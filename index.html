@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#091009" />
+  <title>Eurofighter IFE Fuel Calculator</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon.svg" />
+  <link rel="stylesheet" href="styles.css?v=1.9.18" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <img src="icons/icon.svg" alt="" />
+      <div><strong class="brand-title-full">EUROFIGHTER IFE FUEL CALCULATOR</strong><strong class="brand-title-efb" aria-hidden="true">EUROFIGHTER IFE</strong><span>BY VERBAL · SORTIE / FUEL COMPUTATION · MOBILE BUILD v1.9.18</span></div>
+    </div>
+    <div class="top-status"><span id="airacStatus" class="navdata-cycle" title="Current AIRAC calendar cycle; bundled local navdata is not certified to this cycle.">AIRAC ---- · LOCAL NAVDATA</span><span class="sim-only">SIMULATION ONLY</span><span id="dataStatus" class="chip">LOADING</span><span id="clock">--:-- UTC</span></div>
+  </header>
+
+  <nav class="tabs" aria-label="Main navigation">
+    <button class="tab active" data-view="mission"><span class="tab-icon">✈</span><span>MISSION</span></button>
+    <button class="tab" data-view="route"><span class="tab-icon">⌖</span><span>ROUTE</span></button>
+    <button class="tab" data-view="cruise"><span class="tab-icon">≋</span><span>CRUISE</span></button>
+    <button class="tab" data-view="aar"><span class="tab-icon">⇄</span><span>AAR</span></button>
+    <button class="tab" data-view="bingo"><span class="tab-icon">△</span><span>BINGO / DIVERT</span></button>
+    <button class="tab" data-view="card"><span class="tab-icon">▤</span><span>DATA CARD</span></button>
+    <button class="tab" data-view="settings"><span class="tab-icon">⚙</span><span>SETTINGS</span></button>
+  </nav>
+
+  <main>
+    <section class="view active" id="view-mission">
+      <div class="mission-layout">
+        <section class="panel sortie-panel">
+          <div class="panel-title"><h2>SORTIE DATA</h2><span class="tag input-tag">INPUT</span></div>
+          <div class="form-grid two">
+            <label>Mission<input id="missionName" maxlength="80" /></label>
+            <label>Mission type<input id="missionType" maxlength="24" /></label>
+            <label>Aircraft<select id="aircraft"></select></label>
+            <label>Callsign<input id="callsign" placeholder="z. B. VIPER 11" /></label>
+            <label>Mission date (UTC)<input id="missionDate" type="date" /></label>
+            <label>Mission start (Zulu)<input id="startZulu" inputmode="numeric" placeholder="HH:MM" /></label>
+            <label>Departure<input id="departure" list="airportList" value="ETNN" autocapitalize="characters" /></label>
+            <label>Departure elevation (ft)<div class="input-action"><input id="depElevation" inputmode="numeric" value="380" /><button id="depElevAuto" class="secondary mini-btn" type="button">AUTO</button></div></label>
+            <label>Arrival<input id="arrival" list="airportList" value="ETNN" autocapitalize="characters" /></label>
+            <label>Arrival elevation (ft)<div class="input-action"><input id="arrElevation" inputmode="numeric" value="380" /><button id="arrElevAuto" class="secondary mini-btn" type="button">AUTO</button></div></label>
+            <label>Tank on board (kg)<input id="tankOnBoard" inputmode="decimal" value="7213" /></label>
+            <label>Taxi / Ground (min)<input id="taxiMin" inputmode="decimal" value="8" /></label>
+            <label>Landing reserve (kg)<input id="reserveKg" inputmode="decimal" value="600" /></label>
+            <label>Fuel surcharge (%)<input id="surchargePct" inputmode="decimal" value="0" /></label>
+          </div>
+          <label>Mission notes<input id="missionNotes" maxlength="600" /></label>
+          <div class="button-row">
+            <button id="newManualMission" class="primary">NEW MANUAL MISSION</button>
+            <button id="loadDemo" class="secondary">LOAD DEMO</button>
+          </div>
+          <div class="button-row mission-backup-actions">
+            <button id="exportCurrentMission" class="primary" type="button">EXPORT CURRENT MISSION</button>
+            <button id="importMission" class="secondary" type="button">IMPORT MISSION</button>
+            <input id="missionImportFile" type="file" accept=".json,application/json" hidden />
+          </div>
+          <div id="missionBackupStatus" class="message" role="status" aria-live="polite">JSON · Vollständiges Missions-Backup für andere Geräte.</div>
+          <label>Optional mission preset<select id="missionPreset"><option value="">— Select preset —</option><option value="rhine-sentinelle-ghost-2026-10-10">RHINE SENTINELLE – GHOST – 10.10.2026</option></select></label>
+          <button id="loadMissionPreset" class="secondary" type="button" disabled>LOAD PRESET</button>
+          <p id="missionPresetNote" class="hint hidden"></p>
+        </section>
+
+        <section class="panel simbrief-panel">
+          <div class="panel-title"><h2>SIMBRIEF</h2><span id="simbriefState" class="badge">READY</span></div>
+          <p class="muted">Letzten OFP importieren. Danach bleiben Route, Höhe, Mach und Wind editierbar.</p>
+          <label>Pilot ID / Navigraph Alias</label>
+          <div class="inline"><input id="simbriefUser" placeholder="Pilot ID / Alias" /><button id="savePilot" class="secondary compact">SAVE</button></div>
+          <button id="importSimbrief" class="primary full">IMPORT LATEST OFP</button>
+          <div id="simbriefMessage" class="message">Noch kein Import.</div>
+        </section>
+
+        <section class="panel mission-board full-span">
+          <div class="board-topline"><span id="missionRoute">ETNN → ETNN</span><span id="missionCallsign">NO CALLSIGN</span><span id="planStatus" class="badge">CHECK</span></div>
+          <div class="instrument-grid">
+            <div class="instrument info-card" data-info="block"><small>BLOCK REQ</small><strong id="missionBlock">—</strong><em>kg · tap for details</em></div>
+            <div class="instrument green info-card" data-info="fob"><small>FOB START</small><strong id="missionFob">—</strong><em>kg · entered tank on board</em></div>
+            <div class="instrument info-card" data-info="spare"><small>SPARE</small><strong id="missionSpare">—</strong><em>kg</em></div>
+            <div class="instrument"><small>ROUTE</small><strong id="missionDistance">0</strong><em>NM</em></div>
+            <div class="instrument"><small>ETE</small><strong id="missionTime">0:00</strong><em id="missionEtaZulu">ETA --:--Z</em></div>
+            <div class="instrument bingo info-card" data-info="bingo"><small>BINGO</small><strong id="missionBingo">—</strong><em>kg · tap for details</em></div>
+            <div class="instrument joker info-card" data-info="joker"><small>JOKER</small><strong id="missionJoker">—</strong><em>kg</em></div>
+            <div class="instrument info-card" data-info="divert"><small>DIVERT</small><strong id="missionDivert">—</strong><em>kg</em></div>
+            <div class="instrument aar info-card" data-info="aar"><small>AAR</small><strong id="missionAar">OFF</strong><em id="missionAarUnit">planned</em></div>
+            <div class="instrument"><small>LANDING FOB</small><strong id="missionLandingFob">—</strong><em>kg · estimated</em></div>
+          </div>
+          <svg id="missionProfile" viewBox="0 0 1100 240" role="img" aria-label="Routenprofil"></svg><p class="tap-hint">Tipp: Waypoint im Profil antippen → Leg-, Fuel- und Performance-Details.</p>
+          <div class="quick-actions"><button class="primary jump" data-target="route">EDIT ROUTE</button><button class="secondary jump" data-target="bingo">DIVERT / BINGO</button><button class="secondary jump" data-target="card">DATA CARD</button></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="view" id="view-route">
+      <section class="panel route-panel">
+        <div class="panel-title route-title">
+          <div><h2>ROUTE / LEG EDITOR</h2><p class="muted">Waypoint → ALT → Mach → Zeit (ETA Z) → NM → Hold/WP OUT. Auf Tablet: Waypoint antippen, Felder öffnen oder schließen. Eingabe mit Enter oder beim Verlassen des Feldes übernehmen. Departure/Arrival und Platzhöhen unter Mission ändern.</p></div>
+          <div class="metrics"><span><small>DIST</small><b id="totalDistance">0 NM</b></span><span><small>ETE</small><b id="totalTime">0:00</b></span><span><small>TRIP</small><b id="totalTripFuel">0 kg</b></span></div>
+        </div>
+        <div class="route-scroll-cue" aria-hidden="true">↔ horizontal wischen für ETE · Fuel · FOB</div>
+        <div class="route-table-wrap">
+          <table class="route-table">
+            <thead><tr><th>#</th><th>WP</th><th>ALT ft</th><th>MACH</th><th>ZEIT / ETA Z · WP IN</th><th>NM</th><th>HOLD / WP OUT</th><th>WIND kt</th><th>MODE</th><th>MIN EDIT</th><th>ETE</th><th>LEG kg</th><th title="Fuel, der an diesem WP für restliche Route + Recovery benötigt wird">RECOV kg</th><th>FOB IN / OUT</th><th>MOVE</th></tr></thead>
+            <tbody id="routeBody"></tbody>
+          </table>
+        </div>
+        <div class="route-actions"><button id="addWaypoint" class="primary">＋ ADD WAYPOINT</button><button id="recalculate" class="secondary">↻ RECALCULATE</button><button id="saveMission" class="secondary">SAVE LOCAL</button><button id="loadMission" class="secondary">LOAD LOCAL</button></div>
+      </section>
+      <section class="panel profile-panel"><div class="panel-title"><h2>VERTICAL PROFILE</h2><span class="tag">LIVE</span></div><svg id="routeSvg" viewBox="0 0 1100 260"></svg></section>
+    </section>
+
+    <section class="view" id="view-cruise">
+      <div class="cruise-layout">
+        <section class="panel">
+          <div class="panel-title"><h2>CRUISE CALCULATOR</h2><span class="tag input-tag">EXCEL LOGIC</span></div>
+          <p class="muted">Gesamtstrecke oder Gesamtzeit planen. Steig- und Sinkflug sind enthalten.</p>
+          <div class="form-grid two">
+            <label>Calculation mode<select id="cruiseMode"><option value="distance">DISTANCE (NM)</option><option value="time">TOTAL TIME (MIN)</option></select></label>
+            <label id="cruiseDistanceSourceLabel">Distance source<select id="cruiseDistanceSource"><option value="route">CURRENT ROUTE · AUTO</option><option value="direct">DEP → ARR DIRECT · AUTO</option><option value="manual">MANUAL DISTANCE</option></select></label>
+            <label id="cruiseDistanceLabel">Distance (NM)<input id="cruiseDistance" inputmode="decimal" value="0" readonly /></label>
+            <label id="cruiseTimeLabel" class="hidden">Total flight time (min)<input id="cruiseTimeInput" inputmode="decimal" value="60" /></label>
+            <label>Cruise altitude (ft)<input id="cruiseAltitude" inputmode="numeric" value="30000" /></label>
+            <label>Mach<input id="cruiseMach" inputmode="decimal" value="0.85" /></label>
+            <label>Wind component (kt)<input id="cruiseWind" inputmode="decimal" value="0" /><small>+ tailwind / − headwind</small></label>
+            <label>Departure elevation (ft)<input id="cruiseDepElev" inputmode="numeric" value="380" /></label>
+            <label>Arrival elevation (ft)<input id="cruiseArrElev" inputmode="numeric" value="380" /></label>
+          </div>
+          <button id="cruiseUseMissionAirports" class="secondary full">SYNC WITH CURRENT MISSION</button>
+        </section>
+        <section class="panel cruise-result-panel">
+          <div class="panel-title"><h2>RESULT</h2><span id="cruiseStatus" class="badge">CHECK</span></div>
+          <div class="instrument-grid cruise-instruments">
+            <div class="instrument"><small>CLIMB</small><strong id="cruiseClimbFuel">—</strong><em>kg</em></div>
+            <div class="instrument green"><small>CRUISE</small><strong id="cruiseCruiseFuel">—</strong><em>kg</em></div>
+            <div class="instrument"><small>DESCENT</small><strong id="cruiseDescentFuel">—</strong><em>kg</em></div>
+            <div class="instrument"><small>FLIGHT</small><strong id="cruiseFlightFuel">—</strong><em>kg</em></div>
+            <div class="instrument"><small>ETE</small><strong id="cruiseResultTime">—</strong><em>h:mm</em></div>
+            <div class="instrument"><small>DIST</small><strong id="cruiseResultDistance">—</strong><em>NM</em></div>
+            <div class="instrument bingo"><small>BLOCK</small><strong id="cruiseBlockFuel">—</strong><em>kg</em></div>
+            <div class="instrument"><small>FF</small><strong id="cruiseFlow">—</strong><em>kg/min</em></div>
+          </div>
+          <div id="cruiseDetails" class="message"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="view" id="view-aar">
+      <div class="aar-layout">
+        <section class="panel aar-main">
+          <div class="panel-title"><h2>AIR-TO-AIR REFUELING</h2><span class="tag input-tag">PLANNING</span></div>
+          <div class="aar-enable-row"><label class="switch"><input id="aarEnabled" type="checkbox" /><span></span></label><strong>PLAN AAR</strong><small>Ein geplantes AAR kann den benötigten Start-Block reduzieren.</small></div>
+          <div class="form-grid two">
+            <label>AAR after waypoint<select id="aarWp"></select></label>
+            <label>Aircraft tank capacity (kg)<input id="aarCapacity" readonly /></label>
+            <label>ARIP<input id="aarArip" maxlength="12" placeholder="—" /></label>
+            <label>ARCP<input id="aarArcp" maxlength="12" placeholder="TOD" /></label>
+            <label>Tanker type<input id="aarTankerType" maxlength="48" /></label>
+            <label>Tanker callsign<input id="aarTankerCallsign" maxlength="24" /></label>
+            <label>Frequency / status<input id="aarFrequency" maxlength="80" /></label>
+            <label>ARCT PLAN (Zulu)<input id="aarPlannedArct" maxlength="6" placeholder="HH:MM" /></label>
+            <label>AAR OUT PLAN (Zulu)<input id="aarPlannedOut" maxlength="6" placeholder="HH:MM" /></label>
+            <label>AAR altitude (FL)<input id="aarAlt" inputmode="numeric" value="230" /></label>
+            <label>AAR speed (KIAS)<input id="aarSpeed" inputmode="numeric" value="285" /></label>
+            <label>Effective transfer rate (kg/min · GROSS)<input id="aarTransferRate" inputmode="decimal" placeholder="RATE REQUIRED" /></label>
+            <label>RATE SOURCE<input id="aarRateSource" value="MANUAL" readonly /></label>
+            <label>AAR EVENT DURATION (min)<input id="aarDuration" inputmode="decimal" value="10" /></label>
+            <label>Configuration<select id="aarConfig"><option value="CLEAN">CLEAN</option><option value="3 BAGS">3 BAGS</option></select></label>
+            <label>AUTO target FOB OUT (kg)<input id="aarTargetOut" inputmode="decimal" placeholder="AUTO · continuation requirement" /></label>
+            <label>BINGO 2 (kg)<input id="aarBingo2" inputmode="numeric" placeholder="1650" /></label>
+            <label>B2 → RTB<input id="aarB2Rtb" maxlength="8" placeholder="ETSN" /></label>
+          </div>
+          <div class="instrument-grid aar-instruments">
+            <div class="instrument"><small>CURRENT START FUEL</small><strong id="aarCurrentStart">—</strong><em>kg · Mission input</em></div>
+            <div class="instrument"><small>FUEL TO AAR POINT</small><strong id="aarBurnToPoint">—</strong><em>kg · ground + route</em></div>
+            <div class="instrument"><small>FOB AT AAR · CURRENT</small><strong id="aarFobBefore">—</strong><em>kg before refuel</em></div>
+            <div class="instrument"><small id="aarRequiredAfterLabel">TARGET FOB OUT</small><strong id="aarRequiredAfter">—</strong><em>kg · finish + divert + reserve</em></div>
+            <div class="instrument green"><small>REQUIRED ONLOAD · AUTO</small><strong id="aarSuggested">—</strong><em>kg · target − FOB IN + AAR burn</em></div>
+            <div class="instrument"><small>TANK SPACE · CURRENT</small><strong id="aarTankSpace">—</strong><em>kg · before AAR burn</em></div>
+          </div>
+          <div class="aar-control">
+            <div class="inline-switch"><label class="switch"><input id="aarManualToggle" type="checkbox" /><span></span></label><span>Fixed / manual AAR onload</span><input id="aarManualKg" inputmode="numeric" placeholder="kg" disabled /></div>
+            <p class="hint">TRANSFER RATE = effektiver Gross-Onload pro Minute, keine Netto-Rate. Keine verlässlichen Tanker-/Receiver-Raten mitgeliefert; manuelle Eingabe erforderlich. Transfer und Event-Dauer sind unabhängig. Zusätzliche Event-Zeit wird als Orbit nach dem Transfer mit demselben Receiver-Verbrauch gerechnet. Zu kurze Events und Tanküberlauf am Transfer-Ende werden markiert.</p>
+            <div id="aarTransferStatus" class="message" role="status">TRANSFER TIME: N/A / RATE REQUIRED</div>
+            <p class="hint"><b>AUTO:</b> TARGET FOB ist der gewünschte tatsächliche FOB bei AAR OUT. Die App berechnet den nötigen Gross Onload inklusive AAR-Burn. <b>MANUAL:</b> der eingegebene Gross Onload bleibt fest; daraus werden FOB OUT, Landing FOB und alle Fuel-Margins neu berechnet. Der Mission-Startfuel wird nicht rückwärts verändert.</p>
+            <p class="hint"><b>AAR EVENT DURATION:</b> verschiebt alle nachfolgenden ETA-Zeiten und erzeugt jetzt zusätzlich den Eigenverbrauch während des AAR. <b>Required Onload = Target AAR-OUT FOB − FOB IN + AAR-duration burn.</b> Der AAR-Burn wird aus AAR-Höhe, KIAS, Konfiguration und dem aktiven Fuel-Flow-Modell berechnet.</p>
+          </div>
+          <div class="aar-result">
+            <div><span>PLANNED / GROSS ONLOAD</span><strong id="aarPlanned">—</strong><small>kg · tanker transfer</small></div>
+            <div><span>FOB AFTER LOAD</span><strong id="aarFobAfterLoad">—</strong><small>kg · FOB IN + gross onload (accounting)</small></div>
+            <div><span>AAR BURN</span><strong id="aarDurationBurn">—</strong><small>kg · receiver own burn</small></div>
+            <div><span>FOB OUT</span><strong id="aarFobAfter">—</strong><small>kg · actual after AAR phase</small></div>
+            <div><span>AAR OUT TIME</span><strong id="aarOutTime">—</strong><small>Zulu</small></div>
+            <div><span>REQUIRED BLOCK WITH AAR</span><strong id="aarBlockRequired">—</strong><small>kg · planning minimum for this gross onload</small></div>
+            <div><span>STATUS</span><strong id="aarStatus">OFF</strong><small id="aarStatusDetail">AAR not planned</small></div>
+          </div>
+        </section>
+        <aside class="aar-side">
+          <section class="panel aar-ticket-panel">
+            <div class="panel-title"><h2>AAR PLAN</h2><span class="tag">LIVE</span></div>
+          <div class="aar-ticket-wrap">
+            <article class="aar-ticket" id="aarTicket">
+              <div class="aar-ticket-title">AAR PLAN 01</div>
+              <div class="aar-ticket-rule"></div>
+              <div class="aar-ticket-row"><span>ARIP</span><b id="aarTicketArip">—</b></div>
+              <div class="aar-ticket-row"><span>ARCP</span><b id="aarTicketArcp">—</b></div>
+              <div class="aar-ticket-row"><span>ARCT</span><b id="aarTicketArct">—</b></div>
+              <div class="aar-ticket-gap"></div>
+              <div class="aar-ticket-row"><span>ALT</span><b id="aarTicketAlt">FL230</b></div>
+              <div class="aar-ticket-row"><span>SPD</span><b id="aarTicketSpeed">285 KIAS</b></div>
+              <div class="aar-ticket-row"><span>CONF</span><b id="aarTicketConfig">CLEAN</b></div>
+              <div class="aar-ticket-row"><span>TANKER</span><b id="aarTicketTanker">—</b></div>
+              <div class="aar-ticket-row"><span>CALLSIGN</span><b id="aarTicketCallsign">—</b></div>
+              <div class="aar-ticket-row"><span>FREQ / STATUS</span><b id="aarTicketFrequency">—</b></div>
+              <div class="aar-ticket-row"><span>ARCT / OUT PLAN</span><b id="aarTicketPlanTimes">—</b></div>
+              <div class="aar-ticket-rule"></div>
+              <div class="aar-ticket-row"><span>FOB IN</span><b id="aarTicketFobIn">—</b></div>
+              <div class="aar-ticket-row" id="aarTicketTargetRow"><span>TARGET FOB OUT</span><b id="aarTicketTarget">—</b></div>
+              <div class="aar-ticket-row"><span>GROSS ONLOAD</span><b id="aarTicketOnload">—</b></div>
+              <div class="aar-ticket-row"><span>TRANSFER RATE</span><b id="aarTicketRate">—</b></div>
+              <div class="aar-ticket-row"><span>RATE SOURCE</span><b id="aarTicketRateSource">MANUAL</b></div>
+              <div class="aar-ticket-row"><span>EST XFER TIME</span><b id="aarTicketTransferTime">N/A / RATE REQUIRED</b></div>
+              <div class="aar-ticket-row"><span>AAR EVENT</span><b id="aarTicketEvent">—</b></div>
+              <div class="aar-ticket-row"><span>FOB AFTER LOAD</span><b id="aarTicketAfterLoad">—</b></div>
+              <div class="aar-ticket-row"><span>AAR BURN</span><b id="aarTicketBurn">—</b></div>
+              <div class="aar-ticket-row"><span>FOB OUT</span><b id="aarTicketFobOut">—</b></div>
+              <div class="aar-ticket-row"><span>TRANSFER / ORBIT BURN</span><b id="aarTicketTime">—</b></div>
+              <div class="aar-ticket-row"><span>AAR OUT</span><b id="aarTicketOut">--:--</b></div>
+              <div class="aar-ticket-rule"></div>
+              <div class="aar-ticket-row aar-ticket-critical"><span>BINGO 2</span><b id="aarTicketBingo2">—</b></div>
+              <div class="aar-ticket-row aar-ticket-critical"><span>B2 → RTB</span><b id="aarTicketRtb">—</b></div>
+              <div class="aar-ticket-row"><span>BINGO (NO AAR)</span><b id="aarTicketBingo">—</b></div>
+              <div class="aar-ticket-row aar-ticket-critical"><span>JOKER</span><b id="aarTicketJoker">—</b></div>
+              <div class="aar-ticket-row"><span>JOKER WP</span><b id="aarTicketJokerWp">—</b></div>
+              <div class="aar-ticket-foot">SIMULATION ONLY · *FOB AFTER LOAD: ACCOUNTING ONLY · TRANSFER + RECEIVER BURN, THEN ORBIT · WITHOUT RATE: TRANSFER FEASIBILITY UNVERIFIED</div>
+            </article>
+          </div>
+            <div class="aar-ticket-actions"><button id="printAarTicket" class="primary">PRINT / SAVE PDF</button></div>
+          </section>
+          <section class="panel aar-note">
+          <div class="panel-title"><h2>AAR LOGIC</h2><span class="tag">LIVE</span></div>
+          <div class="info-lines">
+            <div><span>Fuel to AAR point</span><b id="aarBurnToWp">—</b></div>
+            <div><span>Mission requirement without AAR</span><b id="aarBaseBlock">—</b></div>
+            <div><span>Effective accepted onload</span><b id="aarAccepted">—</b></div>
+            <div><span>Shortfall after AAR</span><b id="aarShortfall">—</b></div>
+          </div>
+          <p class="hint">AUTO nutzt: Required Onload = Target AAR-OUT FOB − FOB IN + AAR-duration burn. Der Eigenverbrauch während des AAR wird aus Höhe, KIAS, Konfiguration und Fuel-Flow-Modell berechnet. Bingo/Joker rechnen ohne Onload-Gutschrift; geplanter Event-Burn bleibt enthalten.</p>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-bingo">
+      <div class="bingo-layout">
+        <section class="panel divert-panel full-span">
+          <div class="panel-title"><h2>DIVERT PROFILE</h2><span class="tag input-tag">AUTO</span></div>
+          <p class="hint">Der Divert rechnet vereinfacht ab Arrival zum Alternate. Einen nicht separat modellierten Missed Approach / Recovery-Zusatz hier als kg ergänzen.</p>
+          <div class="form-grid four">
+            <label>Divert altitude (ft)<input id="divertAltitude" inputmode="numeric" value="30000" /></label>
+            <label>Divert Mach<input id="divertMach" inputmode="decimal" value="0.85" /></label>
+            <label>Wind component (kt)<input id="divertWind" inputmode="decimal" value="0" /></label>
+            <label>Missed approach / Recovery extra (kg)<input id="recoveryExtra" inputmode="decimal" value="0" /></label>
+          </div>
+          <div class="divert-grid">
+            <div class="divert-card">
+              <div class="divert-heading"><strong>DIVERT 1</strong><span id="divert1Status" class="mini-status">NOT SET</span></div>
+              <div class="form-grid two">
+                <label>Air base search<input id="alternate1Search" placeholder="ICAO / name / country" autocomplete="off" /></label>
+                <label>Country<select id="alternate1Country"></select></label>
+                <div id="alternate1Results" class="airbase-results full-row" aria-live="polite"></div>
+                <label>Alternate / manual ICAO<input id="alternate1" list="airportList" placeholder="ICAO" autocapitalize="characters" /></label>
+                <label>Manual distance (NM)<input id="divert1ManualDist" inputmode="decimal" placeholder="auto" /></label>
+                <label>Manual elevation (ft)<input id="divert1ManualElev" inputmode="decimal" placeholder="auto" /></label>
+                <label>Used distance<input id="divert1Distance" readonly /></label>
+                <div id="alternate1Selected" class="airbase-selected full-row"></div>
+              </div>
+              <div class="divert-result"><span>FUEL <b id="divert1Fuel">—</b> kg</span><span>ETE <b id="divert1Time">—</b></span></div>
+            </div>
+            <div class="divert-card">
+              <div class="divert-heading"><strong>DIVERT 2</strong><span id="divert2Status" class="mini-status">OPTIONAL</span></div>
+              <div class="form-grid two">
+                <label>Air base search<input id="alternate2Search" placeholder="ICAO / name / country" autocomplete="off" /></label>
+                <label>Country<select id="alternate2Country"></select></label>
+                <div id="alternate2Results" class="airbase-results full-row" aria-live="polite"></div>
+                <label>Alternate / manual ICAO<input id="alternate2" list="airportList" placeholder="ICAO" autocapitalize="characters" /></label>
+                <label>Manual distance (NM)<input id="divert2ManualDist" inputmode="decimal" placeholder="auto" /></label>
+                <label>Manual elevation (ft)<input id="divert2ManualElev" inputmode="decimal" placeholder="auto" /></label>
+                <label>Used distance<input id="divert2Distance" readonly /></label>
+                <div id="alternate2Selected" class="airbase-selected full-row"></div>
+              </div>
+              <div class="divert-result"><span>FUEL <b id="divert2Fuel">—</b> kg</span><span>ETE <b id="divert2Time">—</b></span></div>
+            </div>
+          </div>
+          <label>Used divert<select id="divertSelection"><option value="auto">AUTO · higher fuel requirement</option><option value="1">DIVERT 1</option><option value="2">DIVERT 2</option></select></label>
+          <div class="used-divert">USED DIVERT <strong id="divertUsedFuel">—</strong> kg <span id="divertUsedName">—</span></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title"><h2>BINGO / JOKER</h2><span class="tag">WP BASED</span></div>
+          <label>Bingo reference point<select id="bingoWp"></select></label>
+          <label>Joker checkpoint<select id="jokerWp"></select></label>
+          <label>Joker basis<select id="jokerBasis"><option value="in" selected>WP IN / before HOLD</option><option value="out">WP OUT / after HOLD</option></select></label>
+          <div class="bingo-suggest">
+            <div><small>ARRIVAL RECOVERY FLOOR</small><strong id="arrivalRecoveryFloor">—</strong><span>Divert + Missed/Recovery extra + Reserve. Das ist nur der Bedarf ab Arrival, nicht das positionsabhängige Bingo früher in der Mission.</span></div>
+            <button id="useArrivalReference" class="secondary compact" type="button">USE ARRIVAL</button>
+          </div>
+          <div class="threshold-grid">
+            <div class="threshold bingo"><span>BINGO USED</span><strong id="bingoUsed">—</strong><small id="bingoMode">AUTO</small></div>
+            <div class="threshold joker"><span>JOKER USED</span><strong id="jokerUsed">—</strong><small id="jokerMode">AUTO</small></div>
+          </div>
+          <div class="auto-line"><span>Bingo auto</span><b id="bingoAuto">—</b></div>
+          <div class="inline-switch"><label class="switch"><input id="bingoManualToggle" type="checkbox" /><span></span></label><span>Manual Bingo</span><input id="bingoManual" inputmode="numeric" placeholder="kg" disabled /></div>
+          <div class="auto-line"><span id="jokerAutoLabel">Joker auto @ selected WP IN</span><b id="jokerAuto">—</b></div>
+          <label>Joker buffer over Bingo (kg)<input id="jokerBuffer" inputmode="numeric" value="795" /></label>
+          <div class="inline-switch"><label class="switch"><input id="jokerManualToggle" type="checkbox" /><span></span></label><span>Manual Joker</span><input id="jokerManual" inputmode="numeric" placeholder="kg" disabled /></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title"><h2>FUEL BUILD-UP</h2><span class="tag">LIVE</span></div>
+          <div class="info-lines">
+            <div><span>Remaining mission @ Bingo ref</span><b id="bingoRemaining">—</b></div>
+            <div><span>Estimated FOB @ Bingo ref IN</span><b id="bingoFobAt">—</b></div>
+            <div><span>Bingo margin</span><b id="bingoMargin">—</b></div>
+            <div><span id="jokerRemainingLabel">Remaining mission @ Joker WP IN</span><b id="jokerRemaining">—</b></div>
+            <div><span>Estimated FOB @ Joker basis</span><b id="jokerFobAt">—</b></div>
+            <div><span>Joker margin</span><b id="jokerMargin">—</b></div>
+            <div><span>Divert used</span><b id="bingoDivert">—</b></div>
+            <div><span>Missed / Recovery extra</span><b id="bingoRecovery">—</b></div>
+            <div><span>Landing reserve</span><b id="bingoReserve">—</b></div>
+          </div>
+          <p class="hint"><b>Bingo ist positionsabhängig:</b> ab dem gewählten Bezugspunkt muss der Fuel für die restliche geplante Route bis zur Recovery plus Divert, Missed/Recovery-Zusatz und Reserve reichen. Am Arrival selbst bleibt nur der Recovery Floor. Joker wird separat am gewählten Joker-Checkpoint berechnet. Mit WP IN gilt er bei Ankunft vor einem Hold; mit WP OUT gilt er nach Hold/PUSH.</p>
+        </section>
+      </div>
+    </section>
+
+    <section class="view" id="view-card">
+      <div class="card-toolbar"><button id="printCard" class="primary">PRINT / SAVE PDF</button><button id="refreshCard" class="secondary">REFRESH</button><span class="muted">Eigene Missionskarte aus dem aktuellen App-Zustand</span></div>
+      <article id="dataCardSheet" class="data-card-sheet"></article>
+    </section>
+
+    <section class="view" id="view-settings">
+      <div class="settings-layout">
+        <section class="panel">
+          <div class="panel-title"><h2>AIRCRAFT PROFILES</h2></div>
+          <div id="aircraftProfileList" class="profile-list"></div>
+          <p id="profilesHint" class="hint">Weitere Muster lassen sich später als eigenes Profil mit Tankkapazität, Ground/Climb/Descent und eigener Fuel-Flow-Tabelle ergänzen.</p>
+        </section>
+        <section class="panel">
+          <div class="panel-title"><h2 id="displayHeading">APPEARANCE & LANGUAGE</h2><span class="tag">DISPLAY</span></div>
+          <label id="layoutLabel">Interface layout<select id="layoutSelect">
+            <option value="ops" selected>OPS · CURRENT</option>
+            <option value="efb">OPERATIONAL · EFB</option>
+          </select></label>
+          <label id="languageLabel">Language / Sprache<select id="languageSelect"><option value="de">Deutsch</option><option value="en">English</option></select></label>
+          <label id="themeLabel">Color / day-night theme<select id="themeSelect">
+            <option value="night-cyan">NIGHT · CYAN</option>
+            <option value="night-white">NIGHT · WHITE</option>
+            <option value="ops-green" selected>OPS · GREEN</option>
+            <option value="day">DAY · HIGH CONTRAST</option>
+          </select></label>
+          <p id="themeHint" class="hint">Farben ändern nur die Darstellung. Grün/Amber/Rot bleiben für Status- und Warnwerte reserviert.</p><p id="airacHint" class="hint">AIRAC zeigt den aktuellen 28-Tage-Kalenderzyklus. Die lokale App-Datenbank wird dadurch nicht als AIRAC-zertifiziert oder vollständig aktuell ausgewiesen.</p>
+        </section>
+        <section class="panel">
+          <div class="panel-title"><h2 id="dataModelHeading">DATA MODEL</h2></div>
+          <div class="info-lines">
+            <div><span id="fuelTableLabel">Fuel table</span><b id="settingsFuelRows">—</b></div>
+            <div><span id="aarDataLabel">AAR measurements</span><b id="settingsAarRuns">—</b></div>
+            <div><span id="airacCycleLabel">AIRAC calendar cycle</span><b id="settingsAirac">—</b></div>
+            <div><span id="navdataStatusLabel">Navdata status</span><b id="settingsNavdataStatus">LOCAL / UNVERIFIED</b></div>
+            <div><span id="airportsLabel">Airports</span><b id="settingsAirports">—</b></div>
+            <div><span id="localSaveLabel">Local save</span><b id="localSaveValue">DEVICE ONLY</b></div>
+            <div><span id="calculationLabel">Calculation</span><b id="calculationValue">OFFLINE</b></div>
+          </div>
+        </section>
+        <section class="panel security-panel">
+          <div class="panel-title"><h2 id="securityHeading">SECURITY & PRIVACY</h2><span class="tag">LOCAL FIRST</span></div>
+          <div class="security-points">
+            <p id="securityNoAccount">No app account, no advertising and no analytics/tracking SDKs.</p>
+            <p id="securityLocal">Mission data and settings are stored locally on this device.</p>
+            <p id="securityPermissions">The app does not request camera, microphone, location, payment or USB access.</p>
+            <p id="securitySimbrief">SimBrief is contacted only when you press Import. Pilot ID/Alias is used; no SimBrief password is requested or stored.</p>
+          </div>
+          <div class="button-row"><button id="clearLocalData" class="secondary danger-outline" type="button">DELETE LOCAL DATA</button><a id="privacyPolicyLink" class="secondary link-button" href="privacy-policy.html" target="_blank" rel="noopener">PRIVACY POLICY</a></div>
+          <div id="securityMessage" class="message">No security guarantee is claimed; the build is designed to minimize permissions and external dependencies.</div>
+        </section>
+        <section class="panel full-span warning-panel"><strong id="testStatusHeading">SIMULATION / TEST STATUS</strong><p id="testStatusText">Simulator model calculation using measured and interpolated performance data. Not an official flight document and not for real-world operational planning.</p></section>
+      </div>
+    </section>
+  </main>
+  <datalist id="airportList"></datalist>
+</div>
+<div id="infoOverlay" class="info-overlay hidden" aria-hidden="true">
+  <div class="info-sheet" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <div class="info-sheet-head"><div><small>EUROFIGHTER IFE · DETAIL</small><h3 id="infoTitle">INFO</h3></div><button id="infoClose" class="secondary mini-btn" type="button">CLOSE</button></div>
+    <div id="infoBody" class="info-body"></div>
+  </div>
+</div>
+<script src="i18n.js?v=1.9.18"></script>
+<script src="logic-core.js?v=1.9.18"></script>
+<script src="mission-backup.js?v=1.9.18"></script>
+<script src="app.js?v=1.9.18"></script>
+</body>
+</html>

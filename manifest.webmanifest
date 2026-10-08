@@ -1,0 +1,23 @@
+{
+  "name": "Eurofighter IFE Fuel Calculator",
+  "short_name": "IFE Fuel",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#091009",
+  "theme_color": "#091009",
+  "description": "Eurofighter IFE Fuel Calculator by Verbal – bilingual simulation fuel and sortie planning app",
+  "categories": [
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
