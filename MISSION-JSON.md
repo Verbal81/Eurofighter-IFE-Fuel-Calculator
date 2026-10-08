@@ -1,13 +1,13 @@
-# Update v1.9.18: Schema 2
+# Update v1.9.19: Schema 2
 
-The current portable format is schemaVersion 2, appVersion 1.9.18, performance.modelVersion
+The current portable format is schemaVersion 2, appVersion 1.9.19, performance.modelVersion
 `ife-forward-transfer-2`. Two additional required fields: `aarTransferRate` (numeric text or empty)
 and `aarRateSource` (MANUAL / TANKER PRESET / RECEIVER PRESET). Both persist through JSON and local saves.
 An empty rate means N/A / RATE REQUIRED, never a default calibration. Editing a rate uses MANUAL provenance.
 
 Schema 1 with `ife-forward-1` is migrated safely to schema 2: rate stays empty and source is MANUAL,
 because these fields did not exist then. All previous inputs remain intact. Computed snapshots are ignored.
-Unknown schemas/models still fail validation before mutation. See README v1.9.18 for the transfer/orbit
+Unknown schemas/models still fail validation before mutation. See README v1.9.19 for the transfer/orbit
 phase assumption, equations and capacity checks. The original schema-1 documentation follows for context.
 
 ---

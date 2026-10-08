@@ -1,4 +1,8 @@
-# Eurofighter IFE Fuel Calculator v1.9.18
+# Eurofighter IFE Fuel Calculator v1.9.19
+
+## v1.9.19 — English default
+
+English is the default language, independent of device language. Explicitly saved language preferences remain available. Fuel, timing, AAR and mission data are unchanged.
 
 ## v1.9.18 — Effective transfer rate and transfer time
 
