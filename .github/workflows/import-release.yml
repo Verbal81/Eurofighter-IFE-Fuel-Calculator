@@ -1,0 +1,64 @@
+name: Import Fuel Calculator release ZIP
+on:
+  release:
+    types: [published]
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.event.release.tag_name == 'v1.9.19'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Download release ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          gh release download "$RELEASE_TAG" --pattern '*v1.9.19*English*.zip' --dir /tmp/ife-release
+          test "$(find /tmp/ife-release -maxdepth 1 -name '*.zip' | wc -l)" -eq 1
+      - name: Validate and import archive
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+          archive = next(Path('/tmp/ife-release').glob('*.zip'))
+          root = Path.cwd()
+          with zipfile.ZipFile(archive) as z:
+              names = [i.filename for i in z.infolist() if not i.is_dir()]
+              assert len(names) >= 20, 'Archive appears incomplete'
+              for info in z.infolist():
+                  name = info.filename
+                  p = Path(name)
+                  assert not p.is_absolute() and '..' not in p.parts and not name.startswith('.github/'), f'Unsafe path: {name}'
+                  assert not (info.external_attr >> 16) & 0o170000 == 0o120000, f'Symlink: {name}'
+              assert {'index.html','app.js','i18n.js','logic-core.js','styles.css'}.issubset(names)
+              assert 'let lang=\'en\'' in z.read('i18n.js').decode()
+              assert '<html lang="en">' in z.read('index.html').decode()
+              for info in z.infolist():
+                  if not info.is_dir():
+                      dst = root / info.filename
+                      dst.parent.mkdir(parents=True, exist_ok=True)
+                      dst.write_bytes(z.read(info))
+          print('Imported', len(names), 'files; existing unrelated files retained')
+          PY
+      - name: Run regression tests
+        run: |
+          node tests/regression.cjs
+          node tests/mission-backup.cjs
+          node tests/route-editing.cjs
+          node tests/aar-transfer.cjs
+      - name: Commit verified update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+          else
+            git commit -m "Update Fuel Calculator to v1.9.19 (English default)"
+            git push origin HEAD:main
+          fi
