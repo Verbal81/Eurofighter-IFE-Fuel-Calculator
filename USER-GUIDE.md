@@ -1,4 +1,4 @@
-# Eurofighter IFE Fuel Calculator — User Guide
+# IFE Eurofighter Fuel Calculator FS2024 — User Guide
 Version 1.9.19 · English
 
 ## Open and language
