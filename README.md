@@ -1,10 +1,10 @@
-# Eurofighter IFE Fuel Calculator v1.9.19
+# IFE Eurofighter Fuel Calculator FS2024 v1.9.19
 
-![Eurofighter IFE Fuel Calculator app icon](icons/icon.svg)
+![IFE Eurofighter Fuel Calculator FS2024 app icon](icons/icon.svg)
 
 ## 🌐 Open the app
 
-[✈️ Launch Eurofighter IFE Fuel Calculator](https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/)
+[✈️ Launch IFE Eurofighter Fuel Calculator FS2024](https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/)
 
 [📘 User guide (English)](USER-GUIDE.md)
 
