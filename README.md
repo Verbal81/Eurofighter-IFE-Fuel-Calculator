@@ -8,6 +8,8 @@
 
 [📘 Ausführliche Bedienungsanleitung (PDF, Deutsch)](Eurofighter_IFE_Anleitung_v1.9.19.pdf)
 
+[📘 Full User Guide (PDF, English)](Eurofighter_IFE_User_Guide_v1.9.19_EN.pdf)
+
 [📖 Quick Guide (English)](USER-GUIDE.md)
 
 ## v1.9.19 — English default
