@@ -6,7 +6,9 @@
 
 [✈️ Launch IFE Eurofighter Fuel Calculator FS2024](https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/)
 
-[📘 User guide (English)](USER-GUIDE.md)
+[📘 Ausführliche Bedienungsanleitung (PDF, Deutsch)](IFE_Eurofighter_Fuel_Calculator_FS2024_Anleitung_v1.9.19(1).pdf)
+
+[📖 Quick Guide (English)](USER-GUIDE.md)
 
 ## v1.9.19 — English default
 
