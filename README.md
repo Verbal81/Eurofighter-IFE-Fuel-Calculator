@@ -1,5 +1,9 @@
 # Eurofighter IFE Fuel Calculator v1.9.19
 
+## 🌐 Open the app
+
+[✈️ Launch Eurofighter IFE Fuel Calculator](https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/)
+
 ## v1.9.19 — English default
 
 English is the default language, independent of device language. Explicitly saved language preferences remain available. Fuel, timing, AAR and mission data are unchanged.
