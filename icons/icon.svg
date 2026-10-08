@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="104" fill="#091009"/>
+  <path d="M72 278 235 220l70-124 31 8-27 126 113 36 24 47-135-17-48 124-30-7 15-127-131 30z" fill="#b5d96f"/>
+  <text x="256" y="462" text-anchor="middle" font-family="Arial,sans-serif" font-size="58" font-weight="700" fill="#e7eee2">IFE</text>
+</svg>

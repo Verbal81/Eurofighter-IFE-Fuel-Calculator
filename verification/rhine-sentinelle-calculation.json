@@ -1,0 +1,342 @@
+{
+  "preset": "RHINE SENTINELLE – GHOST – 10.10.2026",
+  "basis": "Preset-Fuel-State aus Briefing: ETAD 1119 kg; ETNN 1253 kg (USED); Landing Reserve 600 kg; Joker Buffer 795 kg; Bingo AUTO @ Arrival = 1853 kg. Divert-Fuel ist fest vorgegeben, ETE bleibt Modellwert. Taxi 8 min / Zuschlag 0 % / Recovery Extra 0 kg wie bisher. PLANANPASSUNG für RP 17:50Z / GO 18:30Z / TOT 18:50Z: Leg RP ANGIE M0.65 → M0.724209; Leg IP M0.55 → M0.582384; S-PUSH Hold 17 → 16.736402 min. Keine Änderung von LEG NM oder Koordinaten. Bei Speed-/Hold-Änderungen Hard-Time-Warnung beachten.",
+  "status": "PLAN READY",
+  "fuelKg": {
+    "start": 7213,
+    "plannedTakeoff": 7085,
+    "angieIn": 6256.286063584571,
+    "grossOnload": 966,
+    "aarBurn": 324.1449685692674,
+    "aarOut": 6898.141095015303,
+    "spushIn": 6475.0442383002755,
+    "spushOut": 5806.843381800807,
+    "joker": 6449,
+    "bingo": 1853,
+    "tgt": 4991.192716922786,
+    "landing": 2674.696807758968
+  },
+  "comparisons": {
+    "joker": {
+      "expected": 6458,
+      "actual": 6449,
+      "delta": -9
+    },
+    "bingo": {
+      "expected": 1853,
+      "actual": 1853,
+      "delta": 0
+    },
+    "diverts": [
+      {
+        "icao": "ETAD",
+        "expected": 1119,
+        "actual": 1119,
+        "delta": 0
+      },
+      {
+        "icao": "ETNN",
+        "expected": 1253,
+        "actual": 1253,
+        "delta": 0
+      }
+    ]
+  },
+  "timing": {
+    "angieIn": "17:50:00Z",
+    "aarOut": "18:00:00Z",
+    "spushIn": "18:13:16Z",
+    "spushOut": "18:30:00Z",
+    "tot": "18:50:00Z",
+    "totLateSeconds": 0,
+    "landing": "19:39:58Z"
+  },
+  "route": [
+    {
+      "wp": "ETSN",
+      "legNm": 0,
+      "plannedEta": "17:30",
+      "hardTime": "",
+      "actualEta": "17:30:00Z",
+      "fobIn": 7085,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 7085
+    },
+    {
+      "wp": "PESIM",
+      "legNm": 32,
+      "plannedEta": "",
+      "hardTime": "",
+      "actualEta": "17:35:00Z",
+      "fobIn": 6809.259081478953,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 6809.259081478953
+    },
+    {
+      "wp": "MEXIT",
+      "legNm": 52.1,
+      "plannedEta": "",
+      "hardTime": "",
+      "actualEta": "17:42:15Z",
+      "fobIn": 6536.328800516119,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 6536.328800516119
+    },
+    {
+      "wp": "RP ANGIE",
+      "legNm": 56.3,
+      "plannedEta": "17:50",
+      "hardTime": "",
+      "actualEta": "17:50:00Z",
+      "fobIn": 6256.286063584571,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 6898.141095015304
+    },
+    {
+      "wp": "AAR EVENT",
+      "legNm": 0.1,
+      "plannedEta": "",
+      "hardTime": "",
+      "actualEta": "18:00:01Z",
+      "fobIn": 6897.605296434391,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 6897.605296434391
+    },
+    {
+      "wp": "AAR OUT",
+      "legNm": 0.1,
+      "plannedEta": "18:00",
+      "hardTime": "",
+      "actualEta": "18:00:02Z",
+      "fobIn": 6897.051447855474,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 6897.051447855474
+    },
+    {
+      "wp": "RUSTI / LL ENTRY",
+      "legNm": 23.1,
+      "plannedEta": "18:05",
+      "hardTime": "",
+      "actualEta": "18:04:51Z",
+      "fobIn": 6794.361524293501,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 6794.361524293501
+    },
+    {
+      "wp": "S-PUSH",
+      "legNm": 47.1,
+      "plannedEta": "18:13",
+      "hardTime": "",
+      "actualEta": "18:13:16Z",
+      "fobIn": 6475.0442383002755,
+      "holdMin": 16.736402166549,
+      "holdBurn": 668.2008564994688,
+      "fobOut": 5806.843381800807
+    },
+    {
+      "wp": "LY",
+      "legNm": 28.1,
+      "plannedEta": "18:35",
+      "hardTime": "",
+      "actualEta": "18:34:52Z",
+      "fobIn": 5612.465714465257,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 5612.465714465257
+    },
+    {
+      "wp": "N11",
+      "legNm": 13,
+      "plannedEta": "18:37",
+      "hardTime": "",
+      "actualEta": "18:37:12Z",
+      "fobIn": 5519.312170332143,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 5519.312170332143
+    },
+    {
+      "wp": "LX",
+      "legNm": 24.4,
+      "plannedEta": "18:42",
+      "hardTime": "",
+      "actualEta": "18:41:34Z",
+      "fobIn": 5344.991578698365,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 5344.991578698365
+    },
+    {
+      "wp": "IP",
+      "legNm": 39.4,
+      "plannedEta": "18:48",
+      "hardTime": "",
+      "actualEta": "18:47:58Z",
+      "fobIn": 5072.4600487018115,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 5072.4600487018115
+    },
+    {
+      "wp": "TGT-SUIP",
+      "legNm": 12.8,
+      "plannedEta": "18:50",
+      "hardTime": "18:50",
+      "actualEta": "18:50:00Z",
+      "fobIn": 4991.192716922786,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 4991.192716922786
+    },
+    {
+      "wp": "EXIT",
+      "legNm": 10.5,
+      "plannedEta": "18:52",
+      "hardTime": "",
+      "actualEta": "18:51:42Z",
+      "fobIn": 4923.267918162645,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 4923.267918162645
+    },
+    {
+      "wp": "NZ",
+      "legNm": 51.4,
+      "plannedEta": "19:00",
+      "hardTime": "",
+      "actualEta": "18:59:51Z",
+      "fobIn": 4597.791428762932,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 4597.791428762932
+    },
+    {
+      "wp": "NY",
+      "legNm": 8.6,
+      "plannedEta": "19:01",
+      "hardTime": "",
+      "actualEta": "19:01:14Z",
+      "fobIn": 4542.604876582991,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 4542.604876582991
+    },
+    {
+      "wp": "N-PUSH",
+      "legNm": 9.2,
+      "plannedEta": "19:03",
+      "hardTime": "",
+      "actualEta": "19:02:47Z",
+      "fobIn": 4480.924436916208,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 4480.924436916208
+    },
+    {
+      "wp": "GE1",
+      "legNm": 10.3,
+      "plannedEta": "19:04",
+      "hardTime": "",
+      "actualEta": "19:04:27Z",
+      "fobIn": 4361.442120135582,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 4361.442120135582
+    },
+    {
+      "wp": "GE2",
+      "legNm": 25.1,
+      "plannedEta": "19:08",
+      "hardTime": "",
+      "actualEta": "19:07:34Z",
+      "fobIn": 4164.263321001393,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 4164.263321001393
+    },
+    {
+      "wp": "USFIL",
+      "legNm": 20,
+      "plannedEta": "19:10",
+      "hardTime": "",
+      "actualEta": "19:09:38Z",
+      "fobIn": 4057.838703404113,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 4057.838703404113
+    },
+    {
+      "wp": "FOLWU",
+      "legNm": 81.2,
+      "plannedEta": "19:18",
+      "hardTime": "",
+      "actualEta": "19:17:47Z",
+      "fobIn": 3636.606205303159,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 3636.606205303159
+    },
+    {
+      "wp": "BANIM",
+      "legNm": 20,
+      "plannedEta": "19:20",
+      "hardTime": "",
+      "actualEta": "19:19:48Z",
+      "fobIn": 3532.854358480264,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 3532.854358480264
+    },
+    {
+      "wp": "ULMEX",
+      "legNm": 77.5,
+      "plannedEta": "19:28",
+      "hardTime": "",
+      "actualEta": "19:27:42Z",
+      "fobIn": 3124.6651408709185,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 3124.6651408709185
+    },
+    {
+      "wp": "ABGAS",
+      "legNm": 19.7,
+      "plannedEta": "19:30",
+      "hardTime": "",
+      "actualEta": "19:29:41Z",
+      "fobIn": 3022.1262137896156,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 3022.1262137896156
+    },
+    {
+      "wp": "IGL",
+      "legNm": 47.3,
+      "plannedEta": "19:37",
+      "hardTime": "",
+      "actualEta": "19:37:11Z",
+      "fobIn": 2738.2069897909996,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 2738.2069897909996
+    },
+    {
+      "wp": "ETSN",
+      "legNm": 14.2,
+      "plannedEta": "19:40",
+      "hardTime": "",
+      "actualEta": "19:39:58Z",
+      "fobIn": 2674.696807758968,
+      "holdMin": 0,
+      "holdBurn": 0,
+      "fobOut": 2674.696807758968
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "date": "2026-10-01",
+  "aircraft": "EF2000",
+  "configuration": "3 Bags",
+  "unit": "kg total fuel",
+  "activeCalibration": {
+    "groundFuelKgPerMin": 16,
+    "normalClimb20kTo30k": {
+      "mach": 0.7,
+      "pitchDeg": 10,
+      "durationMin": 1.25,
+      "fuelUsedKg": 97,
+      "climbRateFpm": 8000,
+      "fuelKgPerMin": 77.6
+    },
+    "normalDescent30kTo20k": {
+      "mach": 0.85,
+      "pitchDeg": -5,
+      "durationMin": 3,
+      "fuelUsedKg": 64,
+      "descentRateFpm": 3333.3333333333,
+      "fuelKgPerMin": 21.3333333333
+    }
+  },
+  "cruise5Min": [
+    {
+      "altitudeFt": 15000,
+      "mach": 0.95,
+      "fuelStartKg": 3623,
+      "fuelEndKg": 3290,
+      "fuelUsedKg": 333,
+      "kgMin": 66.6,
+      "tatC": 40,
+      "tailwindKt": 41
+    },
+    {
+      "altitudeFt": 5000,
+      "mach": 0.48,
+      "fuelStartKg": 3241,
+      "fuelEndKg": 3122,
+      "fuelUsedKg": 119,
+      "kgMin": 23.8
+    },
+    {
+      "altitudeFt": 5000,
+      "mach": 0.56,
+      "fuelStartKg": 3074,
+      "fuelEndKg": 2932,
+      "fuelUsedKg": 142,
+      "kgMin": 28.4
+    },
+    {
+      "altitudeFt": 15000,
+      "mach": 0.85,
+      "fuelStartKg": 2688,
+      "fuelEndKg": 2435,
+      "fuelUsedKg": 253,
+      "kgMin": 50.6
+    },
+    {
+      "altitudeFt": 40000,
+      "mach": 0.85,
+      "fuelStartKg": 2200,
+      "fuelEndKg": 2076,
+      "fuelUsedKg": 124,
+      "kgMin": 24.8
+    }
+  ],
+  "recordedNotStandard": [
+    {
+      "type": "afterburner-climb",
+      "fromFt": 20000,
+      "toFt": 30000,
+      "mach": 0.95,
+      "fuelStartKg": 4080,
+      "fuelEndKg": 4010,
+      "durationMin": 1,
+      "fuelUsedKg": 70
+    },
+    {
+      "type": "fast-descent",
+      "fromFt": 30000,
+      "toFt": 20000,
+      "mach": 0.9,
+      "pitchDeg": -15,
+      "fuelStartKg": 3950,
+      "fuelEndKg": 3934,
+      "durationMin": 1,
+      "fuelUsedKg": 16
+    },
+    {
+      "type": "fast-descent",
+      "fromFt": 30000,
+      "toFt": 20000,
+      "mach": 0.85,
+      "pitchDeg": -10,
+      "fuelStartKg": 3781,
+      "fuelEndKg": 3757,
+      "durationMin": 1,
+      "fuelUsedKg": 24
+    }
+  ],
+  "excludedOrAmbiguous": [
+    {
+      "type": "takeoff-airborne",
+      "timeStart": "19:31",
+      "timeEnd": "19:32",
+      "fuelStartKg": 4830,
+      "fuelEndKg": 4871,
+      "reason": "Fuel increases by 41 kg; retained as raw observation, excluded from calibration."
+    },
+    {
+      "type": "altitude-change",
+      "fromFt": 40000,
+      "toFt": 5000,
+      "mach": 0.85,
+      "pitchDeg": 5,
+      "timeStart": "20:39",
+      "timeEnd": "20:42",
+      "fuelStartKg": 2066,
+      "fuelEndKg": 1964,
+      "reason": "User called this climb although altitude decreases; retained, excluded from standard calibration."
+    }
+  ]
+}

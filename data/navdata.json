@@ -1,0 +1,1114 @@
+{
+  "airports": [
+    {
+      "icao": "EDDB",
+      "name": "BERLIN BRANDENBURG",
+      "lat": 52.362246666666664,
+      "lon": 13.500671666666667,
+      "elevationFt": 156,
+      "category": "Zivil-militärisch"
+    },
+    {
+      "icao": "EDDK",
+      "name": "KÖLN/BONN",
+      "lat": 50.865915,
+      "lon": 7.142745,
+      "elevationFt": 300,
+      "category": "Zivil-militärisch"
+    },
+    {
+      "icao": "EDDS",
+      "name": "STUTTGART / ECHTERDINGEN AAF",
+      "lat": 48.689899,
+      "lon": 9.22196,
+      "elevationFt": 1276,
+      "category": "Zivil-militärisch"
+    },
+    {
+      "icao": "ETAD",
+      "name": "SPANGDAHLEM AB",
+      "lat": 49.976507,
+      "lon": 6.698413,
+      "elevationFt": 1197,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETAR",
+      "name": "RAMSTEIN AB",
+      "lat": 49.436901,
+      "lon": 7.60028,
+      "elevationFt": 776,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETEB",
+      "name": "ANSBACH AAF",
+      "lat": 49.308201,
+      "lon": 10.6387,
+      "elevationFt": null,
+      "category": "Hubschrauberplatz"
+    },
+    {
+      "icao": "ETED",
+      "name": "KAISERSLAUTERN DEPOT AHP",
+      "lat": 49.447874,
+      "lon": 7.83957,
+      "elevationFt": 950,
+      "category": "Hubschrauberplatz"
+    },
+    {
+      "icao": "ETEK",
+      "name": "BAUMHOLDER AAF",
+      "lat": 49.650299,
+      "lon": 7.30007,
+      "elevationFt": null,
+      "category": "Status abgleichen"
+    },
+    {
+      "icao": "ETHA",
+      "name": "ALTENSTADT",
+      "lat": 47.83551666666666,
+      "lon": 10.871255,
+      "elevationFt": 2432,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETHB",
+      "name": "BÜCKEBURG",
+      "lat": 52.27842833333333,
+      "lon": 9.082191666666667,
+      "elevationFt": 229,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETHC",
+      "name": "CELLE",
+      "lat": 52.5912,
+      "lon": 10.022133333333333,
+      "elevationFt": 129,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETHF",
+      "name": "FRITZLAR",
+      "lat": 51.114576666666665,
+      "lon": 9.285865,
+      "elevationFt": 565,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETHL",
+      "name": "LAUPHEIM",
+      "lat": 48.220108333333336,
+      "lon": 9.910208333333333,
+      "elevationFt": 1766,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETHN",
+      "name": "NIEDERSTETTEN",
+      "lat": 49.39187833333333,
+      "lon": 9.958185,
+      "elevationFt": 1536,
+      "category": "Zivil-militärisch"
+    },
+    {
+      "icao": "ETHS",
+      "name": "FASSBERG",
+      "lat": 52.91937333333333,
+      "lon": 10.183848333333334,
+      "elevationFt": 244,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETIC",
+      "name": "GRAFENWÖHR AAF",
+      "lat": 49.6987,
+      "lon": 11.9402,
+      "elevationFt": 1363,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETIH",
+      "name": "HOHENFELS AAF",
+      "lat": 49.216541,
+      "lon": 11.836064,
+      "elevationFt": 1455,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETIK",
+      "name": "ILLESHEIM AAF",
+      "lat": 49.4739,
+      "lon": 10.3881,
+      "elevationFt": 1079,
+      "category": "Hubschrauberplatz"
+    },
+    {
+      "icao": "ETIY",
+      "name": "LANDSTUHL HOSPITAL AHP",
+      "lat": 49.402481,
+      "lon": 7.558588,
+      "elevationFt": 1136,
+      "category": "Hubschrauberplatz"
+    },
+    {
+      "icao": "ETMN",
+      "name": "NORDHOLZ",
+      "lat": 53.76761666666667,
+      "lon": 8.65852,
+      "elevationFt": 73,
+      "category": "Zivil-militärisch"
+    },
+    {
+      "icao": "ETND",
+      "name": "DIEPHOLZ",
+      "lat": 52.585498333333334,
+      "lon": 8.340728333333333,
+      "elevationFt": 127,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETNG",
+      "name": "GEILENKIRCHEN",
+      "lat": 50.96082666666667,
+      "lon": 6.041776666666666,
+      "elevationFt": 292,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETNH",
+      "name": "HOHN",
+      "lat": 54.31220166666667,
+      "lon": 9.538145,
+      "elevationFt": 39,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETNL",
+      "name": "LAAGE",
+      "lat": 53.918085,
+      "lon": 12.279288333333334,
+      "elevationFt": 140,
+      "category": "Zivil-militärisch"
+    },
+    {
+      "icao": "ETNN",
+      "name": "NÖRVENICH",
+      "lat": 50.831138333333335,
+      "lon": 6.6582316666666665,
+      "elevationFt": 380,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETNS",
+      "name": "SCHLESWIG",
+      "lat": 54.45935,
+      "lon": 9.516363333333333,
+      "elevationFt": 74,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETNT",
+      "name": "WITTMUNDHAFEN",
+      "lat": 53.547913333333334,
+      "lon": 7.6674,
+      "elevationFt": 26,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETNW",
+      "name": "WUNSTORF",
+      "lat": 52.45732666666667,
+      "lon": 9.427155,
+      "elevationFt": 187,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETOU",
+      "name": "WIESBADEN AAF",
+      "lat": 50.049800872802734,
+      "lon": 8.325400352478027,
+      "elevationFt": 461,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETSB",
+      "name": "BÜCHEL",
+      "lat": 50.173855,
+      "lon": 7.063363333333333,
+      "elevationFt": 1566,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETSH",
+      "name": "HOLZDORF",
+      "lat": 51.76787,
+      "lon": 13.167595,
+      "elevationFt": 265,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETSI",
+      "name": "INGOLSTADT/MANCHING",
+      "lat": 48.71563,
+      "lon": 11.5337,
+      "elevationFt": 1203,
+      "category": "Zivil-militärisch"
+    },
+    {
+      "icao": "ETSL",
+      "name": "LECHFELD",
+      "lat": 48.18543833333333,
+      "lon": 10.861136666666667,
+      "elevationFt": 1822,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETSN",
+      "name": "NEUBURG",
+      "lat": 48.710995,
+      "lon": 11.211496666666667,
+      "elevationFt": 1249,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETSR",
+      "name": "ROTH",
+      "lat": 49.2175,
+      "lon": 11.100166666666667,
+      "elevationFt": 1271,
+      "category": "Militärflugplatz"
+    },
+    {
+      "icao": "ETWM",
+      "name": "MEPPEN",
+      "lat": 52.723166666666664,
+      "lon": 7.326333333333333,
+      "elevationFt": 68,
+      "category": "Militärflugplatz"
+    }
+  ],
+  "waypoints": [
+    {
+      "ident": "ABDIV",
+      "lat": 48.62133333333333,
+      "lon": 11.0685
+    },
+    {
+      "ident": "ABDOB",
+      "lat": 49.9,
+      "lon": 6.581666666666667
+    },
+    {
+      "ident": "ABGAS",
+      "lat": 48.593666666666664,
+      "lon": 10.391666666666667
+    },
+    {
+      "ident": "ALESU",
+      "lat": 50.87466666666667,
+      "lon": 6.301666666666667
+    },
+    {
+      "ident": "ALOPO",
+      "lat": 50.28033333333333,
+      "lon": 11.768
+    },
+    {
+      "ident": "BANIM",
+      "lat": 49.718333333333334,
+      "lon": 8.608833333333333
+    },
+    {
+      "ident": "BARAP",
+      "lat": 51.861666666666665,
+      "lon": 11.716833333333334
+    },
+    {
+      "ident": "BASDA",
+      "lat": 50.07483333333333,
+      "lon": 8.455333333333334
+    },
+    {
+      "ident": "BEJOS",
+      "lat": 50.1075,
+      "lon": 6.900333333333333
+    },
+    {
+      "ident": "BEKEP",
+      "lat": 53.9545,
+      "lon": 11.810666666666666
+    },
+    {
+      "ident": "BERGE",
+      "lat": 49.593666666666664,
+      "lon": 6.722166666666666
+    },
+    {
+      "ident": "BETGI",
+      "lat": 49.51166666666666,
+      "lon": 12.072833333333334
+    },
+    {
+      "ident": "BIGAA",
+      "lat": 50.10366666666667,
+      "lon": 6.906
+    },
+    {
+      "ident": "BIGGE",
+      "lat": 51.3255,
+      "lon": 8.432833333333333
+    },
+    {
+      "ident": "BILMU",
+      "lat": 48.756166666666665,
+      "lon": 11.6655
+    },
+    {
+      "ident": "BRUTH",
+      "lat": 49.818,
+      "lon": 6.473833333333333
+    },
+    {
+      "ident": "BUGAL",
+      "lat": 50.373333333333335,
+      "lon": 7.544833333333333
+    },
+    {
+      "ident": "BUSCH",
+      "lat": 50.840333333333334,
+      "lon": 10.432166666666667
+    },
+    {
+      "ident": "CAPAK",
+      "lat": 49.989333333333335,
+      "lon": 6.718
+    },
+    {
+      "ident": "CELQU",
+      "lat": 49.142833333333336,
+      "lon": 10.238333333333333
+    },
+    {
+      "ident": "COPEC",
+      "lat": 50.216833333333334,
+      "lon": 7.096166666666667
+    },
+    {
+      "ident": "COYAK",
+      "lat": 49.31883333333333,
+      "lon": 10.721166666666667
+    },
+    {
+      "ident": "CRABE",
+      "lat": 51.15,
+      "lon": 9.916666666666666
+    },
+    {
+      "ident": "DECID",
+      "lat": 49.41316666666667,
+      "lon": 6.728
+    },
+    {
+      "ident": "DEDOP",
+      "lat": 52.574333333333335,
+      "lon": 9.853166666666667
+    },
+    {
+      "ident": "DEXAV",
+      "lat": 54.634,
+      "lon": 8.781666666666666
+    },
+    {
+      "ident": "DEXIP",
+      "lat": 49.449333333333335,
+      "lon": 7.916833333333333
+    },
+    {
+      "ident": "EBAWE",
+      "lat": 53.60466666666667,
+      "lon": 13.308666666666667
+    },
+    {
+      "ident": "EDICE",
+      "lat": 50.22233333333333,
+      "lon": 8.1645
+    },
+    {
+      "ident": "EEDER",
+      "lat": 51.02133333333333,
+      "lon": 8.946
+    },
+    {
+      "ident": "EGUGE",
+      "lat": 52.6415,
+      "lon": 6.958666666666667
+    },
+    {
+      "ident": "EKKIH",
+      "lat": 52.44233333333333,
+      "lon": 7.554833333333333
+    },
+    {
+      "ident": "EKSUD",
+      "lat": 49.43966666666667,
+      "lon": 7.695166666666667
+    },
+    {
+      "ident": "EKVUP",
+      "lat": 49.43866666666667,
+      "lon": 7.407
+    },
+    {
+      "ident": "ELGOT",
+      "lat": 49.93966666666667,
+      "lon": 11.897833333333333
+    },
+    {
+      "ident": "ELTIL",
+      "lat": 50.0155,
+      "lon": 8.148166666666667
+    },
+    {
+      "ident": "EROVO",
+      "lat": 49.98716666666667,
+      "lon": 8.014
+    },
+    {
+      "ident": "ESEMI",
+      "lat": 48.6845,
+      "lon": 11.394
+    },
+    {
+      "ident": "ESUTU",
+      "lat": 49.68366666666667,
+      "lon": 11.813
+    },
+    {
+      "ident": "EVGUL",
+      "lat": 49.45316666666667,
+      "lon": 7.9165
+    },
+    {
+      "ident": "FELGO",
+      "lat": 49.942,
+      "lon": 6.645666666666667
+    },
+    {
+      "ident": "FEWUZ",
+      "lat": 50.068,
+      "lon": 6.123833333333334
+    },
+    {
+      "ident": "FLEXS",
+      "lat": 49.86533333333333,
+      "lon": 6.886
+    },
+    {
+      "ident": "FODOR",
+      "lat": 50.013333333333335,
+      "lon": 6.9505
+    },
+    {
+      "ident": "FOLWU",
+      "lat": 50.053666666666665,
+      "lon": 8.637166666666667
+    },
+    {
+      "ident": "FUPNE",
+      "lat": 52.57416666666667,
+      "lon": 6.7475000000000005
+    },
+    {
+      "ident": "GALEC",
+      "lat": 50.1215,
+      "lon": 8.701166666666667
+    },
+    {
+      "ident": "GEDEH",
+      "lat": 50.412,
+      "lon": 9.249166666666667
+    },
+    {
+      "ident": "GELNU",
+      "lat": 50.96233333333333,
+      "lon": 5.8825
+    },
+    {
+      "ident": "GERKU",
+      "lat": 49.089666666666666,
+      "lon": 8.287833333333333
+    },
+    {
+      "ident": "GIGTU",
+      "lat": 54.888666666666666,
+      "lon": 9.002
+    },
+    {
+      "ident": "GINIM",
+      "lat": 54.64233333333333,
+      "lon": 9.205833333333333
+    },
+    {
+      "ident": "GISAT",
+      "lat": 49.6435,
+      "lon": 9.950166666666666
+    },
+    {
+      "ident": "GIX",
+      "lat": 50.96334,
+      "lon": 6.045188333333333
+    },
+    {
+      "ident": "GOKUB",
+      "lat": 49.444833333333335,
+      "lon": 7.7636666666666665
+    },
+    {
+      "ident": "GOLVI",
+      "lat": 53.9705,
+      "lon": 6.849166666666667
+    },
+    {
+      "ident": "GOTEL",
+      "lat": 54.51416666666667,
+      "lon": 8
+    },
+    {
+      "ident": "HAMFO",
+      "lat": 53.6855,
+      "lon": 10.205
+    },
+    {
+      "ident": "HIPIL",
+      "lat": 49.3285,
+      "lon": 10.796166666666666
+    },
+    {
+      "ident": "HOZ",
+      "lat": 51.76671833333333,
+      "lon": 13.198955
+    },
+    {
+      "ident": "IBAGU",
+      "lat": 52.345,
+      "lon": 7.539833333333333
+    },
+    {
+      "ident": "IBMIX",
+      "lat": 49.9475,
+      "lon": 10.801333333333334
+    },
+    {
+      "ident": "IGL",
+      "lat": 48.718041666666664,
+      "lon": 11.569671666666666
+    },
+    {
+      "ident": "INBIK",
+      "lat": 54,
+      "lon": 8.333333333333334
+    },
+    {
+      "ident": "INBUG",
+      "lat": 49.40133333333333,
+      "lon": 7.232
+    },
+    {
+      "ident": "INGAP",
+      "lat": 48.866166666666665,
+      "lon": 11.518333333333333
+    },
+    {
+      "ident": "INGEK",
+      "lat": 48.224666666666664,
+      "lon": 9.773666666666667
+    },
+    {
+      "ident": "IPKAP",
+      "lat": 52.572833333333335,
+      "lon": 9.110333333333333
+    },
+    {
+      "ident": "IPTUD",
+      "lat": 49.428333333333335,
+      "lon": 7.403833333333333
+    },
+    {
+      "ident": "IRGAG",
+      "lat": 49.39366666666667,
+      "lon": 7.233833333333333
+    },
+    {
+      "ident": "IVLEL",
+      "lat": 49.437666666666665,
+      "lon": 7.6185
+    },
+    {
+      "ident": "KARLU",
+      "lat": 48.97416666666667,
+      "lon": 8.5475
+    },
+    {
+      "ident": "KETIG",
+      "lat": 50.957,
+      "lon": 6.370166666666667
+    },
+    {
+      "ident": "LAG",
+      "lat": 53.91986166666667,
+      "lon": 12.286418333333334
+    },
+    {
+      "ident": "LANOK",
+      "lat": 48.423,
+      "lon": 9.926166666666667
+    },
+    {
+      "ident": "LCH",
+      "lat": 48.19043,
+      "lon": 10.858991666666666
+    },
+    {
+      "ident": "LEVPI",
+      "lat": 50.041333333333334,
+      "lon": 6.801666666666667
+    },
+    {
+      "ident": "LINPU",
+      "lat": 51.041,
+      "lon": 6.307
+    },
+    {
+      "ident": "LUPAK",
+      "lat": 52.201166666666666,
+      "lon": 13.224166666666667
+    },
+    {
+      "ident": "LUWIL",
+      "lat": 53.42583333333334,
+      "lon": 11.4595
+    },
+    {
+      "ident": "MAMUM",
+      "lat": 49.57366666666667,
+      "lon": 10.053333333333333
+    },
+    {
+      "ident": "MAVEP",
+      "lat": 50.3065,
+      "lon": 7.214
+    },
+    {
+      "ident": "MEXIT",
+      "lat": 47.973333333333336,
+      "lon": 9.553666666666667
+    },
+    {
+      "ident": "MILGU",
+      "lat": 51.572,
+      "lon": 13.029666666666667
+    },
+    {
+      "ident": "MOSUG",
+      "lat": 51.3425,
+      "lon": 6.723
+    },
+    {
+      "ident": "NANYI",
+      "lat": 50.0075,
+      "lon": 8.0065
+    },
+    {
+      "ident": "NDO",
+      "lat": 53.76898166666667,
+      "lon": 8.653551666666667
+    },
+    {
+      "ident": "NENVU",
+      "lat": 49.410333333333334,
+      "lon": 10.061333333333334
+    },
+    {
+      "ident": "NESEE",
+      "lat": 50.224833333333336,
+      "lon": 7.084333333333333
+    },
+    {
+      "ident": "NIBKO",
+      "lat": 49.49633333333333,
+      "lon": 9.876333333333333
+    },
+    {
+      "ident": "NOKRO",
+      "lat": 50.833333333333336,
+      "lon": 8.683333333333334
+    },
+    {
+      "ident": "NOLBA",
+      "lat": 50.094166666666666,
+      "lon": 11.223666666666666
+    },
+    {
+      "ident": "NOLRU",
+      "lat": 51.501,
+      "lon": 6.214
+    },
+    {
+      "ident": "NOSDO",
+      "lat": 48.673,
+      "lon": 11.399666666666667
+    },
+    {
+      "ident": "NVO",
+      "lat": 50.822675,
+      "lon": 6.636535
+    },
+    {
+      "ident": "ODPOG",
+      "lat": 49.41433333333333,
+      "lon": 7.409666666666666
+    },
+    {
+      "ident": "ODROV",
+      "lat": 50.159333333333336,
+      "lon": 6.648166666666667
+    },
+    {
+      "ident": "OGGEL",
+      "lat": 48.1405,
+      "lon": 9.693
+    },
+    {
+      "ident": "OGIMI",
+      "lat": 49.904666666666664,
+      "lon": 6.594166666666666
+    },
+    {
+      "ident": "OGMAM",
+      "lat": 49.582166666666666,
+      "lon": 12.176166666666667
+    },
+    {
+      "ident": "OGNID",
+      "lat": 49.4435,
+      "lon": 7.7636666666666665
+    },
+    {
+      "ident": "OGRUG",
+      "lat": 49.44233333333333,
+      "lon": 7.2283333333333335
+    },
+    {
+      "ident": "OSB",
+      "lat": 52.200136666666666,
+      "lon": 8.285518333333334
+    },
+    {
+      "ident": "OSGIG",
+      "lat": 53.8785,
+      "lon": 12.760166666666667
+    },
+    {
+      "ident": "OTGOG",
+      "lat": 49.437,
+      "lon": 7.636666666666667
+    },
+    {
+      "ident": "PENEK",
+      "lat": 52.396,
+      "lon": 12.6465
+    },
+    {
+      "ident": "PESIM",
+      "lat": 48.399166666666666,
+      "lon": 10.687166666666666
+    },
+    {
+      "ident": "PETOM",
+      "lat": 50.67466666666667,
+      "lon": 7.518833333333333
+    },
+    {
+      "ident": "PIPEP",
+      "lat": 50.455555555555556,
+      "lon": 7.040555555555556
+    },
+    {
+      "ident": "PIREK",
+      "lat": 49.17283333333334,
+      "lon": 7.758333333333333
+    },
+    {
+      "ident": "PLAUN",
+      "lat": 50.355,
+      "lon": 12.0075
+    },
+    {
+      "ident": "RALIV",
+      "lat": 49.90683333333333,
+      "lon": 11.960666666666667
+    },
+    {
+      "ident": "REKOY",
+      "lat": 49.82333333333333,
+      "lon": 6.464833333333333
+    },
+    {
+      "ident": "RIDKO",
+      "lat": 49.844833333333334,
+      "lon": 7.934333333333333
+    },
+    {
+      "ident": "RIPOX",
+      "lat": 49.41733333333333,
+      "lon": 7.408333333333333
+    },
+    {
+      "ident": "RISIS",
+      "lat": 48.32,
+      "lon": 9.910166666666667
+    },
+    {
+      "ident": "RISOK",
+      "lat": 51.89083333333333,
+      "lon": 11.189166666666667
+    },
+    {
+      "ident": "ROBDI",
+      "lat": 51.048,
+      "lon": 11.026166666666667
+    },
+    {
+      "ident": "ROVLI",
+      "lat": 49.44266666666667,
+      "lon": 7.764
+    },
+    {
+      "ident": "RUSTI",
+      "lat": 48.17666666666667,
+      "lon": 7.66
+    },
+    {
+      "ident": "SABEX",
+      "lat": 49.278666666666666,
+      "lon": 7.057833333333333
+    },
+    {
+      "ident": "SIGGI",
+      "lat": 48.78966666666667,
+      "lon": 11.852166666666667
+    },
+    {
+      "ident": "SOXET",
+      "lat": 49.76266666666667,
+      "lon": 6.709333333333333
+    },
+    {
+      "ident": "SUDUB",
+      "lat": 49.449,
+      "lon": 7.768833333333333
+    },
+    {
+      "ident": "SUKEK",
+      "lat": 50.05,
+      "lon": 6.8115
+    },
+    {
+      "ident": "SWG",
+      "lat": 54.46355333333333,
+      "lon": 9.51656
+    },
+    {
+      "ident": "TABOK",
+      "lat": 52.943333333333335,
+      "lon": 13.268
+    },
+    {
+      "ident": "TALEG",
+      "lat": 51.092666666666666,
+      "lon": 12.619666666666667
+    },
+    {
+      "ident": "TARTE",
+      "lat": 50.013,
+      "lon": 6.754333333333333
+    },
+    {
+      "ident": "TEDGO",
+      "lat": 48.61833333333333,
+      "lon": 9.259166666666667
+    },
+    {
+      "ident": "TEQUI",
+      "lat": 49.4325,
+      "lon": 7.4991666666666665
+    },
+    {
+      "ident": "TETGI",
+      "lat": 50.95916666666667,
+      "lon": 6.199
+    },
+    {
+      "ident": "TIMLO",
+      "lat": 49.5095,
+      "lon": 9.957166666666666
+    },
+    {
+      "ident": "TIPTO",
+      "lat": 49.46216666666667,
+      "lon": 7.922
+    },
+    {
+      "ident": "TISOS",
+      "lat": 54.5,
+      "lon": 7.310666666666667
+    },
+    {
+      "ident": "TOMKI",
+      "lat": 52.43033333333333,
+      "lon": 9.877166666666668
+    },
+    {
+      "ident": "TUPED",
+      "lat": 54.897166666666664,
+      "lon": 8.8555
+    },
+    {
+      "ident": "TURBU",
+      "lat": 47.91408333333333,
+      "lon": 11.948702777777777
+    },
+    {
+      "ident": "TUVEX",
+      "lat": 48.2155,
+      "lon": 10.046333333333333
+    },
+    {
+      "ident": "UBAKA",
+      "lat": 52.829,
+      "lon": 12.255833333333333
+    },
+    {
+      "ident": "ULGUS",
+      "lat": 54,
+      "lon": 6.9855
+    },
+    {
+      "ident": "ULMEN",
+      "lat": 50.154666666666664,
+      "lon": 6.973333333333334
+    },
+    {
+      "ident": "ULMEX",
+      "lat": 48.82416666666667,
+      "lon": 10.036333333333333
+    },
+    {
+      "ident": "UMKAB",
+      "lat": 49.370333333333335,
+      "lon": 9.838833333333334
+    },
+    {
+      "ident": "UMRET",
+      "lat": 49.449666666666666,
+      "lon": 7.916833333333333
+    },
+    {
+      "ident": "UMRUM",
+      "lat": 54.79216666666667,
+      "lon": 8.942166666666667
+    },
+    {
+      "ident": "UNBOK",
+      "lat": 49.43533333333333,
+      "lon": 7.5601666666666665
+    },
+    {
+      "ident": "UPMEV",
+      "lat": 49.43183333333333,
+      "lon": 7.5605
+    },
+    {
+      "ident": "USAPA",
+      "lat": 49.7625,
+      "lon": 6.697666666666667
+    },
+    {
+      "ident": "USFIL",
+      "lat": 50.01583333333333,
+      "lon": 6.531833333333333
+    },
+    {
+      "ident": "VADAN",
+      "lat": 48.74583333333333,
+      "lon": 11.675
+    },
+    {
+      "ident": "VALAR",
+      "lat": 49.20216666666666,
+      "lon": 10.735333333333333
+    },
+    {
+      "ident": "VALOB",
+      "lat": 50.88,
+      "lon": 5.775333333333333
+    },
+    {
+      "ident": "VATUP",
+      "lat": 51.519666666666666,
+      "lon": 12.430166666666667
+    },
+    {
+      "ident": "VEPEX",
+      "lat": 49.512,
+      "lon": 9.7025
+    },
+    {
+      "ident": "WANUP",
+      "lat": 50.01616666666666,
+      "lon": 6.7495
+    },
+    {
+      "ident": "WEZEL",
+      "lat": 50.29566666666667,
+      "lon": 7.23
+    },
+    {
+      "ident": "WINKE",
+      "lat": 50.13766666666667,
+      "lon": 6.963
+    },
+    {
+      "ident": "WISMA",
+      "lat": 53.8255,
+      "lon": 11.4855
+    },
+    {
+      "ident": "WTM",
+      "lat": 53.55433333333333,
+      "lon": 7.725111666666667
+    },
+    {
+      "ident": "WUN",
+      "lat": 52.454855,
+      "lon": 9.429383333333334
+    },
+    {
+      "ident": "XAXAP",
+      "lat": 49.4205,
+      "lon": 7.228833333333333
+    },
+    {
+      "ident": "XIBEL",
+      "lat": 52.94283333333333,
+      "lon": 7.997833333333333
+    },
+    {
+      "ident": "XILSI",
+      "lat": 49.43666666666667,
+      "lon": 7.618666666666667
+    }
+  ]
+}

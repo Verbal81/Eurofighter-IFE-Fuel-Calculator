@@ -1,0 +1,45 @@
+{
+  "profiles": [
+    {
+      "id": "EF2000",
+      "name": "Eurofighter EF2000",
+      "shortName": "EF2000",
+      "tankCapacityKg": 7213,
+      "fuelTable": "fuel-flow.json",
+      "groundFuelKgPerMin": 16,
+      "climbRateFpm": 8000,
+      "climbFuelKgPerMin": 77.6,
+      "descentRateFpm": 3333.3333333333,
+      "descentFuelKgPerMin": 21.3333333333,
+      "transitionTasKt": 300,
+      "minMach": 0.48,
+      "maxMach": 0.95,
+      "status": "data",
+      "source": "Excel v18 + simulator measurements 2026-10-01 (EF2000, 3 Bags)",
+      "measurementConfiguration": "3 Bags",
+      "measurementDate": "2026-10-01",
+      "afterburnerClimbRateFpm": 10000,
+      "afterburnerClimbFuelKgPerMin": 70,
+      "fastDescentProfiles": [
+        {
+          "fromFt": 30000,
+          "toFt": 20000,
+          "mach": 0.9,
+          "pitchDeg": -15,
+          "rateFpm": 10000,
+          "fuelKgPerMin": 16,
+          "status": "measured-not-standard"
+        },
+        {
+          "fromFt": 30000,
+          "toFt": 20000,
+          "mach": 0.85,
+          "pitchDeg": -10,
+          "rateFpm": 10000,
+          "fuelKgPerMin": 24,
+          "status": "measured-not-standard"
+        }
+      ]
+    }
+  ]
+}
