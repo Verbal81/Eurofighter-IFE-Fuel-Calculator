@@ -1,0 +1,79 @@
+IFE Eurofighter Fuel Calculator FS2024
+Personal Simulator Use License
+Version 1.0 - 8 October 2026
+
+Copyright (c) 2026 Verbal (GitHub: Verbal81), to the extent copyright exists
+in the original project material controlled by this author.
+All rights reserved except as expressly granted below.
+
+1. Scope
+
+This license applies only to the original application code, documentation
+and other project material for which Verbal has the right to grant a license
+(the "Software"). Third-party material is excluded and remains governed by
+its own terms. See THIRD_PARTY_NOTICES.md.
+
+This is a custom, source-available license, not an open-source license.
+It does not claim exclusive rights over facts, public-domain material,
+third-party trademarks, or material not protected by applicable law.
+
+2. Free personal use
+
+You may download, copy, install and run the Software without charge for
+your own private, non-commercial flight-simulator use. You may keep backup
+copies and modify the Software for that same private use. You may run your
+copy locally or on a private instance accessible only to you.
+
+This permission does not authorize real-world flight planning or operations.
+
+3. Publication, redistribution and commercial use
+
+Unless separately permitted by section 5 or applicable law, prior written
+permission from Verbal is required to:
+- sell, rent, sublicense or otherwise commercially exploit the Software;
+- publish or distribute modified versions;
+- redistribute copies of the Software, whether modified or unmodified; or
+- provide a publicly accessible hosted copy or a service using the Software.
+
+Sharing a link to the author's official repository or hosted application
+is permitted and does not constitute redistribution of the Software.
+
+4. Attribution
+
+Keep the author's existing "By Verbal" attribution, copyright notices,
+this license and applicable third-party notices in copies and private
+modifications. Do not present the author's work as your own or imply that
+a modified version is endorsed by the author.
+
+5. Existing rights and exceptions
+
+Nothing here limits rights that applicable law does not allow a license
+to restrict. Nothing here overrides rights granted under GitHub's applicable
+Terms of Service, including viewing and forking a public repository through
+GitHub's functionality. Such rights do not by themselves grant permission
+for uses beyond their scope.
+
+Third-party license permissions and obligations remain intact. This license
+does not revoke permissions already validly granted for earlier versions.
+It does not claim ownership of user-created mission inputs or restrict
+sharing mission JSON backups or generated mission plans that do not
+redistribute the Software or separately restricted third-party material.
+
+6. Simulation-only model and warranty
+
+The Software is a simulator planning aid. Its performance, navigation and
+AAR data may be incomplete, estimated or inaccurate. It is not a certified
+aircraft performance tool or an approved operational flight document.
+
+To the extent permitted by applicable law, the Software is provided
+"AS IS", without warranties of accuracy, fitness for a particular purpose
+or uninterrupted operation. No maintenance or support commitment is made.
+Nothing in this license excludes liability that cannot legally be excluded.
+
+7. Additional permission
+
+For publication, redistribution or commercial-use permission, contact
+Verbal81 through the official repository:
+https://github.com/Verbal81/Eurofighter-IFE-Fuel-Calculator
+
+Any additional permission must be expressly granted in writing.

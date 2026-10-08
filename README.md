@@ -12,6 +12,23 @@
 
 [📖 Quick Guide (English)](USER-GUIDE.md)
 
+## License and permitted use
+
+**Free personal simulator use. Custom source-available license; not open source.**
+
+- Private, non-commercial simulator use and private modifications are permitted.
+- Keep the author's attribution and license notices.
+- Sale, other commercial use, redistribution, publication of modified versions
+  and public hosting require prior written permission from Verbal.
+- Sharing links to this repository or the official app is permitted.
+- GitHub's applicable viewing/forking rights and third-party license rights
+  remain unaffected. User-created mission backups and generated plans may
+  be shared as described in the license.
+
+See [LICENSE](LICENSE) for the controlling terms and
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the separately licensed
+airportsdata content. Simulation only; not for real-world flight planning.
+
 ## v1.9.19 — English default
 
 English is the default language, independent of device language. Explicitly saved language preferences remain available. Fuel, timing, AAR and mission data are unchanged.
