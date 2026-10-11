@@ -1,7 +1,7 @@
 /* Complete input snapshot. No calculation is performed in this module. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.IFEMissionBackup=api;})(typeof window!=='undefined'?window:globalThis,()=>{
   'use strict';
-  const SCHEMA_VERSION=2,APP_VERSION='1.9.20',MODEL_VERSION='ife-forward-transfer-2',MAX_BYTES=5*1024*1024;
+  const SCHEMA_VERSION=2,APP_VERSION='1.9.21',MODEL_VERSION='ife-forward-transfer-2',MAX_BYTES=5*1024*1024;
   const FIELD_IDS=['aarTransferRate','aarRateSource','callsign','missionDate','startZulu','departure','depElevation','arrival','arrElevation','aircraft','tankOnBoard','taxiMin','reserveKg','surchargePct','alternate1','alternate2','divert1ManualDist','divert1ManualElev','divert2ManualDist','divert2ManualElev','divertAltitude','divertMach','divertWind','recoveryExtra','jokerBuffer','bingoManual','jokerManual','cruiseMode','cruiseDistanceSource','cruiseDistance','cruiseTimeInput','cruiseAltitude','cruiseMach','cruiseWind','cruiseDepElev','cruiseArrElev','aarManualKg','aarArip','aarArcp','aarAlt','aarSpeed','aarDuration','aarConfig','aarBingo2','aarB2Rtb','jokerBasis','aarTargetOut','missionName','missionType','missionNotes','aarTankerType','aarTankerCallsign','aarFrequency','aarPlannedArct','aarPlannedOut','divertSelection'];
   const TEXT_IDS=new Set(['aarRateSource','callsign','missionDate','startZulu','departure','arrival','aircraft','alternate1','alternate2','cruiseMode','cruiseDistanceSource','aarArip','aarArcp','aarConfig','aarB2Rtb','jokerBasis','missionName','missionType','missionNotes','aarTankerType','aarTankerCallsign','aarFrequency','aarPlannedArct','aarPlannedOut','divertSelection']);
   const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
@@ -50,7 +50,7 @@
           if(typeof v!=='string')fail(`mission.fields.${k}`,'text input required');
           else if(!TEXT_IDS.has(k))numeric(v,`mission.fields.${k}`,{blank:true});
         }
-        for(const [k,values] of Object.entries({aarRateSource:['MANUAL','TANKER PRESET','RECEIVER PRESET'],cruiseMode:['distance','time'],cruiseDistanceSource:['route','direct','manual'],jokerBasis:['in','out'],divertSelection:['auto','1','2'],aarConfig:['CLEAN','3 BAGS']}))if(!values.includes(m.fields[k]))fail(`mission.fields.${k}`,'unknown mode');
+        for(const [k,values] of Object.entries({aarRateSource:['MANUAL','TANKER PRESET','RECEIVER PRESET',...Array.from({length:6},(_,i)=>`RECEIVER PRESET S${i+1} ESTIMATE`)],cruiseMode:['distance','time'],cruiseDistanceSource:['route','direct','manual'],jokerBasis:['in','out'],divertSelection:['auto','1','2'],aarConfig:['CLEAN','3 BAGS']}))if(!values.includes(m.fields[k]))fail(`mission.fields.${k}`,'unknown mode');
         for(const k of ['startZulu','aarPlannedArct','aarPlannedOut'])if(own(m.fields,k))time(m.fields[k],`mission.fields.${k}`);
         if(m.fields.missionDate!==''&&(!/^\d{4}-\d{2}-\d{2}$/.test(m.fields.missionDate)||Number.isNaN(Date.parse(m.fields.missionDate))))fail('mission.fields.missionDate','invalid date');
       }

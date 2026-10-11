@@ -1,4 +1,4 @@
-# IFE Eurofighter Fuel Calculator FS2024 v1.9.20
+# IFE Eurofighter Fuel Calculator FS2024 v1.9.21
 
 ![IFE Eurofighter Fuel Calculator FS2024 app icon](icons/icon.svg)
 
@@ -29,33 +29,28 @@ See [LICENSE](LICENSE) for the controlling terms and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the separately licensed
 airportsdata content. Simulation only; not for real-world flight planning.
 
-## v1.9.20 — Supplemental AAR observations
+## v1.9.21 — Measured net rates and estimated gross rates
 
-Six additional simulator runs from `Messung.pdf` (received 11 October 2026) are
-recorded in `data/aar-measurements-2026-10-11.json`, together with the four archived
-runs. SETTINGS → DATA MODEL / New AAR measurements shows the supplemental net
-results. All checkpoint fuel levels and times, original local clock entries,
-missing fields and validation issues are retained in the JSON.
+All six supplemental AAR profiles are available in AAR and SETTINGS. Each shows
+measured net rate, modeled receiver burn, estimated gross onload and gross rate.
+Gross = net gain + modeled burn; rate = gross / elapsed time. These are whole-run
+mean estimates, not a universal rate or a piecewise checkpoint model.
 
-- CLEAN full curve: 1,600 → 4,902 kg, final checkpoint 7:01.
-- 3 BAGS full curve: 300 → 7,160 kg, final checkpoint 10:46.
-- CLEAN speed checks: FL230, 250/320 KIAS; 300 → 2,300 kg in 2:20 / 2:21.
-- CLEAN altitude checks: FL150/FL300, 285 KIAS; 300 → 2,300 kg in 2:17 / 2:20.
-- Run 6 records both start and stop as 13:55 local. The conflicting clock entries
-  are not corrected automatically. Checkpoint times are interpreted as elapsed
-  times from fuel-flow start and still need confirmation, as do dates, tanker
-  identity and whether interruptions occurred.
+The existing consumption model is calibrated for 3 BAGS. CLEAN estimates explicitly
+use that model as a proxy. No additional measurements are required to use these
+estimates; a CLEAN consumption calibration would improve accuracy.
 
-These are **net receiver fuel gains**, not measured gross tanker onloads. The
-observed full-curve and comparison fuel bands differ; no global rate is inferred.
-The six requested profile types have been supplied, but calibration is not
-complete: gross offload or matching measured receiver burn is still required,
-plus comparable-band repeat measurements before generalizing a curve.
+Run 6 is resolved by the user's clarification: 300 to 2300 kg in 140 seconds;
+start 13:55 local, derived stop about 13:57 (13:57:20 if starting at :00).
+The original erroneous stop clock remains in the raw data for traceability.
 
-No Fuel Flow, AAR model, tank capacity, saved mission, default route or preset
-input changes. With no manual rate, TRANSFER RATE and EST XFER TIME remain
-N/A / RATE REQUIRED. Planned event burn remains available as before. Existing
-schema-2 backups stay compatible; the calculation-model version is unchanged.
+Use an estimate explicitly via an S1–S6 button with matching FL/KIAS/configuration.
+Only the gross rate and its source are applied. Other mission inputs are unchanged.
+Later profile mismatches invalidate the estimate until corrected or a manual rate
+is entered. Out-of-band FOB is flagged. Event/orbit burn is counted once. Manual
+rates remain editable. Missing unselected rates still show N/A / RATE REQUIRED.
+The source label survives JSON export/import and browser saves. Older saves stay
+readable. Defaults and the optional RHINE SENTINELLE preset are unchanged.
 
 ## v1.9.19 — English default
 

@@ -83,20 +83,37 @@ async function boot(){
 }
 
 // Observations only: never use NET rates as effective GROSS transfer inputs.
+function selectedAarMeasurement(){
+  const match=/^RECEIVER PRESET S([1-6]) ESTIMATE$/.exec($('aarRateSource')?.value||'');
+  return match?(state.aarMeasurements?.supplementRuns||[]).find(r=>r.run===Number(match[1])):null;
+}
+function aarMeasurementEstimate(run){
+  const minutes=run.elapsedSecFromCheckpoint/60,net=run.fuelStopKg-run.fuelStartKg;
+  const mach=kiasToMach(run.speedKt,run.flightLevel*100),flow=fuelFlow(run.flightLevel*100,mach);
+  const receiverFlow=flow.status==='range'?NaN:flow.value;
+  return {minutes,net,netRate:net/minutes,mach,receiverFlow,burn:receiverFlow*minutes,
+    gross:net+receiverFlow*minutes,grossRate:net/minutes+receiverFlow,
+    proxy:run.configuration!==String(profile().measurementConfiguration||'').toUpperCase()};
+}
+function applyAarMeasurement(runNumber){
+  const run=(state.aarMeasurements?.supplementRuns||[]).find(r=>r.run===Number(runNumber));
+  if(!run)return false;
+  const estimate=aarMeasurementEstimate(run);
+  if(!Number.isFinite(estimate.grossRate)||parseNum($('aarAlt').value)!==run.flightLevel||parseNum($('aarSpeed').value)!==run.speedKt||$('aarConfig').value!==run.configuration){
+    $('aarMeasurementMessage').textContent=`Set AAR to FL${run.flightLevel} / ${run.speedKt} KIAS / ${run.configuration} to use S${run.run}. No inputs changed.`;return false;
+  }
+  $('aarTransferRate').value=String(estimate.grossRate);
+  $('aarRateSource').value=`RECEIVER PRESET S${run.run} ESTIMATE`;
+  $('aarMeasurementMessage').textContent=`S${run.run}: estimated mean GROSS rate applied. ${estimate.proxy?'CLEAN burn uses the 3 BAGS model as a proxy.':'Receiver burn from the existing model.'}`;
+  recalc();return true;
+}
 function renderAarMeasurementLog(){
-  const data=state.aarMeasurements, prior=data?.runs||[], runs=data?.supplementRuns||[];
-  if($('settingsAarRuns')) $('settingsAarRuns').textContent=data?`${prior.length+runs.length} · ${uiText('NETTO / VORLÄUFIG','NET / PROVISIONAL')}`:'—';
-  const host=$('aarMeasurementLog');if(!host)return;
-  if(!data){host.textContent=uiText('Messdaten nicht verfügbar.','Measurement data unavailable.');return;}
-  const heading=uiText('Neue AAR-Messungen · 11.10.2026','New AAR measurements · 11 Oct 2026');
-  const note=uiText('6 Profile eingegangen. Netto-Zuwachs und Checkpoint-Zeiten sind keine bestätigte Gross-Transferrate. Keine automatische Änderung von Fuel oder Timing.','6 profile types received. Net gains and checkpoint times are not a confirmed gross transfer rate. No automatic fuel or timing changes.');
-  const rows=runs.map(run=>{
-    const gain=run.fuelStopKg-run.fuelStartKg,sec=run.elapsedSecFromCheckpoint;
-    const duration=`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
-    const status=run.issues.includes('START_STOP_CLOCK_CONFLICT')?uiText('ZEIT PRÜFEN','TIME CHECK'):uiText('NUR NETTO','NET ONLY');
-    return `<tr><td>${escapeHtml(run.run)}</td><td>${escapeHtml(run.configuration)}</td><td>FL${escapeHtml(run.flightLevel)}</td><td>${escapeHtml(run.speedKt)}</td><td>${fmt(gain)}</td><td>${duration}</td><td>${fmt(gain*60/sec,1)}</td><td>${status}</td></tr>`;
-  }).join('');
-  host.innerHTML=`<details><summary>${heading}</summary><p class="hint">${note}</p><div class="measurement-scroll"><table class="measurement-table"><thead><tr><th>Run</th><th>Config</th><th>FL</th><th>KIAS</th><th>NET kg</th><th>mm:ss</th><th>NET kg/min</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div><p class="hint">${uiText('Lauf 6: Start/Stopp beide 13:55 lokal, letzter Checkpoint 2:20. Unverändert gespeichert. Checkpoint-Ursprung, Messdatum, Tanker und Unterbrechungen noch bestätigen.','Run 6: start/stop both 13:55 local, final checkpoint 2:20. Stored without correction. Confirm checkpoint timing origin, measurement dates, tanker and interruptions.')}</p><p class="hint">${uiText('Für Gross Rate fehlt Tanker-Abgabe oder separat gemessener Eigenverbrauch im selben Profil. Unterschiedliche Fuel-Bereiche nicht zu einer globalen Rate mitteln.','Gross rate requires tanker offload or separately measured receiver burn for the same profile. Do not average different fuel bands into a global rate.')} TRANSFER TIME: N/A / RATE REQUIRED ${uiText('ohne manuelle Rate.','without a manual rate.')}</p></details>`;
+  const data=state.aarMeasurements,prior=data?.runs||[],runs=data?.supplementRuns||[];
+  if($('settingsAarRuns'))$('settingsAarRuns').textContent=data?`${prior.length+runs.length} · MEASURED NET / EST GROSS`:'—';
+  const rows=runs.map(run=>{const e=aarMeasurementEstimate(run);return `<tr><td>S${run.run}</td><td>${escapeHtml(run.configuration)}</td><td>${run.flightLevel}</td><td>${run.speedKt}</td><td>${run.fuelStartKg}–${run.fuelStopKg}</td><td>${Math.floor(run.elapsedSecFromCheckpoint/60)}:${String(run.elapsedSecFromCheckpoint%60).padStart(2,'0')}</td><td>${fmt(e.netRate,1)}</td><td>${fmt(e.receiverFlow,2)}${e.proxy?'*':''}</td><td>${fmt(e.burn,1)}</td><td>${fmt(e.gross,1)}</td><td>${fmt(e.grossRate,2)}</td></tr>`;}).join('');
+  const content=`<details><summary>AAR measurements / estimated gross rates</summary><p class="hint">All 6 requested profiles received. NET kg/min is measured. Burn and GROSS are model estimates. * CLEAN uses the existing 3 BAGS consumption model as a proxy. Rates are averages across the listed fuel bands; they do not reproduce every checkpoint segment.</p><div class="measurement-scroll"><table class="measurement-table"><thead><tr><th>Run</th><th>Config</th><th>FL</th><th>KIAS</th><th>FOB band kg</th><th>mm:ss</th><th>NET kg/min</th><th>EST burn kg/min</th><th>EST burn kg</th><th>EST gross kg</th><th>EST gross kg/min</th></tr></thead><tbody>${rows}</tbody></table></div><p class="hint">S6: 300 → 2300 kg in 2:20. Start 13:55 local; derived end approx. 13:57 (13:57:20 if start seconds = 00). Original PDF stop 13:55 retained as a corrected transcription error. Measurement date and tanker identity were not supplied; neither blocks this simulator estimate.</p></details>`;
+  if($('aarMeasurementLog'))$('aarMeasurementLog').innerHTML=content;
+  if($('aarMeasurementRates'))$('aarMeasurementRates').innerHTML=content+`<p class="hint">Optional: use a measured-profile estimate after setting the matching AAR FL, KIAS and configuration. Manual rate entry remains available. No preset is applied automatically.</p>`+runs.map(r=>`<button type="button" data-aar-measurement="${r.run}">Use S${r.run} estimate · ${escapeHtml(r.configuration)} / FL${r.flightLevel} / ${r.speedKt}</button>`).join(' ');
 }
 
 function checkJson(r){ if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }
@@ -190,6 +207,7 @@ function wire(){
     recalc();
   });
   bindNumber('aarManualKg',recalc);
+  $('aarMeasurementRates')?.addEventListener('click',e=>{const b=e.target.closest('[data-aar-measurement]');if(b)applyAarMeasurement(b.dataset.aarMeasurement);});
   bindNumber('aarTransferRate',()=>{$('aarRateSource').value='MANUAL';recalc();});
   ['aarAlt','aarSpeed','aarDuration','aarBingo2','aarTargetOut'].forEach(id=>bindNumber(id,recalc));
   ['aarArip','aarArcp','aarB2Rtb'].forEach(id=>bindText(id,recalc));
@@ -944,7 +962,9 @@ function aarBurnProfile(surcharge=1){
   const conf=String($('aarConfig')?.value||'CLEAN').toUpperCase();
   const measuredConf=String(p.measurementConfiguration||'').toUpperCase();
   // Do not pretend the 3 BAGS calibration is a CLEAN performance model.
-  const configurationValid=!!measuredConf&&conf===measuredConf;
+  const selected=selectedAarMeasurement();
+  const measurementMatches=selected&&selected.configuration===conf&&selected.flightLevel===aarFl&&selected.speedKt===aarKias;
+  const configurationValid=(!!measuredConf&&conf===measuredConf)||!!measurementMatches;
   const aarFlow=fuelFlow(aarAltFt,aarMach);
   const valid=configurationValid&&aarAltFt>=0&&aarAltFt<=55000&&aarKias>0&&aarFlow.status!=='range';
   return {aarFl,aarAltFt,aarKias,aarMach,aarModelMach:aarMach,configurationValid,measuredConf,
@@ -979,8 +999,13 @@ function updateAAR(){
   });
 
   const rateRaw=$('aarTransferRate').value;
-  const transfer=window.IFECore.computeAarTransfer({rate:rateRaw===''?null:parseNum(rateRaw,NaN),receiverFlow:burnProfile.profileValid?aarBurnRate:NaN,eventDuration:duration,fobIn:currentFobBefore,targetOutFob,grossOnload:manual,manual:manualOn,capacity:cap});
+  const measurement=selectedAarMeasurement();
+  const measurementRequested=/^RECEIVER PRESET S[1-6] ESTIMATE$/.test($('aarRateSource').value);
+  const measurementMatches=!measurementRequested||!!(measurement&&measurement.flightLevel===aarFl&&measurement.speedKt===aarKias&&measurement.configuration===$('aarConfig').value);
+  const transfer=window.IFECore.computeAarTransfer({rate:measurementMatches?(rateRaw===''?null:parseNum(rateRaw,NaN)):NaN,receiverFlow:burnProfile.profileValid?aarBurnRate:NaN,eventDuration:duration,fobIn:currentFobBefore,targetOutFob,grossOnload:manual,manual:manualOn,capacity:cap});
   const rateSource=$('aarRateSource').value;
+  if(!measurementMatches)transfer.status='MEASUREMENT PROFILE MISMATCH';
+  const estimateNote=measurement?` · ESTIMATED MEAN S${measurement.run}${measurement.configuration==='CLEAN'?' · CLEAN BURN: 3 BAGS PROXY':''} · MEASURED FOB ${measurement.fuelStartKg}–${measurement.fuelStopKg} KG${currentFobBefore<measurement.fuelStartKg||transfer.peakFob>measurement.fuelStopKg?' · OUTSIDE MEASURED FUEL BAND':''}`:'';
   if(enabled&&!transfer.missingRate){
     core.grossCapacity=Number.isFinite(transfer.rate)&&transfer.rate>aarBurnRate?Math.max(0,Math.min(transfer.rate*duration,(cap-currentFobBefore)/(1-aarBurnRate/transfer.rate))):NaN;
     core.capacityLimited=core.requested>core.grossCapacity+1e-7;
@@ -1030,7 +1055,7 @@ function updateAAR(){
 
   const aarOut=(enabled&&Number.isFinite(s.startZuluMin))?formatZulu(s.startZuluMin+parseNum(s.cumulative?.[index],0)+duration)+'Z':'—';
   const landingFob=Number.isFinite(path?.landingFob)?path.landingFob:NaN;
-  state.aar={transfer,rateSource,enabled,index,duration,aarFl,aarAltFt,aarKias,aarMach,aarModelMach,aarBurnRate,durationBurn,routeBurnTo,burnToWp,currentStart,currentFobBefore,targetOutFob,requiredAfter,suggested:autoNeed,currentTankSpace,currentGrossOnloadCapacity,requested,accepted,netGain,fobAfterLoad,fobAfter:fobOut,shortfall,blockWithAar,status,detail,manualOn,valid:core.valid,afterLoadWithinStaticCapacity:core.afterLoadWithinStaticCapacity,landingFob,aarOut};
+  state.aar={transfer,rateSource,estimateNote,enabled,index,duration,aarFl,aarAltFt,aarKias,aarMach,aarModelMach,aarBurnRate,durationBurn,routeBurnTo,burnToWp,currentStart,currentFobBefore,targetOutFob,requiredAfter,suggested:autoNeed,currentTankSpace,currentGrossOnloadCapacity,requested,accepted,netGain,fobAfterLoad,fobAfter:fobOut,shortfall,blockWithAar,status,detail,manualOn,valid:core.valid,afterLoadWithinStaticCapacity:core.afterLoadWithinStaticCapacity,landingFob,aarOut};
   s.aar=state.aar;s.block=blockWithAar;s.missionTrip=s.trip+(enabled?durationBurn:0);s.fobAt=fobAt;s.fobInAt=fobInAt;s.fobOutAt=fobOutAt;s.landingFob=landingFob;s.fuelPathValid=path.valid;s.fuelInvalidIndex=path.firstInvalidIndex;
   s.plannedTakeoffFob=fobInAt[0];s.requiredTakeoff=Math.max(0,blockWithAar-s.ground);
   // Thresholds do not credit an unreceived onload. Remaining planned event burn still counts.
@@ -1077,9 +1102,9 @@ function updateAAR(){
   }
   ticket('aarTicketAfterLoad',enabled?`${fmt(fobAfterLoad)} KG*`:'—');ticket('aarTicketBurn',enabled?`-${fmt(durationBurn)} KG`:'—');ticket('aarTicketFobOut',enabled?`${fmt(fobOut)} KG`:'—');
   const xferText=Number.isFinite(transfer.transferTime)?`${fmt(transfer.transferTime,2)} MIN${transfer.valid?'':' · CHECK'}`:`N/A / ${transfer.status}`;
-  ticket('aarTicketRate',enabled&&Number.isFinite(transfer.rate)?`${fmt(transfer.rate,2)} KG/MIN`:'N/A / RATE REQUIRED');
-  ticket('aarTicketRateSource',rateSource);ticket('aarTicketTransferTime',enabled?xferText:'—');ticket('aarTicketEvent',enabled?`${fmt(duration,1)} MIN`:'—');
-  ticket('aarTransferStatus',enabled?`TRANSFER TIME: ${xferText} · ${transfer.status}${Number.isFinite(transfer.orbitTime)?` · ORBIT ${fmt(transfer.orbitTime,2)} MIN`:''}`:'AAR OFF');
+  ticket('aarTicketRate',enabled&&Number.isFinite(transfer.rate)?`${fmt(transfer.rate,2)} KG/MIN${measurement?' EST':''}`:'N/A / RATE REQUIRED');
+  ticket('aarTicketRateSource',rateSource+(measurement?.configuration==='CLEAN'?' · 3 BAGS BURN PROXY':''));ticket('aarTicketTransferTime',enabled?xferText:'—');ticket('aarTicketEvent',enabled?`${fmt(duration,1)} MIN`:'—');
+  ticket('aarTransferStatus',enabled?`TRANSFER TIME: ${xferText} · ${transfer.status}${estimateNote}${Number.isFinite(transfer.orbitTime)?` · ORBIT ${fmt(transfer.orbitTime,2)} MIN`:''}`:'AAR OFF');
   ticket('aarTicketTime',enabled&&transfer.valid&&Number.isFinite(transfer.transferBurn)?`${fmt(transfer.transferBurn)} / ${fmt(transfer.orbitBurn)} KG`:'N/A');ticket('aarTicketOut',aarOut);
   ticket('aarTicketBingo2',enabled&&Number.isFinite(bingo2)?`${fmt(bingo2)} KG`:'—');ticket('aarTicketRtb',enabled?(b2rtb||'—'):'—');
   const bingoUsed=Number.isFinite(s.bingo)?s.bingo:NaN,jokerUsed=Number.isFinite(s.joker)?s.joker:NaN,jokerIndex=Number.isInteger(s.jokerIndex)?s.jokerIndex:Math.max(1,state.route.length-2),jokerWp=state.route[jokerIndex]?.wp||'—';
@@ -1241,9 +1266,9 @@ function renderDataCard(){
     <p class="dc-note">PLANNED T/O FOB: <b>${fmt(s.plannedTakeoffFob)} kg</b> · START FOB − GROUND</p>
     <h2>02 | BINGO / JOKER</h2><div class="dc-kpis two"><div><span>BINGO ${$('bingoManualToggle').checked?'MANUAL':'AUTO'}</span><strong>${Number.isFinite(s.bingo)?fmt(s.bingo)+' kg':'—'}</strong></div><div><span>JOKER ${$('jokerManualToggle').checked?'MANUAL':'AUTO'}</span><strong>${Number.isFinite(s.joker)?fmt(s.joker)+' kg':'—'}</strong></div></div><p class="dc-note">BINGO REF WP ${String(bingoI+1).padStart(2,'0')} · ${escapeHtml(state.route[bingoI]?.wp||'—')} IN · JOKER @ ${escapeHtml(state.route[jokerI]?.wp||'—')} ${(s.jokerBasis||'in').toUpperCase()} · Joker = selected IN/OUT recovery requirement + briefed margin.</p>
     <h2>03 | ${uiText('DIVERT / RESERVE','DIVERT / RESERVE')}</h2><div class="dc-kpis"><div><span>DIVERT 1</span><strong>${escapeHtml(d1.name||'—')} ${d1.valid?fmt(d1.fuel)+' kg':''}</strong></div><div><span>DIVERT 2</span><strong>${escapeHtml(d2.name||'—')} ${d2.valid?fmt(d2.fuel)+' kg':''}</strong></div><div><span>USED</span><strong>${s.divertValid?escapeHtml(s.divertName)+' '+fmt(s.divert)+' kg':'—'}</strong></div><div><span>ARR RECOV FLOOR</span><strong>${fmt((s.divert||0)+(s.reserve||0)+(s.recovery||0))} kg</strong></div></div>
-    <h2>04 | AAR</h2>${s.aar?.enabled?`<div class="dc-aar-ticket"><div class="dc-aar-title">AAR PLAN 01</div><div class="dc-aar-rule"></div><div><span>ARIP</span><b>${escapeHtml(s.aar.ticket?.arip||'—')}</b></div><div><span>ARCP</span><b>${escapeHtml(s.aar.ticket?.arcp||state.route[s.aar.index]?.wp||'—')}</b></div><div><span>ARCT</span><b>${escapeHtml(s.aar.ticket?.arct||'—')}</b></div><div class="dc-aar-space"></div><div><span>ALT</span><b>FL${fmt(s.aar.ticket?.alt||230,0)}</b></div><div><span>SPD</span><b>${fmt(s.aar.ticket?.speed||285,0)} KIAS</b></div><div><span>CONF</span><b>${escapeHtml(s.aar.ticket?.conf||'CLEAN')}</b></div><div><span>TANKER</span><b>${escapeHtml(s.aar.ticket?.tankerType||'—')}</b></div><div><span>CALLSIGN</span><b>${escapeHtml(s.aar.ticket?.tankerCallsign||'—')}</b></div><div><span>FREQ / STATUS</span><b>${escapeHtml(s.aar.ticket?.frequency||'—')}</b></div>${s.aar.ticket?.plannedArct||s.aar.ticket?.plannedOut?`<div><span>ARCT / OUT PLAN</span><b>${escapeHtml(s.aar.ticket?.plannedArct||'—')}Z / ${escapeHtml(s.aar.ticket?.plannedOut||'—')}Z</b></div>`:''}<div class="dc-aar-rule"></div><div><span>FOB IN</span><b>${fmt(s.aar.ticket?.fobIn)} KG</b></div>${s.aar.manualOn?'':`<div><span>TARGET FOB OUT</span><b>${fmt(s.aar.ticket?.target)} KG</b></div>`}<div><span>GROSS ONLOAD</span><b>+${fmt(s.aar.ticket?.onload)} KG</b></div><div><span>TRANSFER RATE</span><b>${Number.isFinite(s.aar.transfer?.rate)?fmt(s.aar.transfer.rate,2)+' KG/MIN':'N/A / RATE REQUIRED'}</b></div><div><span>RATE SOURCE</span><b>${escapeHtml(s.aar.rateSource||'MANUAL')}</b></div><div><span>EST XFER TIME</span><b>${Number.isFinite(s.aar.transfer?.transferTime)?fmt(s.aar.transfer.transferTime,2)+' MIN'+(s.aar.transfer.valid?'':' · CHECK'):'N/A / '+escapeHtml(s.aar.transfer?.status||'RATE REQUIRED')}</b></div><div><span>AAR EVENT</span><b>${fmt(s.aar.duration,1)} MIN</b></div><div><span>FOB AFTER LOAD</span><b>${fmt(s.aar.ticket?.fobAfterLoad)} KG*</b></div><div><span>AAR BURN</span><b>-${fmt(s.aar.ticket?.burn)} KG</b></div><div><span>FOB OUT</span><b>${fmt(s.aar.ticket?.fobOut)} KG</b></div><div><span>AAR OUT</span><b>${escapeHtml(s.aar.ticket?.out||'—')}</b></div><div class="dc-aar-rule"></div><div><span>BINGO 2</span><b>${Number.isFinite(s.aar.ticket?.bingo2)?fmt(s.aar.ticket.bingo2)+' KG':'—'}</b></div><div><span>B2 → RTB</span><b>${escapeHtml(s.aar.ticket?.b2rtb||'—')}</b></div><div><span>BINGO (NO AAR)</span><b>${Number.isFinite(s.aar.ticket?.bingo)?fmt(s.aar.ticket.bingo)+' KG':'—'}</b></div><div><span>JOKER</span><b>${Number.isFinite(s.aar.ticket?.joker)?fmt(s.aar.ticket.joker)+' KG':'—'}</b></div><div><span>JOKER @</span><b>${escapeHtml((s.aar.ticket?.jokerWp||'—')+' '+(s.jokerBasis||'in').toUpperCase())}</b></div><small>SIMULATION ONLY · *FOB AFTER LOAD is accounting only; Known rate: simultaneous transfer/burn followed by orbit burn; peak checked at transfer end. Without rate, transfer time/feasibility unverified.</small></div>`:`<div class="dc-kpis"><div><span>STATUS</span><strong>OFF</strong></div></div>`}
+    <h2>04 | AAR</h2>${s.aar?.enabled?`<div class="dc-aar-ticket"><div class="dc-aar-title">AAR PLAN 01</div><div class="dc-aar-rule"></div><div><span>ARIP</span><b>${escapeHtml(s.aar.ticket?.arip||'—')}</b></div><div><span>ARCP</span><b>${escapeHtml(s.aar.ticket?.arcp||state.route[s.aar.index]?.wp||'—')}</b></div><div><span>ARCT</span><b>${escapeHtml(s.aar.ticket?.arct||'—')}</b></div><div class="dc-aar-space"></div><div><span>ALT</span><b>FL${fmt(s.aar.ticket?.alt||230,0)}</b></div><div><span>SPD</span><b>${fmt(s.aar.ticket?.speed||285,0)} KIAS</b></div><div><span>CONF</span><b>${escapeHtml(s.aar.ticket?.conf||'CLEAN')}</b></div><div><span>TANKER</span><b>${escapeHtml(s.aar.ticket?.tankerType||'—')}</b></div><div><span>CALLSIGN</span><b>${escapeHtml(s.aar.ticket?.tankerCallsign||'—')}</b></div><div><span>FREQ / STATUS</span><b>${escapeHtml(s.aar.ticket?.frequency||'—')}</b></div>${s.aar.ticket?.plannedArct||s.aar.ticket?.plannedOut?`<div><span>ARCT / OUT PLAN</span><b>${escapeHtml(s.aar.ticket?.plannedArct||'—')}Z / ${escapeHtml(s.aar.ticket?.plannedOut||'—')}Z</b></div>`:''}<div class="dc-aar-rule"></div><div><span>FOB IN</span><b>${fmt(s.aar.ticket?.fobIn)} KG</b></div>${s.aar.manualOn?'':`<div><span>TARGET FOB OUT</span><b>${fmt(s.aar.ticket?.target)} KG</b></div>`}<div><span>GROSS ONLOAD</span><b>+${fmt(s.aar.ticket?.onload)} KG</b></div><div><span>TRANSFER RATE</span><b>${Number.isFinite(s.aar.transfer?.rate)?fmt(s.aar.transfer.rate,2)+' KG/MIN':'N/A / RATE REQUIRED'}</b></div><div><span>RATE SOURCE</span><b>${escapeHtml(s.aar.rateSource||'MANUAL')}</b></div><div><span>EST XFER TIME</span><b>${Number.isFinite(s.aar.transfer?.transferTime)?fmt(s.aar.transfer.transferTime,2)+' MIN'+(s.aar.transfer.valid?'':' · CHECK'):'N/A / '+escapeHtml(s.aar.transfer?.status||'RATE REQUIRED')}</b></div><div><span>AAR EVENT</span><b>${fmt(s.aar.duration,1)} MIN</b></div><div><span>FOB AFTER LOAD</span><b>${fmt(s.aar.ticket?.fobAfterLoad)} KG*</b></div><div><span>AAR BURN</span><b>-${fmt(s.aar.ticket?.burn)} KG</b></div><div><span>FOB OUT</span><b>${fmt(s.aar.ticket?.fobOut)} KG</b></div><div><span>AAR OUT</span><b>${escapeHtml(s.aar.ticket?.out||'—')}</b></div><div class="dc-aar-rule"></div><div><span>BINGO 2</span><b>${Number.isFinite(s.aar.ticket?.bingo2)?fmt(s.aar.ticket.bingo2)+' KG':'—'}</b></div><div><span>B2 → RTB</span><b>${escapeHtml(s.aar.ticket?.b2rtb||'—')}</b></div><div><span>BINGO (NO AAR)</span><b>${Number.isFinite(s.aar.ticket?.bingo)?fmt(s.aar.ticket.bingo)+' KG':'—'}</b></div><div><span>JOKER</span><b>${Number.isFinite(s.aar.ticket?.joker)?fmt(s.aar.ticket.joker)+' KG':'—'}</b></div><div><span>JOKER @</span><b>${escapeHtml((s.aar.ticket?.jokerWp||'—')+' '+(s.jokerBasis||'in').toUpperCase())}</b></div><small>${escapeHtml(s.aar.estimateNote||'')} SIMULATION ONLY · *FOB AFTER LOAD is accounting only; Known rate: simultaneous transfer/burn followed by orbit burn; peak checked at transfer end. Without rate, transfer time/feasibility unverified.</small></div>`:`<div class="dc-kpis"><div><span>STATUS</span><strong>OFF</strong></div></div>`}
     <h2>05 | ${uiText('FLUGLOG','FLIGHT LOG')}</h2><table class="dc-table"><thead><tr><th>NR</th><th>WAYPOINT</th><th>ALT</th><th>M</th><th>WIND</th><th>LEG NM</th><th>ETE</th><th>WP IN Z</th><th>HOLD / WP OUT</th><th>LEG kg</th><th>RECOV kg</th><th>FOB IN / OUT</th><th>IST kg</th></tr></thead><tbody>${rows}</tbody></table>
-    <footer class="dc-footer">Eurofighter IFE Fuel Calculator v1.9.20 · by Verbal · ${uiText('SIMULATION / TESTBUILD · KEIN OFFIZIELLES FLUGDOKUMENT','SIMULATION / TEST BUILD · NOT AN OFFICIAL FLIGHT DOCUMENT')}</footer>`;
+    <footer class="dc-footer">Eurofighter IFE Fuel Calculator v1.9.21 · by Verbal · ${uiText('SIMULATION / TESTBUILD · KEIN OFFIZIELLES FLUGDOKUMENT','SIMULATION / TEST BUILD · NOT AN OFFICIAL FLIGHT DOCUMENT')}</footer>`;
 }
 
 function openInfo(title,html){$('infoTitle').textContent=title;$('infoBody').innerHTML=html;$('infoOverlay').classList.remove('hidden');$('infoOverlay').setAttribute('aria-hidden','false');}

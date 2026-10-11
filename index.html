@@ -7,14 +7,14 @@
   <title>Eurofighter IFE Fuel Calculator</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon.svg" />
-  <link rel="stylesheet" href="styles.css?v=1.9.20" />
+  <link rel="stylesheet" href="styles.css?v=1.9.21" />
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
     <div class="brand">
       <img src="icons/icon.svg" alt="" />
-      <div><strong class="brand-title-full">EUROFIGHTER IFE FUEL CALCULATOR</strong><strong class="brand-title-efb" aria-hidden="true">EUROFIGHTER IFE</strong><span>BY VERBAL · SORTIE / FUEL COMPUTATION · MOBILE BUILD v1.9.20</span></div>
+      <div><strong class="brand-title-full">EUROFIGHTER IFE FUEL CALCULATOR</strong><strong class="brand-title-efb" aria-hidden="true">EUROFIGHTER IFE</strong><span>BY VERBAL · SORTIE / FUEL COMPUTATION · MOBILE BUILD v1.9.21</span></div>
     </div>
     <div class="top-status"><span id="airacStatus" class="navdata-cycle" title="Current AIRAC calendar cycle; bundled local navdata is not certified to this cycle.">AIRAC ---- · LOCAL NAVDATA</span><span class="sim-only">SIMULATION ONLY</span><span id="dataStatus" class="chip">LOADING</span><span id="clock">--:-- UTC</span></div>
   </header>
@@ -184,6 +184,7 @@
           <div class="aar-control">
             <div class="inline-switch"><label class="switch"><input id="aarManualToggle" type="checkbox" /><span></span></label><span>Fixed / manual AAR onload</span><input id="aarManualKg" inputmode="numeric" placeholder="kg" disabled /></div>
             <p class="hint">TRANSFER RATE = effektiver Gross-Onload pro Minute, keine Netto-Rate. Keine verlässlichen Tanker-/Receiver-Raten mitgeliefert; manuelle Eingabe erforderlich. Transfer und Event-Dauer sind unabhängig. Zusätzliche Event-Zeit wird als Orbit nach dem Transfer mit demselben Receiver-Verbrauch gerechnet. Zu kurze Events und Tanküberlauf am Transfer-Ende werden markiert.</p>
+            <div id="aarMeasurementRates"></div><p id="aarMeasurementMessage" class="hint" role="status"></p>
             <div id="aarTransferStatus" class="message" role="status">TRANSFER TIME: N/A / RATE REQUIRED</div>
             <p class="hint"><b>AUTO:</b> TARGET FOB ist der gewünschte tatsächliche FOB bei AAR OUT. Die App berechnet den nötigen Gross Onload inklusive AAR-Burn. <b>MANUAL:</b> der eingegebene Gross Onload bleibt fest; daraus werden FOB OUT, Landing FOB und alle Fuel-Margins neu berechnet. Der Mission-Startfuel wird nicht rückwärts verändert.</p>
             <p class="hint"><b>AAR EVENT DURATION:</b> verschiebt alle nachfolgenden ETA-Zeiten und erzeugt jetzt zusätzlich den Eigenverbrauch während des AAR. <b>Required Onload = Target AAR-OUT FOB − FOB IN + AAR-duration burn.</b> Der AAR-Burn wird aus AAR-Höhe, KIAS, Konfiguration und dem aktiven Fuel-Flow-Modell berechnet.</p>
@@ -400,9 +401,9 @@
     <div id="infoBody" class="info-body"></div>
   </div>
 </div>
-<script src="i18n.js?v=1.9.20"></script>
-<script src="logic-core.js?v=1.9.20"></script>
-<script src="mission-backup.js?v=1.9.20"></script>
-<script src="app.js?v=1.9.20"></script>
+<script src="i18n.js?v=1.9.21"></script>
+<script src="logic-core.js?v=1.9.21"></script>
+<script src="mission-backup.js?v=1.9.21"></script>
+<script src="app.js?v=1.9.21"></script>
 </body>
 </html>

@@ -7,13 +7,10 @@
   "sourceFile": "Messung.pdf",
   "sourceSha256": "a364ff928a62cfecf35292cbc762facdcdbfbb60e28dfc8f9b7c2efc12fa4ef7",
   "notes": [
-    "Supplement received on 2026-10-11; measurement dates were not provided.",
-    "Six requested profile types supplied. Full-curve starting fuel differs from the original requested reference range.",
-    "Checkpoint durations are interpreted as elapsed transfer times; confirm that timing begins at actual fuel flow and report any interruptions.",
-    "FOB differences are NET gains, not gross tanker onloads. No measured gross-transfer rate or receiver burn is available.",
-    "Supplement run 6 records 1355lcl for both start and stop, but its final checkpoint is 2:20. Original entries retained without correction.",
-    "No global rate, fuel-flow curve, mission input, tank capacity, or AAR timing is changed by these observations.",
-    "Original runs remain in runs; supplemental runs use unique IDs and a separate collection."
+    "All six requested measurement profiles supplied. No extra measurement needed for these model-based estimates.",
+    "Net gains are measured; receiver burn and gross onload/rate are estimates. CLEAN uses the existing 3 BAGS model as a proxy.",
+    "Run 6 duration confirmed by user: 140 seconds. Start 13:55 local; derived stop approximately 13:57 (13:57:20 if start seconds were 00). Raw PDF clock preserved.",
+    "Rates are whole-run averages, not a calibrated universal or piecewise fuel-band curve."
   ],
   "runs": [
     {
@@ -110,7 +107,7 @@
       "fuelStopKg": 4902,
       "stopLocalTimeRaw": "1334lcl",
       "elapsedSecFromCheckpoint": 421,
-      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpointBasis": "elapsed seconds since fuel transfer started; user clarification 2026-10-11",
       "checkpoints": [
         {
           "label": "2500 kg",
@@ -159,14 +156,13 @@
       "grossOnloadKg": null,
       "receiverBurnKg": null,
       "effectiveGrossTransferRateKgMin": null,
-      "status": "NET ONLY",
+      "status": "MEASURED NET / MODEL ESTIMATE",
       "issues": [
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
         "TANKER_NOT_RECORDED",
-        "INTERRUPTIONS_NOT_RECORDED",
-        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+        "INTERRUPTIONS_NOT_RECORDED"
       ]
     },
     {
@@ -184,7 +180,7 @@
       "fuelStopKg": 7160,
       "stopLocalTimeRaw": "1422lcl",
       "elapsedSecFromCheckpoint": 646,
-      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpointBasis": "elapsed seconds since fuel transfer started; user clarification 2026-10-11",
       "checkpoints": [
         {
           "label": "2500 kg",
@@ -233,14 +229,13 @@
       "grossOnloadKg": null,
       "receiverBurnKg": null,
       "effectiveGrossTransferRateKgMin": null,
-      "status": "NET ONLY",
+      "status": "MEASURED NET / MODEL ESTIMATE",
       "issues": [
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
         "TANKER_NOT_RECORDED",
-        "INTERRUPTIONS_NOT_RECORDED",
-        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+        "INTERRUPTIONS_NOT_RECORDED"
       ]
     },
     {
@@ -258,7 +253,7 @@
       "fuelStopKg": 2300,
       "stopLocalTimeRaw": "1340lcl",
       "elapsedSecFromCheckpoint": 140,
-      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpointBasis": "elapsed seconds since fuel transfer started; user clarification 2026-10-11",
       "checkpoints": [
         {
           "label": "+500 kg",
@@ -289,14 +284,13 @@
       "grossOnloadKg": null,
       "receiverBurnKg": null,
       "effectiveGrossTransferRateKgMin": null,
-      "status": "NET ONLY",
+      "status": "MEASURED NET / MODEL ESTIMATE",
       "issues": [
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
         "TANKER_NOT_RECORDED",
-        "INTERRUPTIONS_NOT_RECORDED",
-        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+        "INTERRUPTIONS_NOT_RECORDED"
       ]
     },
     {
@@ -314,7 +308,7 @@
       "fuelStopKg": 2300,
       "stopLocalTimeRaw": "1347lcl",
       "elapsedSecFromCheckpoint": 141,
-      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpointBasis": "elapsed seconds since fuel transfer started; user clarification 2026-10-11",
       "checkpoints": [
         {
           "label": "+500 kg",
@@ -345,14 +339,13 @@
       "grossOnloadKg": null,
       "receiverBurnKg": null,
       "effectiveGrossTransferRateKgMin": null,
-      "status": "NET ONLY",
+      "status": "MEASURED NET / MODEL ESTIMATE",
       "issues": [
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
         "TANKER_NOT_RECORDED",
-        "INTERRUPTIONS_NOT_RECORDED",
-        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+        "INTERRUPTIONS_NOT_RECORDED"
       ]
     },
     {
@@ -370,7 +363,7 @@
       "fuelStopKg": 2300,
       "stopLocalTimeRaw": "1406lcl",
       "elapsedSecFromCheckpoint": 137,
-      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpointBasis": "elapsed seconds since fuel transfer started; user clarification 2026-10-11",
       "checkpoints": [
         {
           "label": "+500 kg",
@@ -401,14 +394,13 @@
       "grossOnloadKg": null,
       "receiverBurnKg": null,
       "effectiveGrossTransferRateKgMin": null,
-      "status": "NET ONLY",
+      "status": "MEASURED NET / MODEL ESTIMATE",
       "issues": [
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
         "TANKER_NOT_RECORDED",
-        "INTERRUPTIONS_NOT_RECORDED",
-        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+        "INTERRUPTIONS_NOT_RECORDED"
       ]
     },
     {
@@ -426,7 +418,7 @@
       "fuelStopKg": 2300,
       "stopLocalTimeRaw": "1355lcl",
       "elapsedSecFromCheckpoint": 140,
-      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpointBasis": "elapsed seconds since fuel transfer started; user clarification 2026-10-11",
       "checkpoints": [
         {
           "label": "+500 kg",
@@ -457,25 +449,29 @@
       "grossOnloadKg": null,
       "receiverBurnKg": null,
       "effectiveGrossTransferRateKgMin": null,
-      "status": "TIME CHECK",
+      "status": "MEASURED NET / MODEL ESTIMATE",
       "issues": [
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
         "TANKER_NOT_RECORDED",
-        "INTERRUPTIONS_NOT_RECORDED",
-        "ELAPSED_TIME_BASIS_TO_CONFIRM",
-        "START_STOP_CLOCK_CONFLICT"
-      ]
+        "INTERRUPTIONS_NOT_RECORDED"
+      ],
+      "timingResolution": {
+        "durationSec": 140,
+        "startLocalMinute": "13:55",
+        "derivedStopLocalMinute": "13:57",
+        "derivedStopIfStartSecondsZero": "13:57:20",
+        "source": "user clarification 2026-10-11",
+        "rawStopIsTypo": true
+      }
     }
   ],
   "activation": {
-    "enabled": false,
-    "reason": "RATE REQUIRED: net observations cannot establish a confirmed effective gross transfer rate.",
-    "required": [
-      "Confirm run 6 stop time and checkpoint timing origin for all runs; supply measurement dates, tanker type and interruption notes.",
-      "Provide gross tanker offload over the measured interval OR a separately measured receiver burn for the same configuration, altitude and speed.",
-      "Repeat comparable fuel bands before generalizing the observed fuel-level-dependent curve."
-    ]
-  }
+    "enabled": true,
+    "mode": "explicit receiver preset selection only",
+    "method": "mean net rate plus existing receiver fuel-flow model; CLEAN uses labelled 3 BAGS proxy",
+    "scope": "exact measured FL/KIAS/configuration; mean across recorded fuel band, no universal rate"
+  },
+  "revision": 2
 }
