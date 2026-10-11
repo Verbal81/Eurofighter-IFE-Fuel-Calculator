@@ -500,3 +500,6 @@ html[data-theme="day"] .row-move{background:#eef2ef;color:#24342b;border-color:#
   .route-table td:first-child,.route-table th:first-child{position:static}
   .route-table td:nth-child(2),.route-table th:nth-child(2){left:0}
 }
+
+/* Read-only calibration observations; separate from route and AAR inputs. */
+.measurement-scroll{overflow-x:auto;margin:10px 0}.measurement-table{width:100%;border-collapse:collapse;font-size:12px}.measurement-table th,.measurement-table td{padding:7px;border-bottom:1px solid var(--line,#315044);text-align:left;white-space:nowrap}#aarMeasurementLog summary{cursor:pointer;font-weight:700}

@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "aircraft": "EF2000",
+  "status": "provisional-not-active-for-calculation",
+  "source": "user simulator measurements",
+  "sourceFile": "Messung.pdf",
+  "sourceSha256": "a364ff928a62cfecf35292cbc762facdcdbfbb60e28dfc8f9b7c2efc12fa4ef7",
+  "notes": [
+    "Supplement received on 2026-10-11; measurement dates were not provided.",
+    "Six requested profile types supplied. Full-curve starting fuel differs from the original requested reference range.",
+    "Checkpoint durations are interpreted as elapsed transfer times; confirm that timing begins at actual fuel flow and report any interruptions.",
+    "FOB differences are NET gains, not gross tanker onloads. No measured gross-transfer rate or receiver burn is available.",
+    "Supplement run 6 records 1355lcl for both start and stop, but its final checkpoint is 2:20. Original entries retained without correction.",
+    "No global rate, fuel-flow curve, mission input, tank capacity, or AAR timing is changed by these observations.",
+    "Original runs remain in runs; supplemental runs use unique IDs and a separate collection."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "configuration": "clean",
+      "flightLevel": 230,
+      "speedKt": 285,
+      "speedType": "IAS",
+      "targetNetGainKg": 1000,
+      "fuelBeforeJoinKg": 2170,
+      "fuelFirstContactKg": 2046,
+      "fuelFinalDisconnectKg": 3046,
+      "fuelEventEndKg": 3008,
+      "joinStart": "07:38:15",
+      "firstContact": "07:41:55",
+      "finalDisconnect": "07:43:45",
+      "eventEnd": "07:44:45",
+      "contactTimeSec": 110,
+      "eventTimeSec": 330,
+      "interruptions": "none"
+    },
+    {
+      "run": 2,
+      "configuration": "clean",
+      "flightLevel": 230,
+      "speedKt": 285,
+      "speedType": "IAS",
+      "targetNetGainKg": 2000,
+      "fuelBeforeJoinKg": 2170,
+      "fuelFirstContactKg": 2062,
+      "fuelFinalDisconnectKg": 4034,
+      "fuelEventEndKg": 3996,
+      "joinStart": "07:46:55",
+      "firstContact": "07:50:05",
+      "finalDisconnect": "07:52:40",
+      "eventEnd": "07:53:40",
+      "contactTimeSec": 155,
+      "eventTimeSec": 405,
+      "interruptions": "none"
+    },
+    {
+      "run": 4,
+      "configuration": "clean",
+      "flightLevel": 230,
+      "speedKt": 285,
+      "speedType": "IAS",
+      "targetNetGainKg": 1000,
+      "fuelBeforeJoinKg": 3930,
+      "fuelFirstContactKg": 3811,
+      "fuelFinalDisconnectKg": 4811,
+      "fuelEventEndKg": 4773,
+      "joinStart": "07:56:35",
+      "firstContact": "07:58:37",
+      "finalDisconnect": "08:00:57",
+      "eventEnd": "08:01:57",
+      "contactTimeSec": 140,
+      "eventTimeSec": 322,
+      "interruptions": "none"
+    },
+    {
+      "run": 5,
+      "configuration": "clean",
+      "flightLevel": 230,
+      "speedKt": 285,
+      "speedType": "IAS",
+      "targetNetGainKg": "2800 -> FULL",
+      "fuelBeforeJoinKg": 2170,
+      "fuelFirstContactKg": 2058,
+      "fuelFinalDisconnectKg": 4903,
+      "fuelEventEndKg": 4874,
+      "joinStart": "08:07:08",
+      "firstContact": "08:10:45",
+      "finalDisconnect": "08:16:55",
+      "eventEnd": "08:17:55",
+      "contactTimeSec": 370,
+      "eventTimeSec": 657,
+      "interruptions": "none",
+      "observation": "Refuel appears to slow from about 3600 kg and again from about 4520 kg."
+    }
+  ],
+  "supplementRuns": [
+    {
+      "id": "supplement-1",
+      "run": 1,
+      "sourcePage": 1,
+      "configuration": "CLEAN",
+      "flightLevel": 230,
+      "speedKt": 285,
+      "speedType": "IAS",
+      "measurementDate": null,
+      "dateTimeFieldRaw": "1323lcl",
+      "fuelStartKg": 1600,
+      "startLocalTimeRaw": "1327lcl",
+      "fuelStopKg": 4902,
+      "stopLocalTimeRaw": "1334lcl",
+      "elapsedSecFromCheckpoint": 421,
+      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpoints": [
+        {
+          "label": "2500 kg",
+          "fuelKg": 2500,
+          "elapsedTimeRaw": "1:20",
+          "elapsedSec": 80
+        },
+        {
+          "label": "3000 kg",
+          "fuelKg": 3000,
+          "elapsedTimeRaw": "2:16",
+          "elapsedSec": 136
+        },
+        {
+          "label": "3600 kg",
+          "fuelKg": 3600,
+          "elapsedTimeRaw": "3:22",
+          "elapsedSec": 202
+        },
+        {
+          "label": "4000 kg",
+          "fuelKg": 4000,
+          "elapsedTimeRaw": "4:03",
+          "elapsedSec": 243
+        },
+        {
+          "label": "4520 kg",
+          "fuelKg": 4520,
+          "elapsedTimeRaw": "5:41",
+          "elapsedSec": 341
+        },
+        {
+          "label": "4800 kg",
+          "fuelKg": 4800,
+          "elapsedTimeRaw": "6:50",
+          "elapsedSec": 410
+        },
+        {
+          "label": "FULL",
+          "fuelKg": 4902,
+          "elapsedTimeRaw": "7:01",
+          "elapsedSec": 421
+        }
+      ],
+      "interruptionsRaw": "",
+      "grossOnloadKg": null,
+      "receiverBurnKg": null,
+      "effectiveGrossTransferRateKgMin": null,
+      "status": "NET ONLY",
+      "issues": [
+        "GROSS_TRANSFER_UNKNOWN",
+        "RECEIVER_BURN_UNKNOWN",
+        "MEASUREMENT_DATE_NOT_RECORDED",
+        "TANKER_NOT_RECORDED",
+        "INTERRUPTIONS_NOT_RECORDED",
+        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+      ]
+    },
+    {
+      "id": "supplement-2",
+      "run": 2,
+      "sourcePage": 1,
+      "configuration": "3 BAGS",
+      "flightLevel": 230,
+      "speedKt": 285,
+      "speedType": "IAS",
+      "measurementDate": null,
+      "dateTimeFieldRaw": "1410lcl",
+      "fuelStartKg": 300,
+      "startLocalTimeRaw": "1412lcl",
+      "fuelStopKg": 7160,
+      "stopLocalTimeRaw": "1422lcl",
+      "elapsedSecFromCheckpoint": 646,
+      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpoints": [
+        {
+          "label": "2500 kg",
+          "fuelKg": 2500,
+          "elapsedTimeRaw": "2:35",
+          "elapsedSec": 155
+        },
+        {
+          "label": "3000 kg",
+          "fuelKg": 3000,
+          "elapsedTimeRaw": "3:26",
+          "elapsedSec": 206
+        },
+        {
+          "label": "3600 kg",
+          "fuelKg": 3600,
+          "elapsedTimeRaw": "4:07",
+          "elapsedSec": 247
+        },
+        {
+          "label": "4000 kg",
+          "fuelKg": 4000,
+          "elapsedTimeRaw": "4:32",
+          "elapsedSec": 272
+        },
+        {
+          "label": "4520 kg",
+          "fuelKg": 4520,
+          "elapsedTimeRaw": "5:10",
+          "elapsedSec": 310
+        },
+        {
+          "label": "4800 kg",
+          "fuelKg": 4800,
+          "elapsedTimeRaw": "5:36",
+          "elapsedSec": 336
+        },
+        {
+          "label": "FULL",
+          "fuelKg": 7160,
+          "elapsedTimeRaw": "10:46",
+          "elapsedSec": 646
+        }
+      ],
+      "interruptionsRaw": "",
+      "grossOnloadKg": null,
+      "receiverBurnKg": null,
+      "effectiveGrossTransferRateKgMin": null,
+      "status": "NET ONLY",
+      "issues": [
+        "GROSS_TRANSFER_UNKNOWN",
+        "RECEIVER_BURN_UNKNOWN",
+        "MEASUREMENT_DATE_NOT_RECORDED",
+        "TANKER_NOT_RECORDED",
+        "INTERRUPTIONS_NOT_RECORDED",
+        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+      ]
+    },
+    {
+      "id": "supplement-3",
+      "run": 3,
+      "sourcePage": 2,
+      "configuration": "CLEAN",
+      "flightLevel": 230,
+      "speedKt": 250,
+      "speedType": "IAS",
+      "measurementDate": null,
+      "dateTimeFieldRaw": "1327lcl",
+      "fuelStartKg": 300,
+      "startLocalTimeRaw": "1338lcl",
+      "fuelStopKg": 2300,
+      "stopLocalTimeRaw": "1340lcl",
+      "elapsedSecFromCheckpoint": 140,
+      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpoints": [
+        {
+          "label": "+500 kg",
+          "fuelKg": 800,
+          "elapsedTimeRaw": "0:32",
+          "elapsedSec": 32
+        },
+        {
+          "label": "+1000 kg",
+          "fuelKg": 1300,
+          "elapsedTimeRaw": "1:08",
+          "elapsedSec": 68
+        },
+        {
+          "label": "+1500 kg",
+          "fuelKg": 1800,
+          "elapsedTimeRaw": "1:44",
+          "elapsedSec": 104
+        },
+        {
+          "label": "+2000 kg",
+          "fuelKg": 2300,
+          "elapsedTimeRaw": "2:20",
+          "elapsedSec": 140
+        }
+      ],
+      "interruptionsRaw": "",
+      "grossOnloadKg": null,
+      "receiverBurnKg": null,
+      "effectiveGrossTransferRateKgMin": null,
+      "status": "NET ONLY",
+      "issues": [
+        "GROSS_TRANSFER_UNKNOWN",
+        "RECEIVER_BURN_UNKNOWN",
+        "MEASUREMENT_DATE_NOT_RECORDED",
+        "TANKER_NOT_RECORDED",
+        "INTERRUPTIONS_NOT_RECORDED",
+        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+      ]
+    },
+    {
+      "id": "supplement-4",
+      "run": 4,
+      "sourcePage": 2,
+      "configuration": "CLEAN",
+      "flightLevel": 230,
+      "speedKt": 320,
+      "speedType": "IAS",
+      "measurementDate": null,
+      "dateTimeFieldRaw": "1342lcl",
+      "fuelStartKg": 300,
+      "startLocalTimeRaw": "1345lcl",
+      "fuelStopKg": 2300,
+      "stopLocalTimeRaw": "1347lcl",
+      "elapsedSecFromCheckpoint": 141,
+      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpoints": [
+        {
+          "label": "+500 kg",
+          "fuelKg": 800,
+          "elapsedTimeRaw": "0:34",
+          "elapsedSec": 34
+        },
+        {
+          "label": "+1000 kg",
+          "fuelKg": 1300,
+          "elapsedTimeRaw": "1:10",
+          "elapsedSec": 70
+        },
+        {
+          "label": "+1500 kg",
+          "fuelKg": 1800,
+          "elapsedTimeRaw": "1:45",
+          "elapsedSec": 105
+        },
+        {
+          "label": "+2000 kg",
+          "fuelKg": 2300,
+          "elapsedTimeRaw": "2:21",
+          "elapsedSec": 141
+        }
+      ],
+      "interruptionsRaw": "",
+      "grossOnloadKg": null,
+      "receiverBurnKg": null,
+      "effectiveGrossTransferRateKgMin": null,
+      "status": "NET ONLY",
+      "issues": [
+        "GROSS_TRANSFER_UNKNOWN",
+        "RECEIVER_BURN_UNKNOWN",
+        "MEASUREMENT_DATE_NOT_RECORDED",
+        "TANKER_NOT_RECORDED",
+        "INTERRUPTIONS_NOT_RECORDED",
+        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+      ]
+    },
+    {
+      "id": "supplement-5",
+      "run": 5,
+      "sourcePage": 3,
+      "configuration": "CLEAN",
+      "flightLevel": 150,
+      "speedKt": 285,
+      "speedType": "IAS",
+      "measurementDate": null,
+      "dateTimeFieldRaw": "1402lcl",
+      "fuelStartKg": 300,
+      "startLocalTimeRaw": "1404lcl",
+      "fuelStopKg": 2300,
+      "stopLocalTimeRaw": "1406lcl",
+      "elapsedSecFromCheckpoint": 137,
+      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpoints": [
+        {
+          "label": "+500 kg",
+          "fuelKg": 800,
+          "elapsedTimeRaw": "0:30",
+          "elapsedSec": 30
+        },
+        {
+          "label": "+1000 kg",
+          "fuelKg": 1300,
+          "elapsedTimeRaw": "1:05",
+          "elapsedSec": 65
+        },
+        {
+          "label": "+1500 kg",
+          "fuelKg": 1800,
+          "elapsedTimeRaw": "1:40",
+          "elapsedSec": 100
+        },
+        {
+          "label": "+2000 kg",
+          "fuelKg": 2300,
+          "elapsedTimeRaw": "2:17",
+          "elapsedSec": 137
+        }
+      ],
+      "interruptionsRaw": "",
+      "grossOnloadKg": null,
+      "receiverBurnKg": null,
+      "effectiveGrossTransferRateKgMin": null,
+      "status": "NET ONLY",
+      "issues": [
+        "GROSS_TRANSFER_UNKNOWN",
+        "RECEIVER_BURN_UNKNOWN",
+        "MEASUREMENT_DATE_NOT_RECORDED",
+        "TANKER_NOT_RECORDED",
+        "INTERRUPTIONS_NOT_RECORDED",
+        "ELAPSED_TIME_BASIS_TO_CONFIRM"
+      ]
+    },
+    {
+      "id": "supplement-6",
+      "run": 6,
+      "sourcePage": 3,
+      "configuration": "CLEAN",
+      "flightLevel": 300,
+      "speedKt": 285,
+      "speedType": "IAS",
+      "measurementDate": null,
+      "dateTimeFieldRaw": "1351lcl",
+      "fuelStartKg": 300,
+      "startLocalTimeRaw": "1355lcl",
+      "fuelStopKg": 2300,
+      "stopLocalTimeRaw": "1355lcl",
+      "elapsedSecFromCheckpoint": 140,
+      "checkpointBasis": "elapsed time from STR REF START (interpreted; not explicitly labelled in PDF)",
+      "checkpoints": [
+        {
+          "label": "+500 kg",
+          "fuelKg": 800,
+          "elapsedTimeRaw": "0:32",
+          "elapsedSec": 32
+        },
+        {
+          "label": "+1000 kg",
+          "fuelKg": 1300,
+          "elapsedTimeRaw": "1:09",
+          "elapsedSec": 69
+        },
+        {
+          "label": "+1500 kg",
+          "fuelKg": 1800,
+          "elapsedTimeRaw": "1:44",
+          "elapsedSec": 104
+        },
+        {
+          "label": "+2000 kg",
+          "fuelKg": 2300,
+          "elapsedTimeRaw": "2:20",
+          "elapsedSec": 140
+        }
+      ],
+      "interruptionsRaw": "",
+      "grossOnloadKg": null,
+      "receiverBurnKg": null,
+      "effectiveGrossTransferRateKgMin": null,
+      "status": "TIME CHECK",
+      "issues": [
+        "GROSS_TRANSFER_UNKNOWN",
+        "RECEIVER_BURN_UNKNOWN",
+        "MEASUREMENT_DATE_NOT_RECORDED",
+        "TANKER_NOT_RECORDED",
+        "INTERRUPTIONS_NOT_RECORDED",
+        "ELAPSED_TIME_BASIS_TO_CONFIRM",
+        "START_STOP_CLOCK_CONFLICT"
+      ]
+    }
+  ],
+  "activation": {
+    "enabled": false,
+    "reason": "RATE REQUIRED: net observations cannot establish a confirmed effective gross transfer rate.",
+    "required": [
+      "Confirm run 6 stop time and checkpoint timing origin for all runs; supply measurement dates, tanker type and interruption notes.",
+      "Provide gross tanker offload over the measured interval OR a separately measured receiver burn for the same configuration, altitude and speed.",
+      "Repeat comparable fuel bands before generalizing the observed fuel-level-dependent curve."
+    ]
+  }
+}

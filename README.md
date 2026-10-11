@@ -1,4 +1,4 @@
-# IFE Eurofighter Fuel Calculator FS2024 v1.9.19
+# IFE Eurofighter Fuel Calculator FS2024 v1.9.20
 
 ![IFE Eurofighter Fuel Calculator FS2024 app icon](icons/icon.svg)
 
@@ -28,6 +28,34 @@
 See [LICENSE](LICENSE) for the controlling terms and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the separately licensed
 airportsdata content. Simulation only; not for real-world flight planning.
+
+## v1.9.20 — Supplemental AAR observations
+
+Six additional simulator runs from `Messung.pdf` (received 11 October 2026) are
+recorded in `data/aar-measurements-2026-10-11.json`, together with the four archived
+runs. SETTINGS → DATA MODEL / New AAR measurements shows the supplemental net
+results. All checkpoint fuel levels and times, original local clock entries,
+missing fields and validation issues are retained in the JSON.
+
+- CLEAN full curve: 1,600 → 4,902 kg, final checkpoint 7:01.
+- 3 BAGS full curve: 300 → 7,160 kg, final checkpoint 10:46.
+- CLEAN speed checks: FL230, 250/320 KIAS; 300 → 2,300 kg in 2:20 / 2:21.
+- CLEAN altitude checks: FL150/FL300, 285 KIAS; 300 → 2,300 kg in 2:17 / 2:20.
+- Run 6 records both start and stop as 13:55 local. The conflicting clock entries
+  are not corrected automatically. Checkpoint times are interpreted as elapsed
+  times from fuel-flow start and still need confirmation, as do dates, tanker
+  identity and whether interruptions occurred.
+
+These are **net receiver fuel gains**, not measured gross tanker onloads. The
+observed full-curve and comparison fuel bands differ; no global rate is inferred.
+The six requested profile types have been supplied, but calibration is not
+complete: gross offload or matching measured receiver burn is still required,
+plus comparable-band repeat measurements before generalizing a curve.
+
+No Fuel Flow, AAR model, tank capacity, saved mission, default route or preset
+input changes. With no manual rate, TRANSFER RATE and EST XFER TIME remain
+N/A / RATE REQUIRED. Planned event burn remains available as before. Existing
+schema-2 backups stay compatible; the calculation-model version is unchanged.
 
 ## v1.9.19 — English default
 

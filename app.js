@@ -42,7 +42,7 @@ async function boot(){
       fetch('data/navdata.json',{cache:'no-store'}).then(checkJson),
       fetch('data/aircraft-profiles.json',{cache:'no-store'}).then(checkJson),
       fetch('data/international-airbases.json',{cache:'no-store'}).then(checkJson),
-      fetch('data/aar-measurements-2026-10-03.json',{cache:'no-store'}).then(checkJson).catch(()=>null)
+      fetch('data/aar-measurements-2026-10-11.json',{cache:'no-store'}).then(checkJson).catch(()=>null)
     ]);
     const baseAirports=(nav.airports||[]).map(a=>({
       ...a,
@@ -70,7 +70,7 @@ async function boot(){
     $('dataStatus').className='chip ok';
     $('settingsAirports').textContent=fmt((nav.airports||[]).length);
     $('settingsFuelRows').textContent=fmt((state.fuelData?.rows||[]).length);
-    if($('settingsAarRuns')){const n=(state.aarMeasurements?.runs||[]).length;$('settingsAarRuns').textContent=n?`${n} · ${uiText('VORLÄUFIG','PROVISIONAL')}`:'—';}
+    renderAarMeasurementLog();
   }catch(e){
     console.error(e);
     $('dataStatus').textContent='DATA ERROR';
@@ -81,6 +81,24 @@ async function boot(){
   tick(); setInterval(tick,30000);
   if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});
 }
+
+// Observations only: never use NET rates as effective GROSS transfer inputs.
+function renderAarMeasurementLog(){
+  const data=state.aarMeasurements, prior=data?.runs||[], runs=data?.supplementRuns||[];
+  if($('settingsAarRuns')) $('settingsAarRuns').textContent=data?`${prior.length+runs.length} · ${uiText('NETTO / VORLÄUFIG','NET / PROVISIONAL')}`:'—';
+  const host=$('aarMeasurementLog');if(!host)return;
+  if(!data){host.textContent=uiText('Messdaten nicht verfügbar.','Measurement data unavailable.');return;}
+  const heading=uiText('Neue AAR-Messungen · 11.10.2026','New AAR measurements · 11 Oct 2026');
+  const note=uiText('6 Profile eingegangen. Netto-Zuwachs und Checkpoint-Zeiten sind keine bestätigte Gross-Transferrate. Keine automatische Änderung von Fuel oder Timing.','6 profile types received. Net gains and checkpoint times are not a confirmed gross transfer rate. No automatic fuel or timing changes.');
+  const rows=runs.map(run=>{
+    const gain=run.fuelStopKg-run.fuelStartKg,sec=run.elapsedSecFromCheckpoint;
+    const duration=`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
+    const status=run.issues.includes('START_STOP_CLOCK_CONFLICT')?uiText('ZEIT PRÜFEN','TIME CHECK'):uiText('NUR NETTO','NET ONLY');
+    return `<tr><td>${escapeHtml(run.run)}</td><td>${escapeHtml(run.configuration)}</td><td>FL${escapeHtml(run.flightLevel)}</td><td>${escapeHtml(run.speedKt)}</td><td>${fmt(gain)}</td><td>${duration}</td><td>${fmt(gain*60/sec,1)}</td><td>${status}</td></tr>`;
+  }).join('');
+  host.innerHTML=`<details><summary>${heading}</summary><p class="hint">${note}</p><div class="measurement-scroll"><table class="measurement-table"><thead><tr><th>Run</th><th>Config</th><th>FL</th><th>KIAS</th><th>NET kg</th><th>mm:ss</th><th>NET kg/min</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div><p class="hint">${uiText('Lauf 6: Start/Stopp beide 13:55 lokal, letzter Checkpoint 2:20. Unverändert gespeichert. Checkpoint-Ursprung, Messdatum, Tanker und Unterbrechungen noch bestätigen.','Run 6: start/stop both 13:55 local, final checkpoint 2:20. Stored without correction. Confirm checkpoint timing origin, measurement dates, tanker and interruptions.')}</p><p class="hint">${uiText('Für Gross Rate fehlt Tanker-Abgabe oder separat gemessener Eigenverbrauch im selben Profil. Unterschiedliche Fuel-Bereiche nicht zu einer globalen Rate mitteln.','Gross rate requires tanker offload or separately measured receiver burn for the same profile. Do not average different fuel bands into a global rate.')} TRANSFER TIME: N/A / RATE REQUIRED ${uiText('ohne manuelle Rate.','without a manual rate.')}</p></details>`;
+}
+
 function checkJson(r){ if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }
 function hardenDOM(){
   const limits={callsign:24,departure:8,arrival:8,alternate1:8,alternate2:8,alternate1Search:80,alternate2Search:80,simbriefUser:64,startZulu:6};
@@ -113,7 +131,7 @@ function wire(){
   if($('themeSelect')) $('themeSelect').addEventListener('change',()=>applyTheme($('themeSelect').value));
   if($('languageSelect')) $('languageSelect').addEventListener('change',()=>{window.IFE_I18N?.apply($('languageSelect').value,true);tick();recalc();renderDataCard();});
   if($('clearLocalData')) $('clearLocalData').addEventListener('click',clearAllLocalData);
-  window.addEventListener('ife-language-changed',()=>{tick();renderProfileList();populateAlternatePresets();syncAlternatePreset(1);syncAlternatePreset(2);updateBingoOptions();updateAarOptions();renderDataCard();});
+  window.addEventListener('ife-language-changed',()=>{renderAarMeasurementLog();tick();renderProfileList();populateAlternatePresets();syncAlternatePreset(1);syncAlternatePreset(2);updateBingoOptions();updateAarOptions();renderDataCard();});
   ['tankOnBoard','taxiMin','reserveKg','surchargePct'].forEach(id=>bindNumber(id,recalc));
 
   $('newManualMission').onclick=newManualMission;
@@ -1225,7 +1243,7 @@ function renderDataCard(){
     <h2>03 | ${uiText('DIVERT / RESERVE','DIVERT / RESERVE')}</h2><div class="dc-kpis"><div><span>DIVERT 1</span><strong>${escapeHtml(d1.name||'—')} ${d1.valid?fmt(d1.fuel)+' kg':''}</strong></div><div><span>DIVERT 2</span><strong>${escapeHtml(d2.name||'—')} ${d2.valid?fmt(d2.fuel)+' kg':''}</strong></div><div><span>USED</span><strong>${s.divertValid?escapeHtml(s.divertName)+' '+fmt(s.divert)+' kg':'—'}</strong></div><div><span>ARR RECOV FLOOR</span><strong>${fmt((s.divert||0)+(s.reserve||0)+(s.recovery||0))} kg</strong></div></div>
     <h2>04 | AAR</h2>${s.aar?.enabled?`<div class="dc-aar-ticket"><div class="dc-aar-title">AAR PLAN 01</div><div class="dc-aar-rule"></div><div><span>ARIP</span><b>${escapeHtml(s.aar.ticket?.arip||'—')}</b></div><div><span>ARCP</span><b>${escapeHtml(s.aar.ticket?.arcp||state.route[s.aar.index]?.wp||'—')}</b></div><div><span>ARCT</span><b>${escapeHtml(s.aar.ticket?.arct||'—')}</b></div><div class="dc-aar-space"></div><div><span>ALT</span><b>FL${fmt(s.aar.ticket?.alt||230,0)}</b></div><div><span>SPD</span><b>${fmt(s.aar.ticket?.speed||285,0)} KIAS</b></div><div><span>CONF</span><b>${escapeHtml(s.aar.ticket?.conf||'CLEAN')}</b></div><div><span>TANKER</span><b>${escapeHtml(s.aar.ticket?.tankerType||'—')}</b></div><div><span>CALLSIGN</span><b>${escapeHtml(s.aar.ticket?.tankerCallsign||'—')}</b></div><div><span>FREQ / STATUS</span><b>${escapeHtml(s.aar.ticket?.frequency||'—')}</b></div>${s.aar.ticket?.plannedArct||s.aar.ticket?.plannedOut?`<div><span>ARCT / OUT PLAN</span><b>${escapeHtml(s.aar.ticket?.plannedArct||'—')}Z / ${escapeHtml(s.aar.ticket?.plannedOut||'—')}Z</b></div>`:''}<div class="dc-aar-rule"></div><div><span>FOB IN</span><b>${fmt(s.aar.ticket?.fobIn)} KG</b></div>${s.aar.manualOn?'':`<div><span>TARGET FOB OUT</span><b>${fmt(s.aar.ticket?.target)} KG</b></div>`}<div><span>GROSS ONLOAD</span><b>+${fmt(s.aar.ticket?.onload)} KG</b></div><div><span>TRANSFER RATE</span><b>${Number.isFinite(s.aar.transfer?.rate)?fmt(s.aar.transfer.rate,2)+' KG/MIN':'N/A / RATE REQUIRED'}</b></div><div><span>RATE SOURCE</span><b>${escapeHtml(s.aar.rateSource||'MANUAL')}</b></div><div><span>EST XFER TIME</span><b>${Number.isFinite(s.aar.transfer?.transferTime)?fmt(s.aar.transfer.transferTime,2)+' MIN'+(s.aar.transfer.valid?'':' · CHECK'):'N/A / '+escapeHtml(s.aar.transfer?.status||'RATE REQUIRED')}</b></div><div><span>AAR EVENT</span><b>${fmt(s.aar.duration,1)} MIN</b></div><div><span>FOB AFTER LOAD</span><b>${fmt(s.aar.ticket?.fobAfterLoad)} KG*</b></div><div><span>AAR BURN</span><b>-${fmt(s.aar.ticket?.burn)} KG</b></div><div><span>FOB OUT</span><b>${fmt(s.aar.ticket?.fobOut)} KG</b></div><div><span>AAR OUT</span><b>${escapeHtml(s.aar.ticket?.out||'—')}</b></div><div class="dc-aar-rule"></div><div><span>BINGO 2</span><b>${Number.isFinite(s.aar.ticket?.bingo2)?fmt(s.aar.ticket.bingo2)+' KG':'—'}</b></div><div><span>B2 → RTB</span><b>${escapeHtml(s.aar.ticket?.b2rtb||'—')}</b></div><div><span>BINGO (NO AAR)</span><b>${Number.isFinite(s.aar.ticket?.bingo)?fmt(s.aar.ticket.bingo)+' KG':'—'}</b></div><div><span>JOKER</span><b>${Number.isFinite(s.aar.ticket?.joker)?fmt(s.aar.ticket.joker)+' KG':'—'}</b></div><div><span>JOKER @</span><b>${escapeHtml((s.aar.ticket?.jokerWp||'—')+' '+(s.jokerBasis||'in').toUpperCase())}</b></div><small>SIMULATION ONLY · *FOB AFTER LOAD is accounting only; Known rate: simultaneous transfer/burn followed by orbit burn; peak checked at transfer end. Without rate, transfer time/feasibility unverified.</small></div>`:`<div class="dc-kpis"><div><span>STATUS</span><strong>OFF</strong></div></div>`}
     <h2>05 | ${uiText('FLUGLOG','FLIGHT LOG')}</h2><table class="dc-table"><thead><tr><th>NR</th><th>WAYPOINT</th><th>ALT</th><th>M</th><th>WIND</th><th>LEG NM</th><th>ETE</th><th>WP IN Z</th><th>HOLD / WP OUT</th><th>LEG kg</th><th>RECOV kg</th><th>FOB IN / OUT</th><th>IST kg</th></tr></thead><tbody>${rows}</tbody></table>
-    <footer class="dc-footer">Eurofighter IFE Fuel Calculator v1.9.19 · by Verbal · ${uiText('SIMULATION / TESTBUILD · KEIN OFFIZIELLES FLUGDOKUMENT','SIMULATION / TEST BUILD · NOT AN OFFICIAL FLIGHT DOCUMENT')}</footer>`;
+    <footer class="dc-footer">Eurofighter IFE Fuel Calculator v1.9.20 · by Verbal · ${uiText('SIMULATION / TESTBUILD · KEIN OFFIZIELLES FLUGDOKUMENT','SIMULATION / TEST BUILD · NOT AN OFFICIAL FLIGHT DOCUMENT')}</footer>`;
 }
 
 function openInfo(title,html){$('infoTitle').textContent=title;$('infoBody').innerHTML=html;$('infoOverlay').classList.remove('hidden');$('infoOverlay').setAttribute('aria-hidden','false');}
