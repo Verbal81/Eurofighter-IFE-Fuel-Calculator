@@ -21,8 +21,9 @@
       if(data.mission?.performance?.modelVersion!=='ife-forward-transfer-2')throw new Error('Unsupported legacy calculation model');
       if('aarRateMode' in (data.mission?.fields||{}))throw new Error('Schema 2 cannot contain schema 3 rate mode');
       data=clone(data);data.schemaVersion=3;
-      data.mission.fields.aarRateMode='MANUAL'; // preserve existing manual/blank-rate plans
+      data.mission.fields.aarRateMode=data.mission.fields.aarTransferRate===''?'AUTO':'MANUAL'; // only explicit legacy rates remain manual
       data.mission.performance.aarMeasurements=null;
+      if(data.mission.fields.aarRateMode==='AUTO')data.mission.performance.useInstalledAarMeasurements=true;
       data.mission.performance.modelVersion=MODEL_VERSION;
     }
     const errors=[];const fail=(p,m)=>errors.push(`${p}: ${m}`);

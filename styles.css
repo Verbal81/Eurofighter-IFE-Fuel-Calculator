@@ -499,6 +499,8 @@ html[data-theme="day"] .row-move{background:#eef2ef;color:#24342b;border-color:#
 @media screen and (min-width:1301px) and (pointer:fine){
   .route-table td:first-child,.route-table th:first-child{position:static}
   .route-table td:nth-child(2),.route-table th:nth-child(2){left:0}
+  .route-table input[data-k="dist"],.route-table input[data-k="inputTime"],.route-table input[data-k="wind"]{min-width:76px}
+  .route-table select[data-k="mode"]{min-width:84px}
 }
 
 /* Read-only calibration observations; separate from route and AAR inputs. */
@@ -510,6 +512,12 @@ html[data-theme="day"] .row-move{background:#eef2ef;color:#24342b;border-color:#
 .aar-auto-summary small{grid-column:1/-1;line-height:1.5;color:var(--muted);overflow-wrap:anywhere}
 .aar-method{font-size:13px;line-height:1.6;margin-top:14px}.aar-method summary{cursor:pointer}
 #view-aar input[readonly]{opacity:.85}
+.aar-side{grid-template-columns:minmax(0,1fr)}
+html[data-layout="efb"] .aar-side>.aar-note{grid-column:1}
+.aar-ticket-row{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:12px}
+.aar-ticket-row b{overflow-wrap:anywhere}
+@media screen and (min-width:1051px){html[data-layout="efb"] .aar-layout{grid-template-columns:minmax(0,2fr) minmax(360px,1fr)!important}}
+@media screen and (max-width:1050px){html[data-layout="efb"] .aar-layout{grid-template-columns:minmax(0,1fr)!important}}
 @media screen and (max-width:600px){#view-route .route-table tr{grid-template-columns:1fr} .aar-auto-summary{grid-template-columns:1fr}}
 
 @media screen and (max-width:900px), screen and (pointer:coarse){

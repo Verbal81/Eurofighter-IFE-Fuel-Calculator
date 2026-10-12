@@ -45,8 +45,7 @@ airportsdata content. Simulation only; not for real-world flight planning.
   onload is explicitly labelled; planned event/orbit burn is still included.
 - Tablet route cards start expanded and retain explicit collapsed state during
   redraws. Mobile navigation no longer overlaps a multi-line header.
-- Schema 3 archives rate mode and measurement data. Schema 1/2 imports preserve
-  their manual/blank-rate behavior. Existing browser saves are not deleted.
+- Schema 3 archives rate mode and measurement data. Schema 1/2 imports keep explicit rates manual; blank legacy rates adopt AUTO. Existing browser saves are not deleted.
 - SimBrief 793765 tested: 26 waypoints; at FL230/285 KIAS/3 BAGS and the screenshot
   AAR reference, FOB IN 6499.47 kg, zero required onload, event burn 312.46 kg,
   FOB OUT 6187.02 kg. Effective gross rate for that fuel band: 488.02 kg/min.

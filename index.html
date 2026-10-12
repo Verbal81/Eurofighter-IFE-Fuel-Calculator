@@ -104,7 +104,7 @@
         <div class="route-scroll-cue" aria-hidden="true">↔ horizontal wischen für ETE · Fuel · FOB</div>
         <div class="route-table-wrap">
           <table class="route-table">
-            <thead><tr><th>#</th><th>WP</th><th>ALT ft</th><th>MACH</th><th>ZEIT / ETA Z · WP IN</th><th>NM</th><th>HOLD / WP OUT</th><th>WIND kt</th><th>MODE</th><th>MIN EDIT</th><th>ETE</th><th>LEG kg</th><th title="Fuel, der an diesem WP für restliche Route + Recovery benötigt wird">RECOV kg</th><th>FOB IN / OUT</th><th>MOVE</th></tr></thead>
+            <thead><tr><th>#</th><th>WP</th><th>ALT ft</th><th>MACH</th><th>TIME / ETA Z · WP IN</th><th>NM</th><th>HOLD / WP OUT</th><th>WIND kt</th><th>MODE</th><th>MIN EDIT</th><th>ETE</th><th>LEG kg</th><th title="Fuel required at this waypoint for the remaining route and recovery">RECOV kg</th><th>FOB IN / OUT</th><th>MOVE</th></tr></thead>
             <tbody id="routeBody"></tbody>
           </table>
         </div>
@@ -248,7 +248,7 @@
             <div><span>Effective accepted onload</span><b id="aarAccepted">—</b></div>
             <div><span>Shortfall after AAR</span><b id="aarShortfall">—</b></div>
           </div>
-          <p class="hint">AUTO nutzt: Required Onload = Target AAR-OUT FOB − FOB IN + AAR-duration burn. Der Eigenverbrauch während des AAR wird aus Höhe, KIAS, Konfiguration und Fuel-Flow-Modell berechnet. Bingo/Joker rechnen ohne Onload-Gutschrift; geplanter Event-Burn bleibt enthalten.</p>
+          <p class="hint">AUTO: Required gross onload = target FOB OUT − FOB IN + event burn, minimum zero. Receiver burn is calculated from AAR altitude, speed and the available consumption model. Bingo/Joker exclude the onload credit and include planned event burn.</p>
           </section>
         </aside>
       </div>

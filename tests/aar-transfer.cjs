@@ -44,7 +44,7 @@ let n=0;async function test(name,fn){await fn();console.log(`PASS ${++n}. ${name
  await test('Schema 1 safely migrates only new rate fields; new schemas require both fields',()=>{
   const old=t.json(t.run('createMissionBackup()'));old.schemaVersion=1;old.mission.performance.modelVersion='ife-forward-1';delete old.mission.fields.aarRateMode;delete old.mission.performance.aarMeasurements;delete old.mission.fields.aarTransferRate;delete old.mission.fields.aarRateSource;
   const migrated=B.parse(JSON.stringify(old));assert.equal(migrated.schemaVersion,3);assert.equal(migrated.mission.fields.aarTransferRate,'');assert.equal(migrated.mission.fields.aarRateSource,'MANUAL');
-  t.ctx.oldMission=old;t.run('applyMissionBackup(oldMission)');assert.match(t.get('aarTicketTransferTime').textContent,/RATE REQUIRED/);assert.equal(old.schemaVersion,1);
+  t.ctx.oldMission=old;t.run('applyMissionBackup(oldMission)');assert.equal(t.get('aarRateMode').value,'AUTO');assert.ok(t.snapshot().a.transfer.valid);assert.equal(old.schemaVersion,1);
   const invalid=t.json(migrated);delete invalid.mission.fields.aarTransferRate;assert.throws(()=>B.validate(invalid),/aarTransferRate/);
  });
  console.log(`${n} AAR transfer regressions passed. All rates in tests are synthetic, not real tanker calibration.`);

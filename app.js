@@ -83,7 +83,7 @@ async function boot(){
 }
 
 // Observations only: never use NET rates as effective GROSS transfer inputs.
-function activeAarMeasurements(){if(state.missionPerformance&&$('aarRateMode').value==='AUTO')return state.missionPerformance.aarMeasurements;return state.missionPerformance?.aarMeasurements||state.aarMeasurements;}
+function activeAarMeasurements(){if(state.missionPerformance&&$('aarRateMode').value==='AUTO'&&!state.missionPerformance.useInstalledAarMeasurements)return state.missionPerformance.aarMeasurements;return state.missionPerformance?.aarMeasurements||state.aarMeasurements;}
 function selectedAarMeasurement(){
   const match=/^RECEIVER PRESET S([1-6]) ESTIMATE$/.exec($('aarRateSource')?.value||'');
   return match?(activeAarMeasurements()?.supplementRuns||[]).find(r=>r.run===Number(match[1])):null;

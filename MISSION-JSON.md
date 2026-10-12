@@ -3,7 +3,7 @@
 Adds `mission.fields.aarRateMode` (`AUTO` or `MANUAL`) and
 `mission.performance.aarMeasurements` (archived source observations).
 AUTO recomputes its derived rate from the stored observations and fuel model.
-Schema 1/2 files migrate to MANUAL to preserve existing plans and blank-rate behavior.
+Schema 1/2 files preserve explicit rates as MANUAL; blank legacy rates adopt AUTO with the installed measurements, archived on the next export.
 The current model id is `ife-forward-auto-3`. Newer incompatible schemas are rejected.
 
 The previous schema documentation follows for its existing fields:
