@@ -58,7 +58,7 @@ table([
 ],[125,339,35],['BEREICH','LEISTUNG','S.'])
 p('Dokumentcharakter: sachliche Produkt- und Bedienübersicht. Keine amtliche Flugunterlage, kein militärisches Vorschriftenwerk. Der Funktionsumfang bezieht sich auf den vorliegenden Softwarestand, nicht auf angekündigte Erweiterungen.','small')
 # 2
-p('Bildbeispiele: AAR-Einstellungen S. 10; Bon S. 11; Fuel-Schwellen S. 12; Holds S. 13; Abkürzungen S. 14.','small')
+p('Bildbeispiele: AAR-Einstellungen S. 10; Bon S. 11; Fuel-Schwellen S. 12; Holds S. 13; Abkürzungen S. 14. AAR-/Fuel-Hintergründe S. 15-19; Quellen S. 20.','small')
 h('Direkt zur aktuellen App')
 p('<link href="https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/" color="#54624b">ife-eufi-fuelcalc-test.topstoni81.workers.dev</link><br/>Als Lesezeichen oder Home-Bildschirm-App verwenden. ZIP-/HTML-Downloads sind separate Kopien. Update-Anleitung: Seite 9.','small')
 page(2,'Mission und Route','Plan erstellen, importieren und kontrolliert bearbeiten.')
@@ -198,6 +198,7 @@ p('Wiederherstellung umfasst die Eingaben einschließlich der gesicherten Perfor
 p('Die aktuellen deutschen und englischen Anleitungen stehen direkt in SETTINGS und im GitHub-README. Heruntergeladene PDFs sind Momentaufnahmen; die verlinkte Online-Fassung liefert den aktuellen Stand.','small')
 import runpy
 runpy.run_path(str(Path(__file__).with_name('illustrated-guide.py')))['add_illustrations'](globals(),'de')
+runpy.run_path(str(Path(__file__).with_name('fuel-background.py')))['add_background'](globals(),'de')
 
 def decorate(c,doc):
  w,h=doc.pagesize;c.saveState()
@@ -206,7 +207,7 @@ def decorate(c,doc):
  c.setFont('Body',8);c.setFillColor(MUTED);c.drawRightString(w-48,h-32,'v1.9.23  |  12 OCT 2026')
  c.setStrokeColor(LINE);c.line(48,43,w-48,43)
  c.setFont('Body',7.5);c.drawString(48,29,'SIMULATION ONLY  /  BEDIENHANDBUCH')
- c.setFont('Bold',8);c.drawRightString(w-48,29,f'{doc.page:02d} / 14');c.restoreState()
+ c.setFont('Bold',8);c.drawRightString(w-48,29,f'{doc.page:02d} / 20');c.restoreState()
 out=str(Path(__file__).resolve().parent.parent / 'Eurofighter_IFE_Anleitung.pdf')
 doc=SimpleDocTemplate(out,pagesize=(595.28,841.89),rightMargin=48,leftMargin=48,topMargin=58,bottomMargin=58,title='Eurofighter IFE - Bedienhandbuch v1.9.23',author='Eurofighter IFE',subject='Anleitung für Simulator-Missionsplanung')
 doc.build(S,onFirstPage=decorate,onLaterPages=decorate)

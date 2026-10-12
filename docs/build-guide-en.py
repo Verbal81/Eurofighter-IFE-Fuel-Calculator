@@ -56,7 +56,7 @@ table([
 ('ONLINE / UPDATES','Open the web app, check versions and update safely.','09')
 ],[125,339,35],['AREA','CAPABILITY','P.'])
 p('Document scope: a practical product and operating overview. This is not an official flight document or military regulation. It describes implemented features in this software version, not planned extensions.','small')
-p('Illustrated examples: AAR setup p. 10; ticket p. 11; fuel thresholds p. 12; holds p. 13; glossary p. 14.','small')
+p('Illustrated examples: AAR setup p. 10; ticket p. 11; fuel thresholds p. 12; holds p. 13; glossary p. 14. AAR/fuel background pp. 15-19; sources p. 20.','small')
 h('Open the current app')
 p('<link href="https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/" color="#54624b">ife-eufi-fuelcalc-test.topstoni81.workers.dev</link><br/>Bookmark or install this web app to the home screen. ZIP/HTML downloads are separate copies. Update guidance: page 9.','small')
 page(2,'Mission and route','Create, import and edit a plan while retaining control of its inputs.')
@@ -188,13 +188,14 @@ p('Restoration includes inputs and archived performance data. It does not replac
 p('Current English and German guides are linked directly in SETTINGS and the GitHub README. Downloaded PDFs are snapshots; the online links provide the current edition.','small')
 import runpy
 runpy.run_path(str(Path(__file__).with_name('illustrated-guide.py')))['add_illustrations'](globals(),'en')
+runpy.run_path(str(Path(__file__).with_name('fuel-background.py')))['add_background'](globals(),'en')
 
 def decorate(c,doc):
  w,h=doc.pagesize;c.saveState();c.setFillColor(OLIVE);c.rect(0,h-9,w,9,fill=1,stroke=0)
  c.setFont('Bold',8);c.setFillColor(OLIVE);c.drawString(48,h-32,'EUROFIGHTER IFE / USER GUIDE')
  c.setFont('Body',8);c.setFillColor(MUTED);c.drawRightString(w-48,h-32,'v1.9.23  |  ENGLISH  |  12 OCT 2026')
  c.setStrokeColor(LINE);c.line(48,43,w-48,43);c.setFont('Body',7.5);c.drawString(48,29,'SIMULATION ONLY  /  USER GUIDE')
- c.setFont('Bold',8);c.drawRightString(w-48,29,f'{doc.page:02d} / 14');c.restoreState()
+ c.setFont('Bold',8);c.drawRightString(w-48,29,f'{doc.page:02d} / 20');c.restoreState()
 out=str(Path(__file__).resolve().parent.parent / 'Eurofighter_IFE_User_Guide_EN.pdf')
 doc=SimpleDocTemplate(out,pagesize=(595.28,841.89),rightMargin=48,leftMargin=48,topMargin=58,bottomMargin=58,title='Eurofighter IFE - User Guide v1.9.23',author='Eurofighter IFE',subject='English operating guide for simulator mission planning')
 doc.build(S,onFirstPage=decorate,onLaterPages=decorate)

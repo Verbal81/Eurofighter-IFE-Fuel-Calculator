@@ -73,7 +73,7 @@ def add_illustrations(g, lang):
       ('AAR','Air-to-Air Refuelling',tr('Luftbetankung; in dieser App Simulatorplanung.','Air refuelling; simulator planning in this app.')),
       ('ARIP','Air Refuelling Initial Point',tr('Anfangspunkt für die Annäherung zur Betankung.','Initial point for the approach to refuelling.')),
       ('ARCP','Air Refuelling Control Point',tr('Kontroll-/Rendezvous-Referenzpunkt; hier RP ANGIE.','Control/rendezvous reference point; RP ANGIE here.')),
-      ('ARCT','Air Refuelling Control Time',tr('Zeitbezug für das Rendezvous am ARCP. PLAN und berechnete Zeit prüfen.','Time reference for the rendezvous at the ARCP. Compare PLAN and calculated time.')),
+      ('ARCT','Air Refuelling Control Time',tr('Rendezvous-Zeitbezug; der zugehörige Punkt hängt vom Verfahren ab. Details S. 15.','Rendezvous time reference; the associated point depends on the procedure. See p. 15.')),
       ('FOB','Fuel on Board',tr('Kraftstoff an Bord; IN vor, OUT nach dem Ereignis.','Fuel carried; IN before, OUT after the event.')),
       ('FL / KIAS','Flight Level / Knots Indicated Airspeed',tr('FL210 = 21.000 ft Druckhöhe bei Standarddruck. KIAS ist angezeigte Fluggeschwindigkeit.','FL210 = 21,000 ft pressure altitude at standard pressure. KIAS is indicated airspeed.')),
       ('CONF / 3 BAGS','Configuration / three external tanks',tr('Konfiguration / drei Außentanks. CLEAN = ohne Außentanks.','Configuration / three external tanks. CLEAN = no external tanks.')),
