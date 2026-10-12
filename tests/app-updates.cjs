@@ -43,4 +43,6 @@ function fixture(origin=new URL(U.OFFICIAL).origin){
  const manifest=require('../version.json');assert.equal(manifest.appVersion,U.VERSION);assert.equal(require('../mission-backup.js').APP_VERSION,U.VERSION);
  const html=fs.readFileSync(require.resolve('../index.html'),'utf8'),sw=fs.readFileSync(require.resolve('../sw.js'),'utf8');assert.ok(html.indexOf('app-updates.js')<html.indexOf('src="app.js'));assert.match(sw,/pathname.endsWith\('\/version.json'\)/);assert.match(sw,/'app-updates.js'/);
  console.log('PASS release versions, startup ordering and non-cached update manifest');
+ const headers=fs.readFileSync(require.resolve('../_headers'),'utf8');assert.ok(headers.includes(U.MANIFEST));assert.match(headers,/script-src 'self';/);assert.doesNotMatch(headers,/connect-src[^\n]*\*/);
+ console.log('PASS production CSP permits only the required GitHub manifest, without remote script access');
 })().catch(e=>{console.error(e);process.exitCode=1;});
