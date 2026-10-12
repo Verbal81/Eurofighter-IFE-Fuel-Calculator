@@ -1,4 +1,4 @@
-# IFE Eurofighter Fuel Calculator FS2024 v1.9.22
+# IFE Eurofighter Fuel Calculator FS2024 v1.9.23
 
 ![IFE Eurofighter Fuel Calculator FS2024 app icon](icons/icon.svg)
 
@@ -6,9 +6,17 @@
 
 [✈️ Launch IFE Eurofighter Fuel Calculator FS2024](https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/)
 
-[📘 Ausführliche Bedienungsanleitung (PDF, Deutsch)](Eurofighter_IFE_Anleitung_v1.9.19.pdf)
+**Recommended: open the link above and bookmark it or install it from your browser to the home screen.**
+GitHub ZIP/HTML downloads are separate copies that need manual replacement. The official web app/PWA
+checks for new releases. A downloaded copy from v1.9.23 also detects releases and links to the official app.
+Older copies need a one-time switch. Export/import mission JSON when moving to another address or device.
 
-[📘 Full User Guide (PDF, English)](Eurofighter_IFE_User_Guide_v1.9.19_EN.pdf)
+**Empfohlen:** Online-App öffnen oder über den Browser zum Home-Bildschirm hinzufügen.
+Ein GitHub-Download aktualisiert seine Dateien nicht selbst. Vor einem Wechsel Mission als JSON sichern.
+
+[📘 Ausführliche Bedienungsanleitung (PDF, Deutsch)](Eurofighter_IFE_Anleitung.pdf)
+
+[📘 Full User Guide (PDF, English)](Eurofighter_IFE_User_Guide_EN.pdf)
 
 [📖 Quick Guide (English)](USER-GUIDE.md)
 
@@ -28,6 +36,22 @@
 See [LICENSE](LICENSE) for the controlling terms and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the separately licensed
 airportsdata content. Simulation only; not for real-world flight planning.
+
+## v1.9.23 — Update detection and current guides
+
+- Public GitHub `version.json` check on opening/reconnection and at most hourly on return;
+  SETTINGS also provides CHECK FOR UPDATES. No mission data/Pilot ID is sent.
+- Official app/PWA: UPDATE NOW secures the current mission in sessionStorage, reloads,
+  then restores it. No automatic reload and no overwrite of the local mission-save slot.
+- Separate copies have a persistent official-app link; their files cannot self-replace.
+- Offline/unavailable/version/deployment failures are explicit. A failed restore retains
+  the recovery JSON. Version checks never load executable code or cache stale manifests.
+- Updated full English/German PDF guides, stable guide links in SETTINGS and this README.
+- Existing fuel, route, AAR mathematics and optional presets remain unchanged.
+
+Release maintenance: bump app-updates.js VERSION, version.json appVersion, displayed/export
+app version and asset/cache versions together. Commit the version manifest with the release.
+The web host must publish the same version before UPDATE NOW proceeds.
 
 ## v1.9.22 — Automatic AAR rates and visible route fields
 

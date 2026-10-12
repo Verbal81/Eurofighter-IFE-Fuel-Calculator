@@ -7,14 +7,14 @@
   <title>Eurofighter IFE Fuel Calculator</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon.svg" />
-  <link rel="stylesheet" href="styles.css?v=1.9.22" />
+  <link rel="stylesheet" href="styles.css?v=1.9.23" />
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
     <div class="brand">
       <img src="icons/icon.svg" alt="" />
-      <div><strong class="brand-title-full">EUROFIGHTER IFE FUEL CALCULATOR</strong><strong class="brand-title-efb" aria-hidden="true">EUROFIGHTER IFE</strong><span>BY VERBAL · SORTIE / FUEL COMPUTATION · MOBILE BUILD v1.9.22</span></div>
+      <div><strong class="brand-title-full">EUROFIGHTER IFE FUEL CALCULATOR</strong><strong class="brand-title-efb" aria-hidden="true">EUROFIGHTER IFE</strong><span>BY VERBAL · SORTIE / FUEL COMPUTATION · MOBILE BUILD v1.9.23</span></div>
     </div>
     <div class="top-status"><span id="airacStatus" class="navdata-cycle" title="Current AIRAC calendar cycle; bundled local navdata is not certified to this cycle.">AIRAC ---- · LOCAL NAVDATA</span><span class="sim-only">SIMULATION ONLY</span><span id="dataStatus" class="chip">LOADING</span><span id="clock">--:-- UTC</span></div>
   </header>
@@ -30,6 +30,15 @@
   </nav>
 
   <main>
+    <aside id="appUpdateBanner" class="app-update-notice" role="status" hidden>
+      <strong id="appUpdateNotice"></strong>
+      <div class="button-row">
+        <button id="applyAppUpdate" class="primary" type="button" hidden>UPDATE NOW</button>
+        <button id="updateExportMission" class="secondary" type="button">EXPORT CURRENT MISSION</button>
+        <a id="latestAppLink" class="secondary link-button" href="https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/" target="_blank" rel="noopener">OPEN LATEST APP</a>
+        <button id="downloadUpdateRecovery" class="secondary" type="button" hidden>DOWNLOAD RECOVERY JSON</button>
+      </div>
+    </aside>
     <section class="view active" id="view-mission">
       <div class="mission-layout">
         <section class="panel sortie-panel">
@@ -344,6 +353,18 @@
 
     <section class="view" id="view-settings">
       <div class="settings-layout">
+        <section class="panel full-span">
+          <div class="panel-title"><h2>APP UPDATES & USER GUIDE</h2><span class="tag" id="installedAppVersion">v1.9.23</span></div>
+          <p id="appInstallType" class="hint"></p>
+          <p class="hint">Use the official web app, or install it from your browser to the home screen. GitHub ZIP/HTML downloads are separate copies and need manual replacement. Update checks contact GitHub without sending mission data.</p>
+          <div class="button-row">
+            <button id="checkAppUpdates" class="primary" type="button">CHECK FOR UPDATES</button>
+            <a id="settingsLatestApp" class="secondary link-button" href="https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/" target="_blank" rel="noopener">OPEN OFFICIAL APP</a>
+            <a class="secondary link-button" href="https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/Eurofighter_IFE_User_Guide_EN.pdf" target="_blank" rel="noopener">USER GUIDE · EN</a>
+            <a class="secondary link-button" href="https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/Eurofighter_IFE_Anleitung.pdf" target="_blank" rel="noopener">ANLEITUNG · DE</a>
+          </div>
+          <p id="appUpdateStatus" class="message" aria-live="polite">Update check pending.</p>
+        </section>
         <section class="panel">
           <div class="panel-title"><h2>AIRCRAFT PROFILES</h2></div>
           <div id="aircraftProfileList" class="profile-list"></div>
@@ -400,10 +421,11 @@
     <div id="infoBody" class="info-body"></div>
   </div>
 </div>
-<script src="i18n.js?v=1.9.22"></script>
-<script src="logic-core.js?v=1.9.22"></script>
-<script src="aar-rate-model.js?v=1.9.22"></script>
-<script src="mission-backup.js?v=1.9.22"></script>
-<script src="app.js?v=1.9.22"></script>
+<script src="i18n.js?v=1.9.23"></script>
+<script src="logic-core.js?v=1.9.23"></script>
+<script src="aar-rate-model.js?v=1.9.23"></script>
+<script src="mission-backup.js?v=1.9.23"></script>
+<script src="app-updates.js?v=1.9.23"></script>
+<script src="app.js?v=1.9.23"></script>
 </body>
 </html>

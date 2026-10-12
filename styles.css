@@ -492,6 +492,10 @@ html[data-theme="day"] .row-move{background:#eef2ef;color:#24342b;border-color:#
 }
 
 .mission-backup-actions button{max-width:100%;white-space:normal}
+.app-update-notice{padding:16px;margin-bottom:16px;border:1px solid var(--green);background:var(--panel);line-height:1.5}
+.app-update-notice[hidden],#applyAppUpdate[hidden],#latestAppLink[hidden],#downloadUpdateRecovery[hidden]{display:none!important}
+.app-update-notice .button-row{margin-top:12px;flex-wrap:wrap}
+@media print{.app-update-notice{display:none!important}}
 #missionImportFile[hidden]{display:none!important}
 #missionBackupStatus{white-space:pre-wrap;overflow-wrap:anywhere}
 .backup-error{border-color:var(--amber);color:var(--amber)}

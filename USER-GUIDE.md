@@ -1,54 +1,85 @@
-## AAR update v1.9.22
-
-Set AAR altitude, KIAS, configuration, event duration and target/manual onload.
-The transfer-rate mode defaults to AUTO. A330 MRTT is fixed. No measurement-profile
-button is needed. The app shows an effective estimated gross rate and calculates
-receiver burn automatically. Interpolation/reference estimates are labelled.
-MANUAL lets you override the gross rate. A zero onload can be correct when the
-planned FOB already covers the target and event burn.
-
-Tablet route fields are expanded initially; tap the waypoint title to collapse
-or expand. All route inputs remain editable and use the same calculation model.
-
 # IFE Eurofighter Fuel Calculator FS2024 — User Guide
-Version 1.9.19 · English
+Version 1.9.23 · English · 12 October 2026
 
-## Open and language
-Launch the browser app at https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/.
-English is the default language. An explicitly saved language preference may be restored. Use SETTINGS to switch language if needed.
+## Open the app and receive updates
 
-## Mission
-Open MISSION and enter or review mission identification, aircraft/profile, start fuel (FOB), departure and arrival, mission start (Zulu), taxi time, reserve and any consumption surcharge. Check values before relying on outputs. Optional mission presets should be reviewed rather than assumed accurate for a new flight.
+**Use the [official web app](https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/).**
+Bookmark it or use your browser's **Add to Home Screen / Install app** action.
+This installs the official web app (PWA), which continues to use the official address.
+A downloaded GitHub ZIP/HTML package is a separate copy and does not replace itself.
 
-## Route
-Use ROUTE to review waypoints, distances, altitudes, Mach and timing. On touch devices, tap a waypoint name to expand its card. Editing a field commits when you leave it or press Enter. Confirm waypoint order and total route distance after editing.
+From v1.9.23, the app checks the public GitHub version file on opening, on reconnection,
+and at most hourly when returning to the app. SETTINGS → **CHECK FOR UPDATES** runs
+an immediate check. Failed/offline checks are reported, never labelled up to date.
+No mission data or Pilot ID is transmitted with version checks.
 
-## Cruise
-In CRUISE, review the chosen calculation mode and the relevant distance/time, altitude and Mach inputs. Outputs depend on the selected aircraft profile and bundled fuel-flow data.
+- **Official app/PWA:** a newer release offers **UPDATE NOW**. The current mission is
+  secured in this tab's session storage before reload, then restored. The saved local
+  mission slot is not overwritten. No forced reload during planning.
+- **Downloaded/self-hosted copy:** export your mission JSON, choose **OPEN LATEST APP**,
+  then import the JSON in the official app. Browsers cannot overwrite local source files.
+- **Older copies:** v1.9.22 and earlier do not include this check. Switch to the official
+  address or obtain v1.9.23+ once.
+- **Restore failure:** retain the tab and use **DOWNLOAD RECOVERY JSON**. An independent
+  mission JSON backup is still recommended. Restoration retains archived performance data.
 
-## AAR (air-to-air refuelling)
-Enter tanker details, planned times, target FOB and event parameters as applicable. Version 1.9.18+ supports an effective gross transfer rate (kg/min) and a separate AAR event duration. A transfer rate must be entered explicitly; the calculator does not supply a verified tanker rate. If the rate is missing, transfer time is not available. A CHECK or infeasible result requires you to review the inputs; do not assume the application corrected them automatically.
+Current PDF editions: [English](Eurofighter_IFE_User_Guide_EN.pdf) ·
+[Deutsch](Eurofighter_IFE_Anleitung.pdf). These links are also in SETTINGS.
+Downloaded PDFs are snapshots; use these links for the current edition.
 
-## BINGO / DIVERT
-Review diversion selection, fuel reserve and calculated remaining fuel. Verify that the underlying mission, route and aircraft data are appropriate.
+## Mission and route
 
-## DATA CARD
-Use DATA CARD to review or print the calculated summary. Verify all fields and any warnings before sharing it.
+English is the default; SETTINGS can restore/change a saved language choice. Enter
+mission identification, UTC date/start, aircraft, callsign, departure/arrival, start
+fuel, taxi time and reserve. Start fuel is an input and is never back-calculated.
+SimBrief imports the latest OFP using a Pilot ID/alias. Review imported values.
+The demo remains the default; RHINE SENTINELLE is only loaded explicitly.
 
-## Save, export and import
-Use the app's local save controls for browser-local storage. Use MISSION → EXPORT CURRENT MISSION to download a portable JSON backup and MISSION → IMPORT MISSION to restore it. Imported mission data are validated and recalculated. Keep backups of important missions; browser data can be cleared.
+Route order: **WP → ALT ft → Mach → ETA Z → NM → HOLD / WP OUT**, then remaining fields.
+Tablet cards start expanded; tap the waypoint title to collapse/expand. Commit edits
+with Enter or by leaving the field. Mach displays at most two decimals while internal
+precision is retained. Editing NM selects DIST; explicit leg-minute editing selects TIME.
+Holds/AAR/hard-time changes do not alter leg NM or coordinates. Review timing conflicts.
 
-## Offline use
-The application includes a web app manifest and service worker. Offline behavior depends on a successful prior load and browser support; confirm availability on your own device before relying on it.
+## Fuel, cruise and recovery
 
-## Troubleshooting
-- Old interface after an update: refresh the page; if needed, close and reopen it.
-- Unexpected language: check SETTINGS and any saved language preference.
-- Transfer time unavailable: check that a valid effective gross transfer rate was entered.
-- Missing or unexpected calculations: check mission, route, aircraft profile, fuel values and any warnings.
-- Import rejected: verify the JSON came from a supported mission export and was not modified.
+T/O REQ is the required minimum; PLANNED T/O FOB is actual planned fuel after ground burn.
+CRUISE provides distance/time planning with route, direct or manual distance inputs.
+Holds have separate WP IN/OUT times and fuel states. Joker WP IN includes the selected
+hold; WP OUT excludes it. Bingo is position-dependent. Plan diverts, Used Divert,
+Recovery Extra, Landing Reserve, Joker Buffer and optional manual thresholds separately.
 
-## Important limitations
-This is a planning/simulation aid, not a certified aircraft performance or operational flight-planning system. Fuel-flow, navigation and tanker-transfer data require independent verification. Do not use the tool as the sole basis for real-world flight safety decisions.
+## AAR
 
-Project: https://github.com/Verbal81/Eurofighter-IFE-Fuel-Calculator
+Set waypoint, FL, KIAS, configuration, event duration and AUTO target/manual gross onload.
+**A330 MRTT is fixed. AUTO is the default rate mode.** No S1–S6 selection is needed.
+Receiver fuel flow follows the flight condition automatically. Gross transfer rates
+are derived from measured net fuel gain plus modeled receiver burn. Individual fuel
+bands are integrated; the displayed effective rate may differ from an Excel whole-run mean.
+
+Comparable profiles are interpolated within measured coverage. Reference/fuel-band
+estimates are labelled. 3 BAGS currently has one measured flight condition (FL230/285 KIAS).
+CLEAN receiver burn uses the existing 3-BAGS model as an explicit approximation.
+MANUAL is an optional rate override; manual gross onload remains exact in either rate mode.
+
+TRANSFER TIME is time transferring fuel. AAR EVENT includes additional orbit/delay burn.
+AUTO target is fuel at the end of the entire event. Zero onload may be correct.
+Missing usable rate stays N/A / RATE REQUIRED. Rate ≤ receiver flow, insufficient event
+time and tank-capacity violations are flagged; inputs are not silently adjusted.
+FOB AFTER LOAD is accounting only. The modeled sequence is transfer, then orbit.
+
+## Save, export, import and print
+
+MISSION → EXPORT CURRENT MISSION creates the complete JSON backup from internal inputs,
+including route/coordinates, exact values, holds, AAR, thresholds, diverts and the active
+performance/navigation snapshots. IMPORT MISSION validates and recalculates it.
+Schema 3 includes automatic rate mode and measurement data. Schema 1/2 migration keeps
+explicit rates manual; blank legacy rates adopt AUTO. Unsupported versions are rejected.
+SAVE LOCAL / LOAD LOCAL use this device/browser's local slot. Cross-device/origin transfer
+requires JSON. Neither printouts nor PDFs are complete importable mission backups.
+
+DATA CARD and the AAR ticket offer PRINT / SAVE PDF. Check warnings before sharing.
+Offline use requires a successful prior online load and browser cache support.
+
+Simulation only: IndiaFoxtEcho Eurofighter, tested with MSFS 2024. This is a simulator
+model using measured data and identified approximations, not real-world performance approval.
