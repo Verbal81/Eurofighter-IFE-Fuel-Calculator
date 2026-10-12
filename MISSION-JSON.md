@@ -1,3 +1,13 @@
+# Mission JSON schema 3 (v1.9.22)
+
+Adds `mission.fields.aarRateMode` (`AUTO` or `MANUAL`) and
+`mission.performance.aarMeasurements` (archived source observations).
+AUTO recomputes its derived rate from the stored observations and fuel model.
+Schema 1/2 files migrate to MANUAL to preserve existing plans and blank-rate behavior.
+The current model id is `ife-forward-auto-3`. Newer incompatible schemas are rejected.
+
+The previous schema documentation follows for its existing fields:
+
 # Update v1.9.19: Schema 2
 
 The current portable format is schemaVersion 2, appVersion 1.9.19, performance.modelVersion

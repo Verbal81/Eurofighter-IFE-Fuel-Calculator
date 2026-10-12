@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "date": "2026-10-11",
   "aircraft": "EF2000",
-  "status": "provisional-not-active-for-calculation",
+  "status": "automatic-model-estimates",
   "source": "user simulator measurements",
   "sourceFile": "Messung.pdf",
   "sourceSha256": "a364ff928a62cfecf35292cbc762facdcdbfbb60e28dfc8f9b7c2efc12fa4ef7",
@@ -10,7 +10,7 @@
     "All six requested measurement profiles supplied. No extra measurement needed for these model-based estimates.",
     "Net gains are measured; receiver burn and gross onload/rate are estimates. CLEAN uses the existing 3 BAGS model as a proxy.",
     "Run 6 duration confirmed by user: 140 seconds. Start 13:55 local; derived stop approximately 13:57 (13:57:20 if start seconds were 00). Raw PDF clock preserved.",
-    "Rates are whole-run averages, not a calibrated universal or piecewise fuel-band curve."
+    "Workbook values are whole-run means. App AUTO integrates gross transfer across fuel-band segments; effective rate depends on the planned onload."
   ],
   "runs": [
     {
@@ -161,9 +161,9 @@
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
-        "TANKER_NOT_RECORDED",
         "INTERRUPTIONS_NOT_RECORDED"
-      ]
+      ],
+      "tankerType": "A330 MRTT"
     },
     {
       "id": "supplement-2",
@@ -234,9 +234,9 @@
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
-        "TANKER_NOT_RECORDED",
         "INTERRUPTIONS_NOT_RECORDED"
-      ]
+      ],
+      "tankerType": "A330 MRTT"
     },
     {
       "id": "supplement-3",
@@ -289,9 +289,9 @@
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
-        "TANKER_NOT_RECORDED",
         "INTERRUPTIONS_NOT_RECORDED"
-      ]
+      ],
+      "tankerType": "A330 MRTT"
     },
     {
       "id": "supplement-4",
@@ -344,9 +344,9 @@
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
-        "TANKER_NOT_RECORDED",
         "INTERRUPTIONS_NOT_RECORDED"
-      ]
+      ],
+      "tankerType": "A330 MRTT"
     },
     {
       "id": "supplement-5",
@@ -399,9 +399,9 @@
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
-        "TANKER_NOT_RECORDED",
         "INTERRUPTIONS_NOT_RECORDED"
-      ]
+      ],
+      "tankerType": "A330 MRTT"
     },
     {
       "id": "supplement-6",
@@ -454,7 +454,6 @@
         "GROSS_TRANSFER_UNKNOWN",
         "RECEIVER_BURN_UNKNOWN",
         "MEASUREMENT_DATE_NOT_RECORDED",
-        "TANKER_NOT_RECORDED",
         "INTERRUPTIONS_NOT_RECORDED"
       ],
       "timingResolution": {
@@ -464,14 +463,16 @@
         "derivedStopIfStartSecondsZero": "13:57:20",
         "source": "user clarification 2026-10-11",
         "rawStopIsTypo": true
-      }
+      },
+      "tankerType": "A330 MRTT"
     }
   ],
   "activation": {
     "enabled": true,
-    "mode": "explicit receiver preset selection only",
-    "method": "mean net rate plus existing receiver fuel-flow model; CLEAN uses labelled 3 BAGS proxy",
-    "scope": "exact measured FL/KIAS/configuration; mean across recorded fuel band, no universal rate"
+    "mode": "AUTO default; manual override optional",
+    "method": "segment net rate + reference modeled burn; interpolation at common fuel bands; labelled nearest-reference estimate outside coverage"
   },
-  "revision": 2
+  "revision": 3,
+  "tankerType": "A330 MRTT",
+  "tankerConfirmation": "User confirmation, 2026-10-11/12"
 }

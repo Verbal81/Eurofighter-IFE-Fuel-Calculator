@@ -1,3 +1,15 @@
+## AAR update v1.9.22
+
+Set AAR altitude, KIAS, configuration, event duration and target/manual onload.
+The transfer-rate mode defaults to AUTO. A330 MRTT is fixed. No measurement-profile
+button is needed. The app shows an effective estimated gross rate and calculates
+receiver burn automatically. Interpolation/reference estimates are labelled.
+MANUAL lets you override the gross rate. A zero onload can be correct when the
+planned FOB already covers the target and event burn.
+
+Tablet route fields are expanded initially; tap the waypoint title to collapse
+or expand. All route inputs remain editable and use the same calculation model.
+
 # IFE Eurofighter Fuel Calculator FS2024 — User Guide
 Version 1.9.19 · English
 

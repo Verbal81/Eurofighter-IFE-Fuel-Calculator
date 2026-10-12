@@ -7,14 +7,14 @@
   <title>Eurofighter IFE Fuel Calculator</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon.svg" />
-  <link rel="stylesheet" href="styles.css?v=1.9.21" />
+  <link rel="stylesheet" href="styles.css?v=1.9.22" />
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
     <div class="brand">
       <img src="icons/icon.svg" alt="" />
-      <div><strong class="brand-title-full">EUROFIGHTER IFE FUEL CALCULATOR</strong><strong class="brand-title-efb" aria-hidden="true">EUROFIGHTER IFE</strong><span>BY VERBAL · SORTIE / FUEL COMPUTATION · MOBILE BUILD v1.9.21</span></div>
+      <div><strong class="brand-title-full">EUROFIGHTER IFE FUEL CALCULATOR</strong><strong class="brand-title-efb" aria-hidden="true">EUROFIGHTER IFE</strong><span>BY VERBAL · SORTIE / FUEL COMPUTATION · MOBILE BUILD v1.9.22</span></div>
     </div>
     <div class="top-status"><span id="airacStatus" class="navdata-cycle" title="Current AIRAC calendar cycle; bundled local navdata is not certified to this cycle.">AIRAC ---- · LOCAL NAVDATA</span><span class="sim-only">SIMULATION ONLY</span><span id="dataStatus" class="chip">LOADING</span><span id="clock">--:-- UTC</span></div>
   </header>
@@ -152,21 +152,22 @@
       <div class="aar-layout">
         <section class="panel aar-main">
           <div class="panel-title"><h2>AIR-TO-AIR REFUELING</h2><span class="tag input-tag">PLANNING</span></div>
-          <div class="aar-enable-row"><label class="switch"><input id="aarEnabled" type="checkbox" /><span></span></label><strong>PLAN AAR</strong><small>Ein geplantes AAR kann den benötigten Start-Block reduzieren.</small></div>
+          <div class="aar-enable-row"><label class="switch"><input id="aarEnabled" type="checkbox" /><span></span></label><strong>PLAN AAR</strong><small>Planned refueling can reduce the required block fuel.</small></div>
           <div class="form-grid two">
             <label>AAR after waypoint<select id="aarWp"></select></label>
             <label>Aircraft tank capacity (kg)<input id="aarCapacity" readonly /></label>
             <label>ARIP<input id="aarArip" maxlength="12" placeholder="—" /></label>
             <label>ARCP<input id="aarArcp" maxlength="12" placeholder="TOD" /></label>
-            <label>Tanker type<input id="aarTankerType" maxlength="48" /></label>
+            <label>Tanker type<input id="aarTankerType" value="A330 MRTT" readonly /></label>
             <label>Tanker callsign<input id="aarTankerCallsign" maxlength="24" /></label>
             <label>Frequency / status<input id="aarFrequency" maxlength="80" /></label>
             <label>ARCT PLAN (Zulu)<input id="aarPlannedArct" maxlength="6" placeholder="HH:MM" /></label>
             <label>AAR OUT PLAN (Zulu)<input id="aarPlannedOut" maxlength="6" placeholder="HH:MM" /></label>
             <label>AAR altitude (FL)<input id="aarAlt" inputmode="numeric" value="230" /></label>
             <label>AAR speed (KIAS)<input id="aarSpeed" inputmode="numeric" value="285" /></label>
-            <label>Effective transfer rate (kg/min · GROSS)<input id="aarTransferRate" inputmode="decimal" placeholder="RATE REQUIRED" /></label>
-            <label>RATE SOURCE<input id="aarRateSource" value="MANUAL" readonly /></label>
+            <label>Transfer rate mode<select id="aarRateMode"><option value="AUTO" selected>AUTO - from measurements</option><option value="MANUAL">MANUAL - override</option></select></label>
+            <label>Effective gross rate (kg/min)<input id="aarTransferRate" inputmode="decimal" readonly placeholder="Calculated automatically" /></label>
+            <label>RATE SOURCE<input id="aarRateSource" value="AUTO" readonly /></label>
             <label>AAR EVENT DURATION (min)<input id="aarDuration" inputmode="decimal" value="10" /></label>
             <label>Configuration<select id="aarConfig"><option value="CLEAN">CLEAN</option><option value="3 BAGS">3 BAGS</option></select></label>
             <label>AUTO target FOB OUT (kg)<input id="aarTargetOut" inputmode="decimal" placeholder="AUTO · continuation requirement" /></label>
@@ -183,11 +184,9 @@
           </div>
           <div class="aar-control">
             <div class="inline-switch"><label class="switch"><input id="aarManualToggle" type="checkbox" /><span></span></label><span>Fixed / manual AAR onload</span><input id="aarManualKg" inputmode="numeric" placeholder="kg" disabled /></div>
-            <p class="hint">TRANSFER RATE = effektiver Gross-Onload pro Minute, keine Netto-Rate. Keine verlässlichen Tanker-/Receiver-Raten mitgeliefert; manuelle Eingabe erforderlich. Transfer und Event-Dauer sind unabhängig. Zusätzliche Event-Zeit wird als Orbit nach dem Transfer mit demselben Receiver-Verbrauch gerechnet. Zu kurze Events und Tanküberlauf am Transfer-Ende werden markiert.</p>
-            <div id="aarMeasurementRates"></div><p id="aarMeasurementMessage" class="hint" role="status"></p>
-            <div id="aarTransferStatus" class="message" role="status">TRANSFER TIME: N/A / RATE REQUIRED</div>
-            <p class="hint"><b>AUTO:</b> TARGET FOB ist der gewünschte tatsächliche FOB bei AAR OUT. Die App berechnet den nötigen Gross Onload inklusive AAR-Burn. <b>MANUAL:</b> der eingegebene Gross Onload bleibt fest; daraus werden FOB OUT, Landing FOB und alle Fuel-Margins neu berechnet. Der Mission-Startfuel wird nicht rückwärts verändert.</p>
-            <p class="hint"><b>AAR EVENT DURATION:</b> verschiebt alle nachfolgenden ETA-Zeiten und erzeugt jetzt zusätzlich den Eigenverbrauch während des AAR. <b>Required Onload = Target AAR-OUT FOB − FOB IN + AAR-duration burn.</b> Der AAR-Burn wird aus AAR-Höhe, KIAS, Konfiguration und dem aktiven Fuel-Flow-Modell berechnet.</p>
+            <div class="aar-auto-summary"><span>RECEIVER FUEL FLOW</span><strong id="aarReceiverFlow">—</strong><small id="aarRateBasis">Calculated from altitude, speed and configuration.</small></div>
+            <div id="aarTransferStatus" class="message" role="status">AAR OFF</div>
+            <details class="aar-method"><summary>Calculation basis</summary><p>Automatic rates use the A330 MRTT simulator measurements and the fuel band being filled. Gross rate includes modeled receiver burn. Comparable profiles are interpolated; other conditions use a labelled reference estimate. CLEAN burn uses the existing 3 BAGS consumption model as an approximation.</p><p>Transfer time is fuel-flow time. Event duration also includes orbit/delay burn. Manual gross onload remains exact; start fuel and route distances are never adjusted to fit a result.</p></details>
           </div>
           <div class="aar-result">
             <div><span>PLANNED / GROSS ONLOAD</span><strong id="aarPlanned">—</strong><small>kg · tanker transfer</small></div>
@@ -401,9 +400,10 @@
     <div id="infoBody" class="info-body"></div>
   </div>
 </div>
-<script src="i18n.js?v=1.9.21"></script>
-<script src="logic-core.js?v=1.9.21"></script>
-<script src="mission-backup.js?v=1.9.21"></script>
-<script src="app.js?v=1.9.21"></script>
+<script src="i18n.js?v=1.9.22"></script>
+<script src="logic-core.js?v=1.9.22"></script>
+<script src="aar-rate-model.js?v=1.9.22"></script>
+<script src="mission-backup.js?v=1.9.22"></script>
+<script src="app.js?v=1.9.22"></script>
 </body>
 </html>

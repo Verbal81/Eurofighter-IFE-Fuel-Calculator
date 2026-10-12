@@ -17,11 +17,12 @@ class Field{
  };
  t.run('originalRenderRoute()');
  assert.match(rows[6].html,/RUSTI \/ LL ENTRY/);
- assert.deepEqual(rows[3].cells.map(c=>c.dataset.label).slice(1,7),['WP','ALT ft','MACH','ZEIT / ETA Z · WP IN','NM','HOLD min / WP OUT']);
+ assert.deepEqual(rows[3].cells.map(c=>c.dataset.label).slice(1,7),['WP','ALT ft','MACH','TIME / ETA Z · WP IN','NM','HOLD min / WP OUT']);
  const positions=['data-k=\"wp\"','data-k=\"alt\"','data-k=\"mach\"','class=\"calc-zulu\"','data-k=\"dist\"','class=\"hold-cell\"'].map(s=>rows[3].html.indexOf(s));
  assert.ok(positions.every((p,i)=>p>=0&&(i===0||p>positions[i-1])),'Requested actual field order');
- rows[7].toggle.events.click();assert.equal(rows[7].toggle['aria-expanded'],'true');
+ assert.match(rows[7].html,/aria-expanded="true"/);
  rows[7].toggle.events.click();assert.equal(rows[7].toggle['aria-expanded'],'false');
+ rows[7].toggle.events.click();assert.equal(rows[7].toggle['aria-expanded'],'true');
  for(const row of rows)for(const f of Object.values(row.fields))if(f.tagName!=='SELECT')f.events.change();
  assert.deepEqual(t.json(t.snapshot().route),before.route,'Untouched rounded fields preserve exact state');
  const hold=rows[7].fields.holdMin;hold.value='';hold.events.input();hold.value='12,';hold.events.input();

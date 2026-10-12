@@ -503,3 +503,16 @@ html[data-theme="day"] .row-move{background:#eef2ef;color:#24342b;border-color:#
 
 /* Read-only calibration observations; separate from route and AAR inputs. */
 .measurement-scroll{overflow-x:auto;margin:10px 0}.measurement-table{width:100%;border-collapse:collapse;font-size:12px}.measurement-table th,.measurement-table td{padding:7px;border-bottom:1px solid var(--line,#315044);text-align:left;white-space:nowrap}#aarMeasurementLog summary{cursor:pointer;font-weight:700}
+
+/* AAR automation: compact output, no measurement-selection buttons. */
+.aar-auto-summary{display:grid;grid-template-columns:1fr auto;gap:8px;padding:14px;border:1px solid var(--line);margin:12px 0}
+.aar-auto-summary strong{font-variant-numeric:tabular-nums;color:var(--green)}
+.aar-auto-summary small{grid-column:1/-1;line-height:1.5;color:var(--muted);overflow-wrap:anywhere}
+.aar-method{font-size:13px;line-height:1.6;margin-top:14px}.aar-method summary{cursor:pointer}
+#view-aar input[readonly]{opacity:.85}
+@media screen and (max-width:600px){#view-route .route-table tr{grid-template-columns:1fr} .aar-auto-summary{grid-template-columns:1fr}}
+
+@media screen and (max-width:900px), screen and (pointer:coarse){
+  html[data-layout="efb"] .topbar{position:relative!important}
+  html[data-layout="efb"] .tabs{top:0!important}
+}

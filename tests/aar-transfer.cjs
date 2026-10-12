@@ -27,7 +27,7 @@ let n=0;async function test(name,fn){await fn();console.log(`PASS ${++n}. ${name
   const target=core.computeAarTransfer({...base,targetOutFob:7213,eventDuration:10});assert.equal(target.status,'TRANSFER CAP LIMIT');
   const dry=core.computeAarTransfer({...base,fobIn:100,eventDuration:10,manual:true,grossOnload:0});assert.equal(dry.status,'FUEL EXHAUSTED');
  });
- t.get('missionPreset').value='rhine-sentinelle-ghost-2026-10-10';await t.run('loadMissionPreset()');
+ t.get('missionPreset').value='rhine-sentinelle-ghost-2026-10-10';await t.run('loadMissionPreset()');t.run("$('aarRateMode').value='MANUAL';$('aarTransferRate').value='';$('aarRateSource').value='MANUAL';recalc();");
  await test('Real app: rate/event edits preserve geometry; missing rate displays N/A on ticket/PDF',()=>{
   const geom=t.geometry(t.snapshot());assert.match(t.get('aarTicketTransferTime').textContent,/N\/A \/ RATE REQUIRED/);assert.match(t.snapshot().card,/N\/A \/ RATE REQUIRED/);
   t.run("$('aarTransferRate').value='500';recalc();");const a=t.snapshot();near(a.a.transfer.transferTime,966/500);assert.ok(a.a.transfer.valid);near(a.a.durationBurn,a.a.aarBurnRate*10);near(a.a.fobAfter,a.a.currentFobBefore+966-a.a.durationBurn);assert.deepEqual(t.geometry(a),geom);
@@ -42,8 +42,8 @@ let n=0;async function test(name,fn){await fn();console.log(`PASS ${++n}. ${name
   assert.equal(t.get('aarRateSource').value,'RECEIVER PRESET');assert.equal(t.get('aarTransferRate').value,'500');
  });
  await test('Schema 1 safely migrates only new rate fields; new schemas require both fields',()=>{
-  const old=t.json(t.run('createMissionBackup()'));old.schemaVersion=1;old.mission.performance.modelVersion='ife-forward-1';delete old.mission.fields.aarTransferRate;delete old.mission.fields.aarRateSource;
-  const migrated=B.parse(JSON.stringify(old));assert.equal(migrated.schemaVersion,2);assert.equal(migrated.mission.fields.aarTransferRate,'');assert.equal(migrated.mission.fields.aarRateSource,'MANUAL');
+  const old=t.json(t.run('createMissionBackup()'));old.schemaVersion=1;old.mission.performance.modelVersion='ife-forward-1';delete old.mission.fields.aarRateMode;delete old.mission.performance.aarMeasurements;delete old.mission.fields.aarTransferRate;delete old.mission.fields.aarRateSource;
+  const migrated=B.parse(JSON.stringify(old));assert.equal(migrated.schemaVersion,3);assert.equal(migrated.mission.fields.aarTransferRate,'');assert.equal(migrated.mission.fields.aarRateSource,'MANUAL');
   t.ctx.oldMission=old;t.run('applyMissionBackup(oldMission)');assert.match(t.get('aarTicketTransferTime').textContent,/RATE REQUIRED/);assert.equal(old.schemaVersion,1);
   const invalid=t.json(migrated);delete invalid.mission.fields.aarTransferRate;assert.throws(()=>B.validate(invalid),/aarTransferRate/);
  });

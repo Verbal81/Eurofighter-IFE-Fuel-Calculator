@@ -19,6 +19,6 @@ const t=require('./regression.cjs');
  const before=t.json(t.snapshot());t.ctx.observationData=data;t.run('state.aarMeasurements=observationData;renderAarMeasurementLog();recalc();');
  assert.deepEqual(t.json(t.snapshot()),before,'Observations do not affect mission calculation or route');
  assert.match(t.get('settingsAarRuns').textContent,/10/);assert.match(t.get('aarMeasurementLog').innerHTML,/NET kg\/min/);assert.match(t.get('aarMeasurementLog').innerHTML,/model estimates/);
- assert.equal(t.get('aarTransferRate').value,'');assert.ok(Number.isNaN(t.snapshot().a.transfer.transferTime));assert.equal(t.snapshot().a.transfer.status,'RATE REQUIRED');
- console.log('AAR measurement checks passed: 6 profiles, raw times, 30 checkpoints, archive preserved, no automatic selection, unchanged mission.');
+ assert.equal(t.get('aarRateMode').value,'AUTO');assert.ok(Number(t.get('aarTransferRate').value)>0);assert.ok(t.snapshot().a.transfer.valid);
+ console.log('AAR measurement checks passed: 6 profiles, raw times, 30 checkpoints, archive preserved, automatic mode already selected, unchanged mission.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

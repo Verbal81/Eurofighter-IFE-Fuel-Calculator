@@ -83,9 +83,10 @@ async function boot(){
 }
 
 // Observations only: never use NET rates as effective GROSS transfer inputs.
+function activeAarMeasurements(){if(state.missionPerformance&&$('aarRateMode').value==='AUTO')return state.missionPerformance.aarMeasurements;return state.missionPerformance?.aarMeasurements||state.aarMeasurements;}
 function selectedAarMeasurement(){
   const match=/^RECEIVER PRESET S([1-6]) ESTIMATE$/.exec($('aarRateSource')?.value||'');
-  return match?(state.aarMeasurements?.supplementRuns||[]).find(r=>r.run===Number(match[1])):null;
+  return match?(activeAarMeasurements()?.supplementRuns||[]).find(r=>r.run===Number(match[1])):null;
 }
 function aarMeasurementEstimate(run){
   const minutes=run.elapsedSecFromCheckpoint/60,net=run.fuelStopKg-run.fuelStartKg;
@@ -96,24 +97,25 @@ function aarMeasurementEstimate(run){
     proxy:run.configuration!==String(profile().measurementConfiguration||'').toUpperCase()};
 }
 function applyAarMeasurement(runNumber){
-  const run=(state.aarMeasurements?.supplementRuns||[]).find(r=>r.run===Number(runNumber));
+  const run=(activeAarMeasurements()?.supplementRuns||[]).find(r=>r.run===Number(runNumber));
   if(!run)return false;
   const estimate=aarMeasurementEstimate(run);
   if(!Number.isFinite(estimate.grossRate)||parseNum($('aarAlt').value)!==run.flightLevel||parseNum($('aarSpeed').value)!==run.speedKt||$('aarConfig').value!==run.configuration){
-    $('aarMeasurementMessage').textContent=`Set AAR to FL${run.flightLevel} / ${run.speedKt} KIAS / ${run.configuration} to use S${run.run}. No inputs changed.`;return false;
+    $('aarRateBasis').textContent=`Set AAR to FL${run.flightLevel} / ${run.speedKt} KIAS / ${run.configuration} to use S${run.run}. No inputs changed.`;return false;
   }
+  $('aarRateMode').value='MANUAL';
   $('aarTransferRate').value=String(estimate.grossRate);
   $('aarRateSource').value=`RECEIVER PRESET S${run.run} ESTIMATE`;
-  $('aarMeasurementMessage').textContent=`S${run.run}: estimated mean GROSS rate applied. ${estimate.proxy?'CLEAN burn uses the 3 BAGS model as a proxy.':'Receiver burn from the existing model.'}`;
+  $('aarRateBasis').textContent=`S${run.run}: estimated mean GROSS rate applied. ${estimate.proxy?'CLEAN burn uses the 3 BAGS model as a proxy.':'Receiver burn from the existing model.'}`;
   recalc();return true;
 }
 function renderAarMeasurementLog(){
   const data=state.aarMeasurements,prior=data?.runs||[],runs=data?.supplementRuns||[];
   if($('settingsAarRuns'))$('settingsAarRuns').textContent=data?`${prior.length+runs.length} · MEASURED NET / EST GROSS`:'—';
   const rows=runs.map(run=>{const e=aarMeasurementEstimate(run);return `<tr><td>S${run.run}</td><td>${escapeHtml(run.configuration)}</td><td>${run.flightLevel}</td><td>${run.speedKt}</td><td>${run.fuelStartKg}–${run.fuelStopKg}</td><td>${Math.floor(run.elapsedSecFromCheckpoint/60)}:${String(run.elapsedSecFromCheckpoint%60).padStart(2,'0')}</td><td>${fmt(e.netRate,1)}</td><td>${fmt(e.receiverFlow,2)}${e.proxy?'*':''}</td><td>${fmt(e.burn,1)}</td><td>${fmt(e.gross,1)}</td><td>${fmt(e.grossRate,2)}</td></tr>`;}).join('');
-  const content=`<details><summary>AAR measurements / estimated gross rates</summary><p class="hint">All 6 requested profiles received. NET kg/min is measured. Burn and GROSS are model estimates. * CLEAN uses the existing 3 BAGS consumption model as a proxy. Rates are averages across the listed fuel bands; they do not reproduce every checkpoint segment.</p><div class="measurement-scroll"><table class="measurement-table"><thead><tr><th>Run</th><th>Config</th><th>FL</th><th>KIAS</th><th>FOB band kg</th><th>mm:ss</th><th>NET kg/min</th><th>EST burn kg/min</th><th>EST burn kg</th><th>EST gross kg</th><th>EST gross kg/min</th></tr></thead><tbody>${rows}</tbody></table></div><p class="hint">S6: 300 → 2300 kg in 2:20. Start 13:55 local; derived end approx. 13:57 (13:57:20 if start seconds = 00). Original PDF stop 13:55 retained as a corrected transcription error. Measurement date and tanker identity were not supplied; neither blocks this simulator estimate.</p></details>`;
+  const content=`<details><summary>AAR measurements / estimated gross rates</summary><p class="hint">All 6 requested profiles received. NET kg/min is measured. Burn and GROSS are model estimates. * CLEAN uses the existing 3 BAGS consumption model as a proxy. Rates are averages across the listed fuel bands; they do not reproduce every checkpoint segment.</p><div class="measurement-scroll"><table class="measurement-table"><thead><tr><th>Run</th><th>Config</th><th>FL</th><th>KIAS</th><th>FOB band kg</th><th>mm:ss</th><th>NET kg/min</th><th>EST burn kg/min</th><th>EST burn kg</th><th>EST gross kg</th><th>EST gross kg/min</th></tr></thead><tbody>${rows}</tbody></table></div><p class="hint">S6: 300 → 2300 kg in 2:20. Start 13:55 local; derived end approx. 13:57 (13:57:20 if start seconds = 00). Original PDF stop 13:55 retained as a corrected transcription error. Measurement date was not supplied. Tanker confirmed by the user: A330 MRTT.</p></details>`;
   if($('aarMeasurementLog'))$('aarMeasurementLog').innerHTML=content;
-  if($('aarMeasurementRates'))$('aarMeasurementRates').innerHTML=content+`<p class="hint">Optional: use a measured-profile estimate after setting the matching AAR FL, KIAS and configuration. Manual rate entry remains available. No preset is applied automatically.</p>`+runs.map(r=>`<button type="button" data-aar-measurement="${r.run}">Use S${r.run} estimate · ${escapeHtml(r.configuration)} / FL${r.flightLevel} / ${r.speedKt}</button>`).join(' ');
+
 }
 
 function checkJson(r){ if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }
@@ -207,8 +209,8 @@ function wire(){
     recalc();
   });
   bindNumber('aarManualKg',recalc);
-  $('aarMeasurementRates')?.addEventListener('click',e=>{const b=e.target.closest('[data-aar-measurement]');if(b)applyAarMeasurement(b.dataset.aarMeasurement);});
-  bindNumber('aarTransferRate',()=>{$('aarRateSource').value='MANUAL';recalc();});
+  $('aarRateMode').addEventListener('change',()=>{if($('aarRateMode').value==='MANUAL')$('aarRateSource').value='MANUAL';recalc();});
+  bindNumber('aarTransferRate',()=>{$('aarRateMode').value='MANUAL';$('aarRateSource').value='MANUAL';recalc();});
   ['aarAlt','aarSpeed','aarDuration','aarBingo2','aarTargetOut'].forEach(id=>bindNumber(id,recalc));
   ['aarArip','aarArcp','aarB2Rtb'].forEach(id=>bindText(id,recalc));
   $('aarConfig')?.addEventListener('change',recalc);
@@ -394,10 +396,11 @@ function loadPrefs(){
 }
 
 function clearMissionMetadata(){
-  $('aarTransferRate').value='';$('aarRateSource').value='MANUAL';
+  $('aarTransferRate').value='';$('aarRateSource').value='AUTO';$('aarRateMode').value='AUTO';
   state.missionPerformance=null;state.missionNavigation=null;
   state.missionMeta=null;
   ['missionName','missionType','missionNotes','aarTankerType','aarTankerCallsign','aarFrequency','aarPlannedArct','aarPlannedOut','missionPreset'].forEach(id=>{if($(id))$(id).value='';});
+  $('aarTankerType').value='A330 MRTT';
   if($('divertSelection'))$('divertSelection').value='auto';
   if($('loadMissionPreset'))$('loadMissionPreset').disabled=true;
   if($('missionPresetNote')){$('missionPresetNote').textContent='';$('missionPresetNote').className='hint hidden';}
@@ -500,15 +503,17 @@ function deleteWaypoint(i){
   renderRoute(); restoreRouteReferences(refs); recalc();
 }
 
+const collapsedRouteCards=new WeakSet();
 function renderRoute(){
   syncEndpoints(); const body=$('routeBody'); body.innerHTML='';
   state.route.forEach((r,i)=>{
     const first=i===0,last=i===state.route.length-1, endpoint=first||last;
     const tr=document.createElement('tr'); tr.dataset.i=i;
+    const cardOpen=!collapsedRouteCards.has(r);if(cardOpen)tr.classList.toggle('route-expanded');
     tr.innerHTML=`
       <td class="route-index">${i+1}<span class="aar-mark"></span><span class="joker-mark"></span><span class="bingo-mark"></span></td>
-      <td><button type="button" class="route-card-toggle" aria-expanded="false"><strong>${escapeHtml(r.wp||'—')}</strong><small>${uiText('Felder öffnen / schließen','Open / close fields')}</small></button><input data-k="wp" value="${escapeHtml(r.wp||'')}" ${endpoint?'readonly':''}></td>
-      <td><input data-k="alt" inputmode="numeric" value="${fmt(parseNum(r.alt),0).replace(/\./g,'')}" ${endpoint?'readonly':''}></td>
+      <td><button type="button" class="route-card-toggle" aria-expanded="${cardOpen}"><strong>${escapeHtml(r.wp||'—')}</strong><small>${uiText('Felder öffnen / schließen','Open / close fields')}</small></button><input data-k="wp" value="${escapeHtml(r.wp||'')}" ${endpoint?'readonly':''}></td>
+      <td><input data-k="alt" inputmode="numeric" value="${String(parseNum(r.alt))}" ${endpoint?'readonly':''}></td>
       <td class="mach-cell"><input data-k="mach" inputmode="decimal" class="${r.machAutoCorrected?'auto-corrected':''}" title="${r.machAutoCorrected?`AUTO: M${fmt(r.machOriginal,2)} → M0,60`:'Mach'}" value="${first?'':displayMach(r.mach)}" ${first?'disabled':''}>${r.machAutoCorrected?'<small class="mach-auto-note">AUTO 0,60</small>':''}</td>
       <td class="calc-zulu"><input class="eta-zulu-input" inputmode="numeric" maxlength="6" aria-label="ETA Z" title="${uiText('ETA Z = Hard Time. Zusätzliche Wartezeit wird als HOLD mit Fuel berechnet; unerreichbare Zeiten werden markiert. NM bleiben unverändert. Leeren = AUTO.','ETA Z = hard time. Extra waiting becomes a fuel-burning HOLD; unreachable times are flagged. NM stay unchanged. Clear = AUTO.')}" value=""><small class="eta-note"></small></td>
       <td><input data-k="dist" inputmode="decimal" value="${first?'':(r.mode==='distance'?fmt(parseNum(r.dist),1):'')}" ${first?'disabled':''} title="${uiText('NM eingeben = DIST-Modus','Enter NM = DIST mode')}"></td>
@@ -522,12 +527,13 @@ function renderRoute(){
       <td class="calc-fob">—</td>
       <td>${endpoint?'':`<div class="row-actions"><button class="row-move row-up" aria-label="${uiText('Waypoint nach oben verschieben','Move waypoint up')}" title="${uiText('Nach oben','Move up')}" ${i<=1?'disabled':''}>↑</button><button class="row-move row-down" aria-label="${uiText('Waypoint nach unten verschieben','Move waypoint down')}" title="${uiText('Nach unten','Move down')}" ${i>=state.route.length-2?'disabled':''}>↓</button><button class="row-delete" aria-label="${uiText('Waypoint löschen','Delete waypoint')}">×</button></div>`}</td>`;
     body.appendChild(tr);
-    const labels=['#','WP','ALT ft','MACH','ZEIT / ETA Z · WP IN','NM','HOLD min / WP OUT','WIND kt','MODE','MIN EDIT','ETE min','LEG kg','RECOV kg','FOB IN / OUT','MOVE'];
+    const labels=['#','WP','ALT ft','MACH','TIME / ETA Z · WP IN','NM','HOLD min / WP OUT','WIND kt','MODE','MIN EDIT','ETE min','LEG kg','RECOV kg','FOB IN / OUT','MOVE'];
     tr.querySelectorAll('td').forEach((cell,j)=>{cell.dataset.label=labels[j];});
     const cardToggle=tr.querySelector('.route-card-toggle');
     if(cardToggle)cardToggle.addEventListener('click',()=>{
       const open=tr.classList.toggle('route-expanded');
       cardToggle.setAttribute('aria-expanded',String(open));
+      if(open)collapsedRouteCards.delete(r);else collapsedRouteCards.add(r);
     });
     tr.querySelectorAll('[data-k]').forEach(el=>{
       let machEdited=false, fieldEdited=false;
@@ -964,7 +970,7 @@ function aarBurnProfile(surcharge=1){
   // Do not pretend the 3 BAGS calibration is a CLEAN performance model.
   const selected=selectedAarMeasurement();
   const measurementMatches=selected&&selected.configuration===conf&&selected.flightLevel===aarFl&&selected.speedKt===aarKias;
-  const configurationValid=(!!measuredConf&&conf===measuredConf)||!!measurementMatches;
+  const configurationValid=(!!measuredConf&&conf===measuredConf)||!!measurementMatches||($('aarRateMode').value==='AUTO'&&conf==='CLEAN'&&measuredConf==='3 BAGS');
   const aarFlow=fuelFlow(aarAltFt,aarMach);
   const valid=configurationValid&&aarAltFt>=0&&aarAltFt<=55000&&aarKias>0&&aarFlow.status!=='range';
   return {aarFl,aarAltFt,aarKias,aarMach,aarModelMach:aarMach,configurationValid,measuredConf,
@@ -998,14 +1004,30 @@ function updateAAR(){
     requestedOnload:manual,manual:manualOn,capacity:cap
   });
 
+  const automatic=$('aarRateMode').value==='AUTO';
+  $('aarTransferRate').readOnly=automatic;
+  $('aarTankerType').value='A330 MRTT';
+  let automaticRate=null,estimateNote='';
+  const neededGross=manualOn?manual:Math.max(0,targetOutFob-currentFobBefore+durationBurn);
+  if(automatic){
+    const runs=(activeAarMeasurements()?.supplementRuns||[]).map(r=>({...r,receiverFlow:aarMeasurementEstimate(r).receiverFlow}));
+    automaticRate=window.IFEAarRates.effectiveRate({runs,configuration:$('aarConfig').value,flightLevel:aarFl,speedKt:aarKias,fobIn:currentFobBefore,grossOnload:enabled?neededGross:0,receiverFlow:aarBurnRate});
+    const kinds=automaticRate.kinds||[],isReference=kinds.some(k=>k.includes('ESTIMATE'));
+    $('aarTransferRate').value=Number.isFinite(automaticRate.rate)?String(Number(automaticRate.rate.toFixed(2))):'';
+    $('aarRateSource').value=!Number.isFinite(automaticRate.rate)?'AUTO NO DATA':isReference?'AUTO REFERENCE ESTIMATE':kinds.includes('INTERPOLATED')?'AUTO INTERPOLATED':'AUTO MEASURED PROFILE';
+    estimateNote=Number.isFinite(automaticRate.rate)?`ESTIMATED GROSS · ${kinds.join(' / ')} · RUN ${(automaticRate.ids||[]).map(i=>'S'+i).join(', ')}`:automaticRate.status;
+  }
   const rateRaw=$('aarTransferRate').value;
-  const measurement=selectedAarMeasurement();
-  const measurementRequested=/^RECEIVER PRESET S[1-6] ESTIMATE$/.test($('aarRateSource').value);
-  const measurementMatches=!measurementRequested||!!(measurement&&measurement.flightLevel===aarFl&&measurement.speedKt===aarKias&&measurement.configuration===$('aarConfig').value);
-  const transfer=window.IFECore.computeAarTransfer({rate:measurementMatches?(rateRaw===''?null:parseNum(rateRaw,NaN)):NaN,receiverFlow:burnProfile.profileValid?aarBurnRate:NaN,eventDuration:duration,fobIn:currentFobBefore,targetOutFob,grossOnload:manual,manual:manualOn,capacity:cap});
+  const transfer=window.IFECore.computeAarTransfer({rate:automatic?(automaticRate?.rate??NaN):(rateRaw===''?null:parseNum(rateRaw,NaN)),receiverFlow:burnProfile.profileValid?aarBurnRate:NaN,eventDuration:duration,fobIn:currentFobBefore,targetOutFob,grossOnload:automatic?neededGross:manual,manual:automatic||manualOn,capacity:cap});
   const rateSource=$('aarRateSource').value;
-  if(!measurementMatches)transfer.status='MEASUREMENT PROFILE MISMATCH';
-  const estimateNote=measurement?` · ESTIMATED MEAN S${measurement.run}${measurement.configuration==='CLEAN'?' · CLEAN BURN: 3 BAGS PROXY':''} · MEASURED FOB ${measurement.fuelStartKg}–${measurement.fuelStopKg} KG${currentFobBefore<measurement.fuelStartKg||transfer.peakFob>measurement.fuelStopKg?' · OUTSIDE MEASURED FUEL BAND':''}`:'';
+  if(automatic&&!Number.isFinite(automaticRate?.rate))transfer.status=automaticRate?.status||'NO DATA';
+  const measurement=automatic?null:selectedAarMeasurement();
+  if(!automatic&&measurement&&(measurement.flightLevel!==aarFl||measurement.speedKt!==aarKias||measurement.configuration!==$('aarConfig').value)){
+    transfer.valid=false;transfer.status='MEASUREMENT PROFILE MISMATCH';
+  }
+  if($('aarConfig').value==='CLEAN')estimateNote+=' · CLEAN BURN: 3 BAGS MODEL ESTIMATE';
+  if($('aarReceiverFlow'))$('aarReceiverFlow').textContent=Number.isFinite(aarBurnRate)?`${fmt(aarBurnRate,2)} kg/min`:'N/A';
+  if($('aarRateBasis'))$('aarRateBasis').textContent=estimateNote||'Manual gross rate. Receiver burn is calculated from the active performance model.';
   if(enabled&&!transfer.missingRate){
     core.grossCapacity=Number.isFinite(transfer.rate)&&transfer.rate>aarBurnRate?Math.max(0,Math.min(transfer.rate*duration,(cap-currentFobBefore)/(1-aarBurnRate/transfer.rate))):NaN;
     core.capacityLimited=core.requested>core.grossCapacity+1e-7;
@@ -1102,9 +1124,9 @@ function updateAAR(){
   }
   ticket('aarTicketAfterLoad',enabled?`${fmt(fobAfterLoad)} KG*`:'—');ticket('aarTicketBurn',enabled?`-${fmt(durationBurn)} KG`:'—');ticket('aarTicketFobOut',enabled?`${fmt(fobOut)} KG`:'—');
   const xferText=Number.isFinite(transfer.transferTime)?`${fmt(transfer.transferTime,2)} MIN${transfer.valid?'':' · CHECK'}`:`N/A / ${transfer.status}`;
-  ticket('aarTicketRate',enabled&&Number.isFinite(transfer.rate)?`${fmt(transfer.rate,2)} KG/MIN${measurement?' EST':''}`:'N/A / RATE REQUIRED');
-  ticket('aarTicketRateSource',rateSource+(measurement?.configuration==='CLEAN'?' · 3 BAGS BURN PROXY':''));ticket('aarTicketTransferTime',enabled?xferText:'—');ticket('aarTicketEvent',enabled?`${fmt(duration,1)} MIN`:'—');
-  ticket('aarTransferStatus',enabled?`TRANSFER TIME: ${xferText} · ${transfer.status}${estimateNote}${Number.isFinite(transfer.orbitTime)?` · ORBIT ${fmt(transfer.orbitTime,2)} MIN`:''}`:'AAR OFF');
+  ticket('aarTicketRate',enabled&&Number.isFinite(transfer.rate)?`${fmt(transfer.rate,2)} KG/MIN${automatic||measurement?' EST':''}`:'N/A / RATE REQUIRED');
+  ticket('aarTicketRateSource',rateSource);ticket('aarTicketTransferTime',enabled?xferText:'—');ticket('aarTicketEvent',enabled?`${fmt(duration,1)} MIN`:'—');
+  ticket('aarTransferStatus',enabled?`TRANSFER TIME: ${xferText} · ${transfer.valid&&transfer.grossOnload===0?'NO ONLOAD REQUIRED':transfer.status}${Number.isFinite(transfer.orbitTime)?` · ORBIT ${fmt(transfer.orbitTime,2)} MIN`:''}`:'AAR OFF');
   ticket('aarTicketTime',enabled&&transfer.valid&&Number.isFinite(transfer.transferBurn)?`${fmt(transfer.transferBurn)} / ${fmt(transfer.orbitBurn)} KG`:'N/A');ticket('aarTicketOut',aarOut);
   ticket('aarTicketBingo2',enabled&&Number.isFinite(bingo2)?`${fmt(bingo2)} KG`:'—');ticket('aarTicketRtb',enabled?(b2rtb||'—'):'—');
   const bingoUsed=Number.isFinite(s.bingo)?s.bingo:NaN,jokerUsed=Number.isFinite(s.joker)?s.joker:NaN,jokerIndex=Number.isInteger(s.jokerIndex)?s.jokerIndex:Math.max(1,state.route.length-2),jokerWp=state.route[jokerIndex]?.wp||'—';
@@ -1268,7 +1290,7 @@ function renderDataCard(){
     <h2>03 | ${uiText('DIVERT / RESERVE','DIVERT / RESERVE')}</h2><div class="dc-kpis"><div><span>DIVERT 1</span><strong>${escapeHtml(d1.name||'—')} ${d1.valid?fmt(d1.fuel)+' kg':''}</strong></div><div><span>DIVERT 2</span><strong>${escapeHtml(d2.name||'—')} ${d2.valid?fmt(d2.fuel)+' kg':''}</strong></div><div><span>USED</span><strong>${s.divertValid?escapeHtml(s.divertName)+' '+fmt(s.divert)+' kg':'—'}</strong></div><div><span>ARR RECOV FLOOR</span><strong>${fmt((s.divert||0)+(s.reserve||0)+(s.recovery||0))} kg</strong></div></div>
     <h2>04 | AAR</h2>${s.aar?.enabled?`<div class="dc-aar-ticket"><div class="dc-aar-title">AAR PLAN 01</div><div class="dc-aar-rule"></div><div><span>ARIP</span><b>${escapeHtml(s.aar.ticket?.arip||'—')}</b></div><div><span>ARCP</span><b>${escapeHtml(s.aar.ticket?.arcp||state.route[s.aar.index]?.wp||'—')}</b></div><div><span>ARCT</span><b>${escapeHtml(s.aar.ticket?.arct||'—')}</b></div><div class="dc-aar-space"></div><div><span>ALT</span><b>FL${fmt(s.aar.ticket?.alt||230,0)}</b></div><div><span>SPD</span><b>${fmt(s.aar.ticket?.speed||285,0)} KIAS</b></div><div><span>CONF</span><b>${escapeHtml(s.aar.ticket?.conf||'CLEAN')}</b></div><div><span>TANKER</span><b>${escapeHtml(s.aar.ticket?.tankerType||'—')}</b></div><div><span>CALLSIGN</span><b>${escapeHtml(s.aar.ticket?.tankerCallsign||'—')}</b></div><div><span>FREQ / STATUS</span><b>${escapeHtml(s.aar.ticket?.frequency||'—')}</b></div>${s.aar.ticket?.plannedArct||s.aar.ticket?.plannedOut?`<div><span>ARCT / OUT PLAN</span><b>${escapeHtml(s.aar.ticket?.plannedArct||'—')}Z / ${escapeHtml(s.aar.ticket?.plannedOut||'—')}Z</b></div>`:''}<div class="dc-aar-rule"></div><div><span>FOB IN</span><b>${fmt(s.aar.ticket?.fobIn)} KG</b></div>${s.aar.manualOn?'':`<div><span>TARGET FOB OUT</span><b>${fmt(s.aar.ticket?.target)} KG</b></div>`}<div><span>GROSS ONLOAD</span><b>+${fmt(s.aar.ticket?.onload)} KG</b></div><div><span>TRANSFER RATE</span><b>${Number.isFinite(s.aar.transfer?.rate)?fmt(s.aar.transfer.rate,2)+' KG/MIN':'N/A / RATE REQUIRED'}</b></div><div><span>RATE SOURCE</span><b>${escapeHtml(s.aar.rateSource||'MANUAL')}</b></div><div><span>EST XFER TIME</span><b>${Number.isFinite(s.aar.transfer?.transferTime)?fmt(s.aar.transfer.transferTime,2)+' MIN'+(s.aar.transfer.valid?'':' · CHECK'):'N/A / '+escapeHtml(s.aar.transfer?.status||'RATE REQUIRED')}</b></div><div><span>AAR EVENT</span><b>${fmt(s.aar.duration,1)} MIN</b></div><div><span>FOB AFTER LOAD</span><b>${fmt(s.aar.ticket?.fobAfterLoad)} KG*</b></div><div><span>AAR BURN</span><b>-${fmt(s.aar.ticket?.burn)} KG</b></div><div><span>FOB OUT</span><b>${fmt(s.aar.ticket?.fobOut)} KG</b></div><div><span>AAR OUT</span><b>${escapeHtml(s.aar.ticket?.out||'—')}</b></div><div class="dc-aar-rule"></div><div><span>BINGO 2</span><b>${Number.isFinite(s.aar.ticket?.bingo2)?fmt(s.aar.ticket.bingo2)+' KG':'—'}</b></div><div><span>B2 → RTB</span><b>${escapeHtml(s.aar.ticket?.b2rtb||'—')}</b></div><div><span>BINGO (NO AAR)</span><b>${Number.isFinite(s.aar.ticket?.bingo)?fmt(s.aar.ticket.bingo)+' KG':'—'}</b></div><div><span>JOKER</span><b>${Number.isFinite(s.aar.ticket?.joker)?fmt(s.aar.ticket.joker)+' KG':'—'}</b></div><div><span>JOKER @</span><b>${escapeHtml((s.aar.ticket?.jokerWp||'—')+' '+(s.jokerBasis||'in').toUpperCase())}</b></div><small>${escapeHtml(s.aar.estimateNote||'')} SIMULATION ONLY · *FOB AFTER LOAD is accounting only; Known rate: simultaneous transfer/burn followed by orbit burn; peak checked at transfer end. Without rate, transfer time/feasibility unverified.</small></div>`:`<div class="dc-kpis"><div><span>STATUS</span><strong>OFF</strong></div></div>`}
     <h2>05 | ${uiText('FLUGLOG','FLIGHT LOG')}</h2><table class="dc-table"><thead><tr><th>NR</th><th>WAYPOINT</th><th>ALT</th><th>M</th><th>WIND</th><th>LEG NM</th><th>ETE</th><th>WP IN Z</th><th>HOLD / WP OUT</th><th>LEG kg</th><th>RECOV kg</th><th>FOB IN / OUT</th><th>IST kg</th></tr></thead><tbody>${rows}</tbody></table>
-    <footer class="dc-footer">Eurofighter IFE Fuel Calculator v1.9.21 · by Verbal · ${uiText('SIMULATION / TESTBUILD · KEIN OFFIZIELLES FLUGDOKUMENT','SIMULATION / TEST BUILD · NOT AN OFFICIAL FLIGHT DOCUMENT')}</footer>`;
+    <footer class="dc-footer">Eurofighter IFE Fuel Calculator v1.9.22 · by Verbal · ${uiText('SIMULATION / TESTBUILD · KEIN OFFIZIELLES FLUGDOKUMENT','SIMULATION / TEST BUILD · NOT AN OFFICIAL FLIGHT DOCUMENT')}</footer>`;
 }
 
 function openInfo(title,html){$('infoTitle').textContent=title;$('infoBody').innerHTML=html;$('infoOverlay').classList.remove('hidden');$('infoOverlay').setAttribute('aria-hidden','false');}
@@ -1345,7 +1367,7 @@ function captureMissionState(){
     toggles:{bingo:$('bingoManualToggle').checked,joker:$('jokerManualToggle').checked,aar:$('aarEnabled').checked,aarManual:$('aarManualToggle').checked},
     references:{bingoWp:reference('bingoWp'),jokerWp:reference('jokerWp'),aarWp:reference('aarWp')},
     holdModel:'level-at-waypoint-v1',
-    performance:{modelVersion:window.IFEMissionBackup.MODEL_VERSION,aircraftProfile:profile(),fuelData:activeFuelData()},
+    performance:{modelVersion:window.IFEMissionBackup.MODEL_VERSION,aircraftProfile:profile(),fuelData:activeFuelData(),aarMeasurements:activeAarMeasurements()},
     navigation:activeNavigation()
   });
 }
@@ -1426,6 +1448,8 @@ async function applyMissionPayload(p,source='saved'){
   state.source=source;
   state.route=sanitizeRoute(p.route);
   Object.entries(p.fields||{}).forEach(([k,v])=>{if(MISSION_FIELD_IDS.includes(k)&&$(k))$(k).value=k==='missionNotes'?displayMachText(v):v;});
+  if(p.fields?.aarRateMode===undefined)$('aarRateMode').value=p.fields?.aarTransferRate?'MANUAL':'AUTO';
+  $('aarTankerType').value='A330 MRTT';
   if(p.fields?.aarDuration===undefined)$('aarDuration').value='10';
   if(p.fields?.aarTargetOut===undefined)$('aarTargetOut').value='';
   if(p.fields?.jokerBasis===undefined)$('jokerBasis').value='in';

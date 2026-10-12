@@ -22,12 +22,12 @@ for(const m of html.matchAll(/<select\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/selec
   if(selected)get(m[1]).value=selected[1].match(/value="([^"]*)"/)?.[1]||'';
 }
 const fetches=[];
-const saved=new Map(),ctx={console,IFECore:core,IFEMissionBackup:require('../mission-backup.js'),fetch:async url=>{fetches.push(url);return {ok:true,json:async()=>JSON.parse(read(url))};},document:{getElementById:get,createElement:()=>new Element(),documentElement:{lang:'en'},querySelectorAll:()=>[]},localStorage:{getItem:k=>saved.get(k)||null,setItem:(k,v)=>saved.set(k,String(v))},setTimeout:()=>{}};
+const saved=new Map(),ctx={console,IFECore:core,IFEAarRates:require('../aar-rate-model.js'),IFEMissionBackup:require('../mission-backup.js'),fetch:async url=>{fetches.push(url);return {ok:true,json:async()=>JSON.parse(read(url))};},document:{getElementById:get,createElement:()=>new Element(),documentElement:{lang:'en'},querySelectorAll:()=>[]},localStorage:{getItem:k=>saved.get(k)||null,setItem:(k,v)=>saved.set(k,String(v))},setTimeout:()=>{}};
 ctx.window=ctx;vm.createContext(ctx);
 vm.runInContext(read('app.js').replace(/toggleCruiseMode\(\);\s*boot\(\);\s*$/,''),ctx);
 const run=code=>vm.runInContext(code,ctx);
-ctx.profiles=JSON.parse(read('data/aircraft-profiles.json')).profiles;ctx.fuel=JSON.parse(read('data/fuel-flow.json'));ctx.nav=JSON.parse(read('data/navdata.json'));
-run(`state.profiles=profiles;state.fuelData=fuel;state.navData=nav;$('aircraft').value=state.selectedAircraft;
+ctx.profiles=JSON.parse(read('data/aircraft-profiles.json')).profiles;ctx.fuel=JSON.parse(read('data/fuel-flow.json'));ctx.nav=JSON.parse(read('data/navdata.json'));ctx.aarData=JSON.parse(read('data/aar-measurements-2026-10-11.json'));
+run(`state.aarMeasurements=aarData;state.profiles=profiles;state.fuelData=fuel;state.navData=nav;$('aircraft').value=state.selectedAircraft;
   originalRenderRoute=renderRoute;renderRoute=()=>{syncEndpoints();updateBingoOptions();updateAarOptions();};
   originalCalcCruise=calcCruise;originalToggleCruiseMode=toggleCruiseMode;drawRoute=()=>{};calcCruise=()=>{};renderProfileList=()=>{};
   syncAlternatePreset=()=>{};useMissionAirportElevations=()=>{};toggleCruiseMode=()=>{};showView=()=>{};
@@ -35,7 +35,7 @@ run(`state.profiles=profiles;state.fuelData=fuel;state.navData=nav;$('aircraft')
 const snapshot=()=>run(`({s:state.summary,a:state.aar,route:state.route,legs:state.calc,
   start:$('tankOnBoard').value,onload:$('aarManualKg').value,card:$('dataCardSheet').innerHTML})`);
 function setup({manual=true,duration=10,hold=0,start=7213,onload=300}={}){
-  run(`loadDemo();$('startZulu').value='17:30';$('departure').value='ETSN';$('arrival').value='ETSN';
+  run(`loadDemo();$('aarRateMode').value='MANUAL';$('aarTransferRate').value='';$('aarRateSource').value='MANUAL';$('startZulu').value='17:30';$('departure').value='ETSN';$('arrival').value='ETSN';
     setEndpointElevationFromAirport('dep');setEndpointElevationFromAirport('arr');
     $('tankOnBoard').value='${start}';$('taxiMin').value='8';$('aarEnabled').checked=true;
     $('aarConfig').value='3 BAGS';$('aarAlt').value='210';$('aarSpeed').value='285';
@@ -149,7 +149,7 @@ if(require.main===module)(async()=>{
     get('missionPreset').value=preset.missionMeta.id;assert.equal(await run('loadMissionPreset()'),true);
     assert.equal(saved.get('vgaf_mission_v08'),priorSave);
     const x=snapshot();assert.equal(x.route.length,26);near(x.s.dist,723.5);
-    for(const [id,value] of Object.entries(preset.fields))assert.equal(String(get(id).value),id==='missionNotes'?value.replace(/\bM(\d+[.,]\d{3,})/g,(_,n)=>'M'+Number(Number(n).toFixed(2))):value,id);
+    for(const [id,value] of Object.entries(preset.fields))assert.equal(String(get(id).value),id==='aarTankerType'?'A330 MRTT':id==='missionNotes'?value.replace(/\bM(\d+[.,]\d{3,})/g,(_,n)=>'M'+Number(Number(n).toFixed(2))):value,id);
     preset.route.forEach((r,i)=>{for(const k of ['wp','alt','mach','wind','dist','holdMin','etaOverride','plannedEta','plannedOut'])assert.equal(x.route[i][k],r[k],`${i+1} ${k}`);if(r.lat!==undefined){near(x.route[i].lat,r.lat);near(x.route[i].lon,r.lon);}});
     assert.deepEqual(json(x.route.filter(r=>r.etaOverride).map(r=>r.wp)),['TGT-SUIP']);
     assert.equal(x.route[2].wp,'MEXIT');assert.equal(x.s.divertName,'ETNN');assert.equal(x.s.jokerIndex,7);assert.equal(x.s.jokerBasis,'in');assert.equal(x.s.bingoIndex,25);

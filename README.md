@@ -1,4 +1,4 @@
-# IFE Eurofighter Fuel Calculator FS2024 v1.9.21
+# IFE Eurofighter Fuel Calculator FS2024 v1.9.22
 
 ![IFE Eurofighter Fuel Calculator FS2024 app icon](icons/icon.svg)
 
@@ -28,6 +28,31 @@
 See [LICENSE](LICENSE) for the controlling terms and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the separately licensed
 airportsdata content. Simulation only; not for real-world flight planning.
+
+## v1.9.22 — Automatic AAR rates and visible route fields
+
+- AUTO is the default transfer-rate mode; MANUAL remains an explicit override.
+- A330 MRTT is the fixed tanker type, as confirmed for the supplied measurements.
+- Gross rate is derived from measured net fuel-band segments plus modeled receiver
+  burn at the reference condition. Transfer is integrated across the fuel bands;
+  the displayed effective rate is total gross divided by transfer time.
+- Matching profiles use their own curve. Linear/triangle interpolation uses only
+  samples covering the same fuel band. Outside coverage, a nearest measured
+  reference is clearly labelled as an estimate. No cross-configuration mixing.
+- Receiver burn follows the selected altitude/speed and configuration automatically.
+  CLEAN uses the existing 3 BAGS consumption model as an explicit approximation.
+- No S1–S6 selection buttons. Measurement detail remains in Settings. Zero required
+  onload is explicitly labelled; planned event/orbit burn is still included.
+- Tablet route cards start expanded and retain explicit collapsed state during
+  redraws. Mobile navigation no longer overlaps a multi-line header.
+- Schema 3 archives rate mode and measurement data. Schema 1/2 imports preserve
+  their manual/blank-rate behavior. Existing browser saves are not deleted.
+- SimBrief 793765 tested: 26 waypoints; at FL230/285 KIAS/3 BAGS and the screenshot
+  AAR reference, FOB IN 6499.47 kg, zero required onload, event burn 312.46 kg,
+  FOB OUT 6187.02 kg. Effective gross rate for that fuel band: 488.02 kg/min.
+
+The Excel v18.4 report retains whole-run means. Segment rates for a partial fill
+can differ from those means without changing the original measurement data.
 
 ## v1.9.21 — Measured net rates and estimated gross rates
 

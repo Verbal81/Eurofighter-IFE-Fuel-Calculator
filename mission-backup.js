@@ -1,9 +1,9 @@
 /* Complete input snapshot. No calculation is performed in this module. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.IFEMissionBackup=api;})(typeof window!=='undefined'?window:globalThis,()=>{
   'use strict';
-  const SCHEMA_VERSION=2,APP_VERSION='1.9.21',MODEL_VERSION='ife-forward-transfer-2',MAX_BYTES=5*1024*1024;
-  const FIELD_IDS=['aarTransferRate','aarRateSource','callsign','missionDate','startZulu','departure','depElevation','arrival','arrElevation','aircraft','tankOnBoard','taxiMin','reserveKg','surchargePct','alternate1','alternate2','divert1ManualDist','divert1ManualElev','divert2ManualDist','divert2ManualElev','divertAltitude','divertMach','divertWind','recoveryExtra','jokerBuffer','bingoManual','jokerManual','cruiseMode','cruiseDistanceSource','cruiseDistance','cruiseTimeInput','cruiseAltitude','cruiseMach','cruiseWind','cruiseDepElev','cruiseArrElev','aarManualKg','aarArip','aarArcp','aarAlt','aarSpeed','aarDuration','aarConfig','aarBingo2','aarB2Rtb','jokerBasis','aarTargetOut','missionName','missionType','missionNotes','aarTankerType','aarTankerCallsign','aarFrequency','aarPlannedArct','aarPlannedOut','divertSelection'];
-  const TEXT_IDS=new Set(['aarRateSource','callsign','missionDate','startZulu','departure','arrival','aircraft','alternate1','alternate2','cruiseMode','cruiseDistanceSource','aarArip','aarArcp','aarConfig','aarB2Rtb','jokerBasis','missionName','missionType','missionNotes','aarTankerType','aarTankerCallsign','aarFrequency','aarPlannedArct','aarPlannedOut','divertSelection']);
+  const SCHEMA_VERSION=3,APP_VERSION='1.9.22',MODEL_VERSION='ife-forward-auto-3',MAX_BYTES=5*1024*1024;
+  const FIELD_IDS=['aarRateMode','aarTransferRate','aarRateSource','callsign','missionDate','startZulu','departure','depElevation','arrival','arrElevation','aircraft','tankOnBoard','taxiMin','reserveKg','surchargePct','alternate1','alternate2','divert1ManualDist','divert1ManualElev','divert2ManualDist','divert2ManualElev','divertAltitude','divertMach','divertWind','recoveryExtra','jokerBuffer','bingoManual','jokerManual','cruiseMode','cruiseDistanceSource','cruiseDistance','cruiseTimeInput','cruiseAltitude','cruiseMach','cruiseWind','cruiseDepElev','cruiseArrElev','aarManualKg','aarArip','aarArcp','aarAlt','aarSpeed','aarDuration','aarConfig','aarBingo2','aarB2Rtb','jokerBasis','aarTargetOut','missionName','missionType','missionNotes','aarTankerType','aarTankerCallsign','aarFrequency','aarPlannedArct','aarPlannedOut','divertSelection'];
+  const TEXT_IDS=new Set(['aarRateMode','aarRateSource','callsign','missionDate','startZulu','departure','arrival','aircraft','alternate1','alternate2','cruiseMode','cruiseDistanceSource','aarArip','aarArcp','aarConfig','aarB2Rtb','jokerBasis','missionName','missionType','missionNotes','aarTankerType','aarTankerCallsign','aarFrequency','aarPlannedArct','aarPlannedOut','divertSelection']);
   const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
   const clone=v=>JSON.parse(JSON.stringify(v));
   const number=v=>typeof v==='number'?v:typeof v==='string'&&v.trim()!==''?Number(v.trim().replace(/\s/g,'').replace(',','.')):NaN;
@@ -15,6 +15,14 @@
       if(data.mission?.performance?.modelVersion!=='ife-forward-1')throw new Error('Unsupported legacy calculation model');
       data=clone(data);data.schemaVersion=2;
       data.mission.fields={...data.mission.fields,aarTransferRate:'',aarRateSource:'MANUAL'};
+      data.mission.performance.modelVersion='ife-forward-transfer-2';
+    }
+    if(data?.schemaVersion===2){
+      if(data.mission?.performance?.modelVersion!=='ife-forward-transfer-2')throw new Error('Unsupported legacy calculation model');
+      if('aarRateMode' in (data.mission?.fields||{}))throw new Error('Schema 2 cannot contain schema 3 rate mode');
+      data=clone(data);data.schemaVersion=3;
+      data.mission.fields.aarRateMode='MANUAL'; // preserve existing manual/blank-rate plans
+      data.mission.performance.aarMeasurements=null;
       data.mission.performance.modelVersion=MODEL_VERSION;
     }
     const errors=[];const fail=(p,m)=>errors.push(`${p}: ${m}`);
@@ -50,7 +58,7 @@
           if(typeof v!=='string')fail(`mission.fields.${k}`,'text input required');
           else if(!TEXT_IDS.has(k))numeric(v,`mission.fields.${k}`,{blank:true});
         }
-        for(const [k,values] of Object.entries({aarRateSource:['MANUAL','TANKER PRESET','RECEIVER PRESET',...Array.from({length:6},(_,i)=>`RECEIVER PRESET S${i+1} ESTIMATE`)],cruiseMode:['distance','time'],cruiseDistanceSource:['route','direct','manual'],jokerBasis:['in','out'],divertSelection:['auto','1','2'],aarConfig:['CLEAN','3 BAGS']}))if(!values.includes(m.fields[k]))fail(`mission.fields.${k}`,'unknown mode');
+        for(const [k,values] of Object.entries({aarRateMode:['AUTO','MANUAL'],aarRateSource:['AUTO','AUTO NO DATA','AUTO MEASURED PROFILE','AUTO INTERPOLATED','AUTO REFERENCE ESTIMATE','MANUAL','TANKER PRESET','RECEIVER PRESET',...Array.from({length:6},(_,i)=>`RECEIVER PRESET S${i+1} ESTIMATE`)],cruiseMode:['distance','time'],cruiseDistanceSource:['route','direct','manual'],jokerBasis:['in','out'],divertSelection:['auto','1','2'],aarConfig:['CLEAN','3 BAGS']}))if(!values.includes(m.fields[k]))fail(`mission.fields.${k}`,'unknown mode');
         for(const k of ['startZulu','aarPlannedArct','aarPlannedOut'])if(own(m.fields,k))time(m.fields[k],`mission.fields.${k}`);
         if(m.fields.missionDate!==''&&(!/^\d{4}-\d{2}-\d{2}$/.test(m.fields.missionDate)||Number.isNaN(Date.parse(m.fields.missionDate))))fail('mission.fields.missionDate','invalid date');
       }
@@ -82,8 +90,18 @@
         }
       }
       const perf=m.performance;
-      if(req(perf,['modelVersion','aircraftProfile','fuelData'],'mission.performance')){
+      if(req(perf,['modelVersion','aircraftProfile','fuelData','aarMeasurements'],'mission.performance')){
         if(perf.modelVersion!==MODEL_VERSION)fail('mission.performance.modelVersion','unsupported calculation model');
+        const observations=perf.aarMeasurements;
+        if(observations!==null){
+          if(!Array.isArray(observations?.supplementRuns)||observations.supplementRuns.length>50)fail('performance.aarMeasurements','measurement runs required');
+          else observations.supplementRuns.forEach((r,i)=>{
+            if(!['CLEAN','3 BAGS'].includes(r.configuration))fail('aarMeasurements.configuration','unknown configuration');
+            for(const k of ['run','flightLevel','speedKt','fuelStartKg'])numeric(r[k],`aarMeasurements[${i}].${k}`,{min:0});
+            if(!Array.isArray(r.checkpoints)||!r.checkpoints.length)fail('aarMeasurements.checkpoints','checkpoints required');
+            else {let f=r.fuelStartKg,t=0;for(const c of r.checkpoints){if(!(Number.isFinite(c.fuelKg)&&c.fuelKg>f&&Number.isFinite(c.elapsedSec)&&c.elapsedSec>t))fail('aarMeasurements.checkpoints','strictly increasing numeric fuel/time required');f=c.fuelKg;t=c.elapsedSec;}}
+          });
+        }
         const p=perf.aircraftProfile;
         const keys=['id','tankCapacityKg','groundFuelKgPerMin','climbRateFpm','climbFuelKgPerMin','descentRateFpm','descentFuelKgPerMin','transitionTasKt','minMach','maxMach','measurementConfiguration'];
         if(req(p,keys,'mission.performance.aircraftProfile')){
