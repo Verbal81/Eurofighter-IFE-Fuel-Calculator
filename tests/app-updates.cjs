@@ -15,8 +15,8 @@ function fixture(origin=new URL(U.OFFICIAL).origin){
 (async()=>{
  assert.equal(U.compare('1.9.23','1.9.9'),1);assert.equal(U.compare('1.10.0','1.9.99'),1);assert.equal(U.compare('1.9.23','1.9.23'),0);assert.throws(()=>U.validate({schemaVersion:2,appVersion:'1.9.23'}));assert.throws(()=>U.compare('latest','1.9.23'));
  console.log('PASS numeric version comparison and incompatible manifest rejection');
- const f=fixture(),c=U.createController(f.env);f.remote='1.9.24';c.missionReady(f.io);await c.check(true);
- assert.equal(f.node('applyAppUpdate').hidden,false);assert.equal(f.reloads,0);assert.match(f.node('appUpdateNotice').textContent,/1.9.24/);
+ const f=fixture(),c=U.createController(f.env);f.remote='1.9.25';c.missionReady(f.io);await c.check(true);
+ assert.equal(f.node('applyAppUpdate').hidden,false);assert.equal(f.reloads,0);assert.match(f.node('appUpdateNotice').textContent,/1.9.25/);
  assert.equal(f.requests[0].opts.credentials,'omit');assert.equal(f.requests[0].opts.cache,'no-store');assert.equal(f.requests[0].url,U.MANIFEST);
  await c.check();assert.equal(f.requests.length,1,'Automatic checks throttled');
  await c.apply();assert.equal(f.reloads,0);assert.equal(f.session.size,0);assert.match(f.node('appUpdateNotice').textContent,/still deploying/);
@@ -28,7 +28,7 @@ function fixture(origin=new URL(U.OFFICIAL).origin){
  for(const origin of ['null','http://localhost:8000','https://example.test']){const x=fixture(origin),y=U.createController(x.env);y.missionReady(x.io);assert.match(x.node('appUpdateNotice').textContent,/separate copy/);assert.equal(x.node('latestAppLink').href,U.OFFICIAL);x.remote='1.9.24';await y.check(true);await y.apply();assert.equal(x.reloads,0);assert.equal(x.node('applyAppUpdate').hidden,true);}
  console.log('PASS file/local/self-hosted copies retain permanent official-app guidance');
  // Real mission engine: old app's update action -> reload into this version -> exact restoration.
- const old={module:{exports:{}},URL};vm.runInNewContext(fs.readFileSync(require.resolve('../app-updates.js'),'utf8').replace("const VERSION='1.9.23'","const VERSION='1.9.22'"),old);
+ const old={module:{exports:{}},URL};vm.runInNewContext(fs.readFileSync(require.resolve('../app-updates.js'),'utf8').replace("const VERSION='1.9.24'","const VERSION='1.9.22'"),old);
  t.run("loadDemo();$('aarEnabled').checked=true;$('aarWp').value='1';$('aarDuration').value='10';$('aarManualToggle').checked=true;$('aarManualKg').value='100';state.route[2].holdMin=7;recalc();");const backup=t.json(t.run('createMissionBackup()'));
  const m=fixture(),oldController=old.module.exports.createController(m.env);
  oldController.missionReady({capture:()=>t.json(t.run('createMissionBackup()')),restore(){},exportMission(){}});
@@ -46,3 +46,4 @@ function fixture(origin=new URL(U.OFFICIAL).origin){
  const headers=fs.readFileSync(require.resolve('../_headers'),'utf8');assert.ok(headers.includes(U.MANIFEST));assert.match(headers,/script-src 'self';/);assert.doesNotMatch(headers,/connect-src[^\n]*\*/);
  console.log('PASS production CSP permits only the required GitHub manifest, without remote script access');
 })().catch(e=>{console.error(e);process.exitCode=1;});
+

@@ -59,3 +59,10 @@ terms and notices continue to govern them.
 
 This notice documents identified material; it is not a certification that
 every historical contribution or data source has undergone a rights audit.
+
+
+## European aerodrome extension (2026-10-20)
+
+Additional records in `data/international-airbases.json` use the public-domain OurAirports dataset: https://ourairports.com/data/ and https://github.com/davidmegginson/ourairports-data. The source snapshot SHA-256 and retrieval date are stored in the dataset metadata; each added record includes its source URL. An explicit ICAO selection excludes non-airport records and unconfirmed identifiers. Existing airportsdata records retain their original attribution.
+
+LFPV ARP (48°46′27″N 002°11′29″E) and elevation (585 ft) instead follow SIA France AIP AD 2 LFPV.2, page dated 10 JUL 2025, available in the 16 APR 2026 AIP edition. The record stores that reference. Inclusion does not certify current availability, runway suitability, or permission to use an aerodrome.

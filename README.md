@@ -1,4 +1,4 @@
-# IFE Eurofighter Fuel Calculator FS2024 v1.9.23
+# IFE Eurofighter Fuel Calculator FS2024 v1.9.24
 
 ![IFE Eurofighter Fuel Calculator FS2024 app icon](icons/icon.svg)
 
@@ -36,6 +36,15 @@ Ein GitHub-Download aktualisiert seine Dateien nicht selbst. Vor einem Wechsel M
 See [LICENSE](LICENSE) for the controlling terms and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the separately licensed
 airportsdata content. Simulation only; not for real-world flight planning.
+
+## v1.9.24 — European airfields and LFPV
+
+- Added 78 military/joint-use aerodrome records, including LFPV Villacoublay-Vélizy (585 ft; published AIP ARP).
+- Search accepts accented names, plain spelling and the selected ICAO/name label without losing results.
+- Old mission navigation snapshots retain their existing records while gaining missing airports. JSON backups include the merged data.
+- Existing coordinates, fuel models, saves and optional mission presets are unchanged.
+- Sources: OurAirports public-domain snapshot (2026-10-20); LFPV coordinates/elevation use SIA France AIP AD 2 LFPV.2. This is a curated simulator dataset, not a complete operational directory or a runway/availability check.
+- Reproduce additions with `python scripts/extend-airbases.py airports.csv`. Dataset metadata records the CSV SHA-256.
 
 ## v1.9.23 — Update detection and current guides
 
@@ -380,3 +389,4 @@ Simulation/test build. Not an official flight document and not for real-world op
 - Joker basis can be selected as WP IN (before HOLD) or WP OUT (after HOLD/PUSH). Old saved plans migrate to WP IN, matching prior behavior.
 - Saved mission schema bumped to v14; old plans remain loadable.
 - Added standalone regression tests under tests/regression-v1.9.11.js.
+

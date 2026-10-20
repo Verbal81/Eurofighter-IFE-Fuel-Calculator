@@ -5,7 +5,7 @@
   else {root.IFEAppUpdates=api;api.controller=api.createController(root);api.controller.start();}
 })(typeof window!=='undefined'?window:globalThis,()=>{
   'use strict';
-  const VERSION='1.9.23';
+  const VERSION='1.9.24';
   const OFFICIAL='https://ife-eufi-fuelcalc-test.topstoni81.workers.dev/';
   const MANIFEST='https://raw.githubusercontent.com/Verbal81/Eurofighter-IFE-Fuel-Calculator/main/version.json';
   const PENDING='ife_pending_app_update_v1',INTERVAL=60*60*1000;
@@ -95,3 +95,4 @@
   }
   return {VERSION,OFFICIAL,MANIFEST,PENDING,compare,validate,createController};
 });
+

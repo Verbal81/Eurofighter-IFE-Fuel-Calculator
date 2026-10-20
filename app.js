@@ -269,12 +269,12 @@ function populateAirports(){
 }
 const AIRBASE_FAV_KEY='ife_airbase_favorites';
 const AIRBASE_RECENT_KEY='ife_airbase_recent';
-const COUNTRY_NAMES={DE:['Deutschland','Germany'],GB:['Vereinigtes Königreich','United Kingdom'],FR:['Frankreich','France'],BE:['Belgien','Belgium'],NL:['Niederlande','Netherlands'],DK:['Dänemark','Denmark'],NO:['Norwegen','Norway'],SE:['Schweden','Sweden'],FI:['Finnland','Finland'],PL:['Polen','Poland'],CZ:['Tschechien','Czechia'],HU:['Ungarn','Hungary'],GR:['Griechenland','Greece'],RO:['Rumänien','Romania'],IT:['Italien','Italy'],ES:['Spanien','Spain'],PT:['Portugal','Portugal'],AT:['Österreich','Austria'],CH:['Schweiz','Switzerland'],EE:['Estland','Estonia'],LV:['Lettland','Latvia'],LT:['Litauen','Lithuania'],US:['USA','USA'],CA:['Kanada','Canada']};
+const COUNTRY_NAMES={AL:['Albanien','Albania'],BG:['Bulgarien','Bulgaria'],CY:['Zypern','Cyprus'],HR:['Kroatien','Croatia'],IE:['Irland','Ireland'],RS:['Serbien','Serbia'],SI:['Slowenien','Slovenia'],SK:['Slowakei','Slovakia'],DE:['Deutschland','Germany'],GB:['Vereinigtes Königreich','United Kingdom'],FR:['Frankreich','France'],BE:['Belgien','Belgium'],NL:['Niederlande','Netherlands'],DK:['Dänemark','Denmark'],NO:['Norwegen','Norway'],SE:['Schweden','Sweden'],FI:['Finnland','Finland'],PL:['Polen','Poland'],CZ:['Tschechien','Czechia'],HU:['Ungarn','Hungary'],GR:['Griechenland','Greece'],RO:['Rumänien','Romania'],IT:['Italien','Italy'],ES:['Spanien','Spain'],PT:['Portugal','Portugal'],AT:['Österreich','Austria'],CH:['Schweiz','Switzerland'],EE:['Estland','Estonia'],LV:['Lettland','Latvia'],LT:['Litauen','Lithuania'],US:['USA','USA'],CA:['Kanada','Canada']};
 function countryName(code){const pair=COUNTRY_NAMES[String(code||'').toUpperCase()];return pair?(uiLang()==='en'?pair[1]:pair[0]):String(code||'—');}
 function safeLocalList(key){try{const a=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(a)?a.filter(x=>typeof x==='string').slice(0,50):[];}catch{return [];}}
 function saveLocalList(key,a){localStorage.setItem(key,JSON.stringify([...new Set(a)].slice(0,50)));}
 function isAirbase(a){const cat=String(a?.category||'').toLowerCase(),fac=String(a?.facility||'').toUpperCase();return (fac==='MIL'||fac==='CIV-MIL'||cat.includes('militär'))&&!cat.includes('hubschrauber');}
-function airbases(){return (state.navData?.airports||[]).filter(isAirbase);}
+function airbases(){return (activeNavigation()?.airports||[]).filter(isAirbase);}
 function populateAlternatePresets(){
   const codes=[...new Set(airbases().map(a=>String(a.country||'').toUpperCase()).filter(Boolean))].sort((a,b)=>countryName(a).localeCompare(countryName(b),uiLang()==='en'?'en':'de'));
   [1,2].forEach(n=>{
@@ -283,7 +283,8 @@ function populateAlternatePresets(){
     syncAlternatePreset(n);
   });
 }
-function airbaseSearchText(a){return [a.icao,a.name,a.city,a.country,countryName(a.country),a.category,a.facility].filter(Boolean).join(' ').toUpperCase();}
+function normalizeAirbaseSearch(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim();}
+function airbaseSearchText(a){return normalizeAirbaseSearch([a.icao,a.name,a.city,a.country,...(COUNTRY_NAMES[a.country]||[]),a.category,a.facility].filter(Boolean).join(' '));}
 function scoreAirbase(a,q,favs,recents){
   const icao=String(a.icao||'').toUpperCase(),name=String(a.name||'').toUpperCase(),city=String(a.city||'').toUpperCase();
   if(q){if(icao===q)return 0;if(icao.startsWith(q))return 1;if(name.startsWith(q)||city.startsWith(q))return 2;return 4;}
@@ -293,10 +294,10 @@ function scoreAirbase(a,q,favs,recents){
 }
 function renderAirbaseSearch(n){
   const box=$(`alternate${n}Results`);if(!box)return;
-  const q=String($(`alternate${n}Search`)?.value||'').trim().toUpperCase();
+  const q=normalizeAirbaseSearch($(`alternate${n}Search`)?.value);
   const country=$(`alternate${n}Country`)?.value||'ALL';
   const favs=safeLocalList(AIRBASE_FAV_KEY),recents=safeLocalList(AIRBASE_RECENT_KEY);
-  let list=airbases().filter(a=>(country==='ALL'||a.country===country)&&(q===''||airbaseSearchText(a).includes(q)));
+  let list=airbases().filter(a=>(country==='ALL'||a.country===country)&&(q===''||q.split(' ').every(token=>airbaseSearchText(a).includes(token))));
   list.sort((a,b)=>scoreAirbase(a,q,favs,recents)-scoreAirbase(b,q,favs,recents)||String(a.icao).localeCompare(String(b.icao)));
   list=list.slice(0,10);box.replaceChildren();
   if(!list.length){const empty=document.createElement('div');empty.className='airbase-empty';empty.textContent=uiText('Keine Air Base gefunden. ICAO kann weiterhin manuell eingegeben werden.','No air base found. You can still enter the ICAO manually.');box.appendChild(empty);return;}
@@ -338,7 +339,14 @@ function setEndpointElevationFromAirport(which){
 function missionDepElev(){return parseNum($('depElevation').value,airportElev($('departure').value));}
 function missionArrElev(){return parseNum($('arrElevation').value,airportElev($('arrival').value));}
 
-function activeNavigation(){return state.missionNavigation||state.navData;}
+function activeNavigation(){
+  if(!state.missionNavigation)return state.navData;
+  // Retain saved coordinates/elevations; make newly bundled airports available
+  // to old missions and include them in subsequent full-state JSON exports.
+  const saved=state.missionNavigation,known=new Set((saved.airports||[]).map(a=>a.icao));
+  const added=(state.navData?.airports||[]).filter(a=>!known.has(a.icao));
+  return added.length?{...saved,airports:[...(saved.airports||[]),...added]}:saved;
+}
 function activeFuelData(){return state.missionPerformance?.fuelData||state.fuelData;}
 function airport(icao){ return (activeNavigation()?.airports||[]).find(a=>a.icao===String(icao||'').trim().toUpperCase()); }
 function waypoint(ident){ return (activeNavigation()?.waypoints||[]).find(a=>a.ident===String(ident||'').trim().toUpperCase()); }
@@ -1291,7 +1299,7 @@ function renderDataCard(){
     <h2>03 | ${uiText('DIVERT / RESERVE','DIVERT / RESERVE')}</h2><div class="dc-kpis"><div><span>DIVERT 1</span><strong>${escapeHtml(d1.name||'—')} ${d1.valid?fmt(d1.fuel)+' kg':''}</strong></div><div><span>DIVERT 2</span><strong>${escapeHtml(d2.name||'—')} ${d2.valid?fmt(d2.fuel)+' kg':''}</strong></div><div><span>USED</span><strong>${s.divertValid?escapeHtml(s.divertName)+' '+fmt(s.divert)+' kg':'—'}</strong></div><div><span>ARR RECOV FLOOR</span><strong>${fmt((s.divert||0)+(s.reserve||0)+(s.recovery||0))} kg</strong></div></div>
     <h2>04 | AAR</h2>${s.aar?.enabled?`<div class="dc-aar-ticket"><div class="dc-aar-title">AAR PLAN 01</div><div class="dc-aar-rule"></div><div><span>ARIP</span><b>${escapeHtml(s.aar.ticket?.arip||'—')}</b></div><div><span>ARCP</span><b>${escapeHtml(s.aar.ticket?.arcp||state.route[s.aar.index]?.wp||'—')}</b></div><div><span>ARCT</span><b>${escapeHtml(s.aar.ticket?.arct||'—')}</b></div><div class="dc-aar-space"></div><div><span>ALT</span><b>FL${fmt(s.aar.ticket?.alt||230,0)}</b></div><div><span>SPD</span><b>${fmt(s.aar.ticket?.speed||285,0)} KIAS</b></div><div><span>CONF</span><b>${escapeHtml(s.aar.ticket?.conf||'CLEAN')}</b></div><div><span>TANKER</span><b>${escapeHtml(s.aar.ticket?.tankerType||'—')}</b></div><div><span>CALLSIGN</span><b>${escapeHtml(s.aar.ticket?.tankerCallsign||'—')}</b></div><div><span>FREQ / STATUS</span><b>${escapeHtml(s.aar.ticket?.frequency||'—')}</b></div>${s.aar.ticket?.plannedArct||s.aar.ticket?.plannedOut?`<div><span>ARCT / OUT PLAN</span><b>${escapeHtml(s.aar.ticket?.plannedArct||'—')}Z / ${escapeHtml(s.aar.ticket?.plannedOut||'—')}Z</b></div>`:''}<div class="dc-aar-rule"></div><div><span>FOB IN</span><b>${fmt(s.aar.ticket?.fobIn)} KG</b></div>${s.aar.manualOn?'':`<div><span>TARGET FOB OUT</span><b>${fmt(s.aar.ticket?.target)} KG</b></div>`}<div><span>GROSS ONLOAD</span><b>+${fmt(s.aar.ticket?.onload)} KG</b></div><div><span>TRANSFER RATE</span><b>${Number.isFinite(s.aar.transfer?.rate)?fmt(s.aar.transfer.rate,2)+' KG/MIN':'N/A / RATE REQUIRED'}</b></div><div><span>RATE SOURCE</span><b>${escapeHtml(s.aar.rateSource||'MANUAL')}</b></div><div><span>EST XFER TIME</span><b>${Number.isFinite(s.aar.transfer?.transferTime)?fmt(s.aar.transfer.transferTime,2)+' MIN'+(s.aar.transfer.valid?'':' · CHECK'):'N/A / '+escapeHtml(s.aar.transfer?.status||'RATE REQUIRED')}</b></div><div><span>AAR EVENT</span><b>${fmt(s.aar.duration,1)} MIN</b></div><div><span>FOB AFTER LOAD</span><b>${fmt(s.aar.ticket?.fobAfterLoad)} KG*</b></div><div><span>AAR BURN</span><b>-${fmt(s.aar.ticket?.burn)} KG</b></div><div><span>FOB OUT</span><b>${fmt(s.aar.ticket?.fobOut)} KG</b></div><div><span>AAR OUT</span><b>${escapeHtml(s.aar.ticket?.out||'—')}</b></div><div class="dc-aar-rule"></div><div><span>BINGO 2</span><b>${Number.isFinite(s.aar.ticket?.bingo2)?fmt(s.aar.ticket.bingo2)+' KG':'—'}</b></div><div><span>B2 → RTB</span><b>${escapeHtml(s.aar.ticket?.b2rtb||'—')}</b></div><div><span>BINGO (NO AAR)</span><b>${Number.isFinite(s.aar.ticket?.bingo)?fmt(s.aar.ticket.bingo)+' KG':'—'}</b></div><div><span>JOKER</span><b>${Number.isFinite(s.aar.ticket?.joker)?fmt(s.aar.ticket.joker)+' KG':'—'}</b></div><div><span>JOKER @</span><b>${escapeHtml((s.aar.ticket?.jokerWp||'—')+' '+(s.jokerBasis||'in').toUpperCase())}</b></div><small>${escapeHtml(s.aar.estimateNote||'')} SIMULATION ONLY · *FOB AFTER LOAD is accounting only; Known rate: simultaneous transfer/burn followed by orbit burn; peak checked at transfer end. Without rate, transfer time/feasibility unverified.</small></div>`:`<div class="dc-kpis"><div><span>STATUS</span><strong>OFF</strong></div></div>`}
     <h2>05 | ${uiText('FLUGLOG','FLIGHT LOG')}</h2><table class="dc-table"><thead><tr><th>NR</th><th>WAYPOINT</th><th>ALT</th><th>M</th><th>WIND</th><th>LEG NM</th><th>ETE</th><th>WP IN Z</th><th>HOLD / WP OUT</th><th>LEG kg</th><th>RECOV kg</th><th>FOB IN / OUT</th><th>IST kg</th></tr></thead><tbody>${rows}</tbody></table>
-    <footer class="dc-footer">Eurofighter IFE Fuel Calculator v1.9.23 · by Verbal · ${uiText('SIMULATION / TESTBUILD · KEIN OFFIZIELLES FLUGDOKUMENT','SIMULATION / TEST BUILD · NOT AN OFFICIAL FLIGHT DOCUMENT')}</footer>`;
+    <footer class="dc-footer">Eurofighter IFE Fuel Calculator v1.9.24 · by Verbal · ${uiText('SIMULATION / TESTBUILD · KEIN OFFIZIELLES FLUGDOKUMENT','SIMULATION / TEST BUILD · NOT AN OFFICIAL FLIGHT DOCUMENT')}</footer>`;
 }
 
 function openInfo(title,html){$('infoTitle').textContent=title;$('infoBody').innerHTML=html;$('infoOverlay').classList.remove('hidden');$('infoOverlay').setAttribute('aria-hidden','false');}
@@ -1586,3 +1594,4 @@ function formatTime(min){const m=Math.max(0,Math.round(parseNum(min)));return `$
 
 toggleCruiseMode();
 boot();
+
