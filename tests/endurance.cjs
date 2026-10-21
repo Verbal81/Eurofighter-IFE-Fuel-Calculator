@@ -1,0 +1,17 @@
+const assert=require('node:assert/strict'),t=require('./regression.cjs');
+t.run('loadDemo();recalc()');
+const before=t.json(t.run('captureMissionState()')),summary=t.json(t.run('state.summary'));
+let a=t.run('fuelEndurance()');assert.equal(a.valid,true);assert.ok(a.toEmpty>a.usable);assert.ok(a.usable>0);
+assert.equal(a.rate,summary.trip/(summary.routeTime+summary.holdTime));
+assert.equal(a.toEmpty,(7213-summary.ground)/a.rate);
+assert.equal(a.usable,(7213-summary.ground-summary.divert-summary.recovery-summary.reserve)/a.rate);
+t.run('renderDataCard()');assert.deepEqual(t.json(t.run('captureMissionState()')),before);assert.deepEqual(t.json(t.run('state.summary')),summary);
+assert.match(t.get('dataCardSheet').innerHTML,/EST FUEL ENDURANCE/);assert.match(t.get('dataCardSheet').innerHTML,/THEORETICAL TO EMPTY/);
+t.get('tankOnBoard').value='6000';let b=t.run('fuelEndurance()');assert.ok(Math.abs((a.toEmpty-b.toEmpty)-1213/a.rate)<1e-9);
+t.run('state.summary.aar={enabled:true,accepted:3000,duration:20};');assert.equal(t.run('fuelEndurance().toEmpty'),b.toEmpty);
+t.run('state.summary.divertValid=false');assert.equal(t.run('fuelEndurance().usable'),null);assert.equal(t.run('enduranceTime(fuelEndurance().usable)'), 'N/A');
+t.get('tankOnBoard').value='8000';assert.equal(t.run('fuelEndurance().valid'),false);
+t.get('tankOnBoard').value='0';assert.equal(t.run('fuelEndurance().toEmpty'),0);
+t.run('state.summary.routeValid=false');assert.equal(t.run('fuelEndurance().valid'),false);
+assert.equal(t.run('enduranceTime(119.999)'), '01:59');assert.equal(t.run('enduranceTime(125)'), '02:05');
+console.log('PASS actual fuel/full tank, protected floor, extra fuel, no future AAR credit, invalid inputs, HH:MM, card rendering and unchanged mission/results');

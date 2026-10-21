@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "appVersion": "1.9.24",
-  "publishedAt": "2026-10-20",
-  "summary": "78 additional European military/joint-use airfields, LFPV automatic divert lookup and robust airport search."
+  "appVersion": "1.9.25",
+  "publishedAt": "2026-10-21",
+  "summary": "Data Card: estimated fuel endurance from actual on-board fuel, with protected reserves and theoretical time to empty."
 }

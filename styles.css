@@ -528,3 +528,6 @@ html[data-layout="efb"] .aar-side>.aar-note{grid-column:1}
   html[data-layout="efb"] .topbar{position:relative!important}
   html[data-layout="efb"] .tabs{top:0!important}
 }
+
+
+.dc-endurance{break-inside:avoid;margin-top:12px}.dc-endurance small{display:block;font-size:11px;line-height:1.4;margin-top:5px}

@@ -1,4 +1,4 @@
-# IFE Eurofighter Fuel Calculator FS2024 v1.9.24
+# IFE Eurofighter Fuel Calculator FS2024 v1.9.25
 
 ![IFE Eurofighter Fuel Calculator FS2024 app icon](icons/icon.svg)
 
@@ -36,6 +36,10 @@ Ein GitHub-Download aktualisiert seine Dateien nicht selbst. Vor einem Wechsel M
 See [LICENSE](LICENSE) for the controlling terms and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the separately licensed
 airportsdata content. Simulation only; not for real-world flight planning.
+
+## v1.9.25 — Fuel endurance on the Data Card
+
+Two HH:MM estimates use actual ON BOARD fuel minus ground burn, including fuel carried above BLOCK REQ. The first protects selected divert, recovery extra and landing reserve; the second is explicitly theoretical time to empty. Both use the planned route/hold average burn (including mission surcharge), not a maximum-range or live fuel prediction. Planned AAR onload and AAR event burn/time are excluded from this no-refuelling estimate. A valid divert is required for the protected figure. Invalid route/fuel or over-capacity inputs show N/A. Minutes are rounded down. The same values appear in the printed/PDF Data Card. No mission inputs or calculation formulas are changed.
 
 ## v1.9.24 — European airfields and LFPV
 
